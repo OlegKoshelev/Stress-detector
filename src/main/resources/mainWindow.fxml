@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.InSituStress.Controller.Controller">
+    <children>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#Edit" text="New file" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Settings">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#showSettings" text="CCD, substrate &amp; graph" />
+               </items></Menu>
+            </menus>
+        </MenuBar>
+        <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <items>
+                <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
+                <Button mnemonicParsing="false" onAction="#print" text="Run" />
+            </items>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+            <padding>
+                <Insets left="100.0" />
+            </padding>
+        </ToolBar>
+        <SplitPane dividerPositions="0.2904841402337229" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <items>
+                <Pane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <ImageView fx:id="imageView" fitHeight="259.0" fitWidth="344.0" pickOnBounds="true" preserveRatio="true">
+                            <viewport>
+                                <Rectangle2D />
+                            </viewport>
+                        </ImageView>
+                        <TextFlow layoutY="259.0" prefHeight="467.0" prefWidth="344.0" />
+                    </children>
+                </Pane>
+                <VBox prefHeight="200.0" prefWidth="100.0">
+                    <children>
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" VBox.vgrow="ALWAYS">
+                            <graphic>
+                                <LineChart fx:id="chart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="808.0" prefWidth="816.0">
+                                    <xAxis>
+                                        <NumberAxis side="BOTTOM" fx:id="xAxis" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="yAxis" side="LEFT" />
+                                    </yAxis>
+                                </LineChart>
+                            </graphic>
+                            <contextMenu>
+                                <ContextMenu>
+                                    <items>
+                                        <CheckMenuItem mnemonicParsing="false" text="Unspecified Action" />
+                                        <CheckMenuItem mnemonicParsing="false" text="Unspecified Action" />
+                                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                                        <Menu mnemonicParsing="false" text="Unspecified Menu">
+                                            <items>
+                                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                            </items>
+                                        </Menu>
+                                        <Menu mnemonicParsing="false" text="Unspecified Menu">
+                                            <items>
+                                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                            </items>
+                                        </Menu>
+                                    </items>
+                                </ContextMenu>
+                            </contextMenu>
+                        </Button>
+                    </children>
+                </VBox>
+            </items>
+        </SplitPane>
+    </children>
+</VBox>

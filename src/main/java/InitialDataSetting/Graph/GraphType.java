@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package InitialDataSetting.Graph;
 
 public enum GraphType {
     StressThickness("Stress X Thickness (GPa X um)"),

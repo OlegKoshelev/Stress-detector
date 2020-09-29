@@ -7,7 +7,7 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import sample.InSituStress.Controller.CameraCustomizations;
+import InitialDataSetting.Camera.CameraCustomizations;
 import sample.InSituStress.Controller.SettingsData;
 
 import java.io.ByteArrayInputStream;

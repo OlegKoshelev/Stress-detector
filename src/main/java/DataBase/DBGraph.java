@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package DataBase;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

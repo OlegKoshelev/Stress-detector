@@ -1,6 +1,8 @@
 package sample.InSituStress.Controller;
 
 
+import InitialDataSetting.Substrate.BiaxialModulus;
+
 public class SubstrateCustomizations {
     private static SubstrateCustomizations instance;
     private BiaxialModulus biaxialModulus;

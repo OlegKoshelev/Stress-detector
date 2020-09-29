@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package InitialDataSetting.Camera;
 
 public enum Resolution {
     VGA(640,480),

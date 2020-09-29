@@ -1,5 +1,10 @@
 package Controllers;
 
+import InitialDataSetting.Camera.CameraCustomizations;
+import InitialDataSetting.Camera.CountCameras;
+import InitialDataSetting.Camera.Resolution;
+import InitialDataSetting.Graph.GraphType;
+import InitialDataSetting.Substrate.BiaxialModulus;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,8 +24,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import static sample.InSituStress.Controller.SettingsTransfer.readFromSettingsFile;
 
 
 public class SettingsController implements Initializable {

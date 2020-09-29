@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package InitialDataSetting.Camera;
 
 public class CameraCustomizations {
     private static CameraCustomizations instance;

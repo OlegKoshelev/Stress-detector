@@ -1,5 +1,6 @@
 package sample.InSituStress.Controller;
 
+import InitialDataSetting.Graph.GraphType;
 import javafx.scene.paint.Color;
 
 public class GraphCustomizations {

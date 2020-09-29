@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package InitialDataSetting.Substrate;
 
 public enum BiaxialModulus {
 

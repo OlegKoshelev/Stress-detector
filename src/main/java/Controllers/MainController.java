@@ -1,5 +1,7 @@
 package Controllers;
 
+import DataBase.DBGraph;
+import DataBase.DBValues;
 import javafx.application.Platform;
 
 import javafx.fxml.FXML;

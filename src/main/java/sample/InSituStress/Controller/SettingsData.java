@@ -1,6 +1,9 @@
 package sample.InSituStress.Controller;
 
 
+import InitialDataSetting.Camera.Resolution;
+import InitialDataSetting.Graph.GraphType;
+import InitialDataSetting.Substrate.BiaxialModulus;
 import javafx.scene.paint.Color;
 
 public class SettingsData {

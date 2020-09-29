@@ -2,7 +2,7 @@ package sample;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import sample.InSituStress.Model.GettingData.CvUtils;
+import DataGetting.CvUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package sample.InSituStress.Model.GettingData;
+package DataGetting;
 
 import org.opencv.core.Mat;
 

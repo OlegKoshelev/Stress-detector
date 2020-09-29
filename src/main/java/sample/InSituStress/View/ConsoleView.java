@@ -1,8 +1,6 @@
 package sample.InSituStress.View;
 
-import javafx.stage.Stage;
-import sample.InSituStress.Model.GettingData.CvUtils;
-import sample.InSituStress.Model.GettingData.Values;
+import DataGetting.Values;
 
 import java.util.concurrent.BlockingQueue;
 

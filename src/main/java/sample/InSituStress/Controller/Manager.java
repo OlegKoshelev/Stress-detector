@@ -4,7 +4,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import sample.InSituStress.Model.ModelLayer;
-import sample.InSituStress.Model.GettingData.Values;
+import DataGetting.Values;
 import sample.InSituStress.Model.ValuesLayer;
 import sample.InSituStress.View.ConsoleView;
 import sample.InSituStress.View.GraphView;

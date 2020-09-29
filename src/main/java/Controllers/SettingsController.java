@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package Controllers;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.opencv.core.Mat;
 import sample.ImageUtils;
+import sample.InSituStress.Controller.*;
 
 
 import java.io.IOException;

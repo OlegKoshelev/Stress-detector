@@ -1,7 +1,7 @@
 package sample.InSituStress.Model;
 
 
-import sample.InSituStress.Model.GettingData.*;
+import DataGetting.*;
 
 import java.util.concurrent.*;
 

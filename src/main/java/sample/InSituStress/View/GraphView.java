@@ -1,19 +1,9 @@
 package sample.InSituStress.View;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
-import org.opencv.core.Mat;
-import sample.InSituStress.Model.GettingData.CvUtils;
-import sample.InSituStress.Model.GettingData.Values;
+import DataGetting.Values;
 
 import java.util.concurrent.BlockingQueue;
 

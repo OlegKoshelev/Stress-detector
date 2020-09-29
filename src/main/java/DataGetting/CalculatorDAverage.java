@@ -1,4 +1,4 @@
-package sample.InSituStress.Model.GettingData;
+package DataGetting;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;

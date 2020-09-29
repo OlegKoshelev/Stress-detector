@@ -1,6 +1,6 @@
 package sample.InSituStress.Model;
 
-import sample.InSituStress.Model.GettingData.Values;
+import DataGetting.Values;
 
 import java.util.concurrent.BlockingQueue;
 

@@ -1,4 +1,4 @@
-package sample.InSituStress.Controller;
+package Controllers;
 
 import javafx.application.Platform;
 
@@ -19,7 +19,8 @@ import javafx.stage.Stage;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import sample.InSituStress.Model.GettingData.Values;
+import sample.InSituStress.Controller.*;
+import DataGetting.Values;
 import sample.InSituStress.Model.ModelLayer;
 import sample.InSituStress.Model.ValuesLayer;
 
@@ -31,7 +32,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
-public class Controller implements Initializable {
+public class MainController implements Initializable {
 
 
     @FXML

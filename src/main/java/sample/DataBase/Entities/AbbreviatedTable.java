@@ -1,4 +1,4 @@
-package sample.DataBase;
+package sample.DataBase.Entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class DBValues {
+public class AbbreviatedTable {
     @Id
     @Column(name = "DATE")
     private Date timestamp;
@@ -17,17 +17,15 @@ public class DBValues {
     @Column(name ="Curvature")
     private double curvature;
 
-    public DBValues() {
+    public AbbreviatedTable() {
     }
 
-    public DBValues( Date timestamp, double distance, double stressThickness, double curvature) {
+    public AbbreviatedTable(Date timestamp, double distance, double stressThickness, double curvature) {
         this.timestamp = timestamp;
         this.distance = distance;
         this.stressThickness = stressThickness;
         this.curvature = curvature;
     }
-
-
 
     public Date getTimestamp() {
         return timestamp;

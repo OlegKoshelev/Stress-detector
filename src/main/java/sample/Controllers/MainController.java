@@ -1,7 +1,7 @@
 package sample.Controllers;
 
-import sample.DataBase.DBGraph;
-import sample.DataBase.DBValues;
+import sample.DataBase.Entities.RegularTable;
+import sample.DataBase.Entities.DetailedTable;
 import sample.DataSaving.SettingsData;
 import sample.DataSaving.SettingsTransfer;
 import sample.Utils.GraphAverageData;
@@ -116,7 +116,7 @@ public class MainController implements Initializable {
                             counter++;
                             Image image = nextValue.getImage();
                             graphAverageData.save(nextValue.getDistance());
-                            DBValues dbValues = new DBValues(nextValue.getTimestamp(),nextValue.getDistance(),nextValue.getStressThickness(),nextValue.getCurvature());
+                            DetailedTable dbValues = new DetailedTable(nextValue.getTimestamp(),nextValue.getDistance(),nextValue.getStressThickness(),nextValue.getCurvature());
                             session.save(dbValues);
                             System.out.println(counter);
                             if (counter % 1000 == 0){
@@ -129,7 +129,7 @@ public class MainController implements Initializable {
                                 Number x = nextValue.getTimestamp().getTime();
                                 double value = graphAverageData.submit();
                                 Number y = value;
-                                session.save(new DBGraph(nextValue.getTimestamp(),value));
+                                session.save(new RegularTable(nextValue.getTimestamp(),value));
                                 System.out.println(x + "   " + nextValue.getTimestamp().toString());
                                 Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
                             }

@@ -127,13 +127,9 @@ public class MainController implements Initializable {
                 TemporaryValues AbbreviatedValues = new TemporaryValues();
 
                 int checkPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000;
-                // SessionFactory sessionFactory = dBConfiguration.buildSessionFactory();
-                // Session session = sessionFactory.openSession();
-                //   session.beginTransaction();
                 MedianOfList medianOfList = new MedianOfList();
                 while (true) {
                     Values nextValue = null;
-                    // GraphAverageData graphAverageData = new GraphAverageData();
                     try {
                         nextValue = values.take();
                         if (nextValue == null) continue;
@@ -141,15 +137,11 @@ public class MainController implements Initializable {
 
                         Image image = nextValue.getImage();
                         medianOfList.save(nextValue);
-                        //  graphAverageData.save(nextValue.getDistance());
                         DetailedTable dtValues = new DetailedTable(nextValue.getTimestamp(), nextValue.getDistance(), nextValue.getStressThickness(), nextValue.getCurvature());
                         detailedTableValues.addValue(dtValues);
-                        //  session.save(dbValues);
                         System.out.println(counter);
+
                         if (counter % 1000 == 0) {
-                            //  session.getTransaction().commit();
-                            //  session.beginTransaction();
-                            //  series.getData().clear();
                             DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
                             detailedTableHelper.addTableList(detailedTableValues.getList());
                             detailedTableValues.reset();
@@ -157,23 +149,16 @@ public class MainController implements Initializable {
 
                         if (counter % checkPoint == 0) {
                             Values RegularTableValues = medianOfList.getMedianValueAndClear();
-
                             Number x = RegularTableValues.getTimestamp().getTime();
                             Number y = RegularTableValues.getDistance();
-                            //  double value = graphAverageData.submit();
-                            //  Number y = value;
-                            //  session.save(new RegularTable(nextValue.getTimestamp(),value));
                             System.out.println(x + "   " + RegularTableValues.getTimestamp().toString());
                             Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
                         }
                         Platform.runLater(() -> imageView.setImage(image));
-                        //System.out.println(String.format("Time: %s;  StressThickness: %f; Curvature: %f; distance: %f", nextValue.getTimestamp().toString(), nextValue.getStressThickness(), nextValue.getCurvature(), nextValue.getDistance()));
                     } catch (InterruptedException e) {
                         break;
                     }
                 }
-                // session.close();
-                // sessionFactory.close();
             }
         });
     }

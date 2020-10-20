@@ -4,7 +4,7 @@ package sample.DataGetting;
 import javafx.scene.image.Image;
 import java.util.Date;
 
-public class Values {
+public class Values  implements Comparable<Values>{
     private double stressThickness;
     private double curvature;
     private Date timestamp;
@@ -17,6 +17,9 @@ public class Values {
         this.timestamp = timestamp;
         this.distance = distance;
         this.img = img;
+    }
+
+    public Values() {
     }
 
     public double getStressThickness() {
@@ -34,4 +37,29 @@ public class Values {
     public double getDistance() { return distance; }
 
     public Image getImage() { return img; }
+
+    public void setStressThickness(double stressThickness) {
+        this.stressThickness = stressThickness;
+    }
+
+    public void setCurvature(double curvature) {
+        this.curvature = curvature;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
+    @Override
+    public int compareTo(Values o) {
+        return (int) (distance - o.distance)*10000;
+    }
 }

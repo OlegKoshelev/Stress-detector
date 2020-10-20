@@ -1,7 +1,9 @@
 package sample.Controllers;
 
+import sample.DataBase.DetailedTableHelper;
 import sample.DataBase.Entities.RegularTable;
 import sample.DataBase.Entities.DetailedTable;
+import sample.DataBase.HibernateUtil;
 import sample.DataSaving.SettingsData;
 import sample.DataSaving.SettingsTransfer;
 import sample.Utils.GraphAverageData;
@@ -28,6 +30,8 @@ import org.hibernate.cfg.Configuration;
 import sample.DataGetting.Values;
 import sample.DataGetting.ModelLayer;
 import sample.DataGetting.ValuesLayer;
+import sample.Utils.MedianOfList;
+import sample.Utils.TemporaryValues;
 
 
 import java.io.File;
@@ -55,6 +59,8 @@ public class MainController implements Initializable {
     private XYChart.Series<Number, Number> series = new XYChart.Series<>();
     private Thread thread;
     private Configuration dBConfiguration;
+
+    private HibernateUtil hibernateUtil;
 
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
@@ -87,6 +93,19 @@ public class MainController implements Initializable {
 
     @FXML
     public void print() throws Exception {
+        if (hibernateUtil == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
+            Parent root = loader.load();
+            SettingsController controller = loader.getController();
+            Stage primaryStage = new Stage();
+            primaryStage.setTitle("Checking DB");
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
+            primaryStage.setOnCloseRequest(event -> {
+                controller.shutdown();
+            });
+            return;
+        }
         if (thread == null) {
             GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
             chart.getData().add(series);
@@ -103,45 +122,59 @@ public class MainController implements Initializable {
             public void run() {
                 Date date = new Date();
                 int counter = 0;
-                int checkPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000;
-                SessionFactory sessionFactory = dBConfiguration.buildSessionFactory();
-                Session session = sessionFactory.openSession();
-                    session.beginTransaction();
-                    while (true) {
-                        Values nextValue = null;
-                        GraphAverageData graphAverageData = new GraphAverageData();
-                        try {
-                            nextValue = values.take();
-                            if (nextValue == null) continue;
-                            counter++;
-                            Image image = nextValue.getImage();
-                            graphAverageData.save(nextValue.getDistance());
-                            DetailedTable dbValues = new DetailedTable(nextValue.getTimestamp(),nextValue.getDistance(),nextValue.getStressThickness(),nextValue.getCurvature());
-                            session.save(dbValues);
-                            System.out.println(counter);
-                            if (counter % 1000 == 0){
-                                session.getTransaction().commit();
-                                session.beginTransaction();
-                                series.getData().clear();
-                            }
+                TemporaryValues detailedTableValues = new TemporaryValues();
+                TemporaryValues regularTableValues = new TemporaryValues();
+                TemporaryValues AbbreviatedValues = new TemporaryValues();
 
-                            if (counter % checkPoint == 0) {
-                                Number x = nextValue.getTimestamp().getTime();
-                                double value = graphAverageData.submit();
-                                Number y = value;
-                                session.save(new RegularTable(nextValue.getTimestamp(),value));
-                                System.out.println(x + "   " + nextValue.getTimestamp().toString());
-                                Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
-                            }
-                            Platform.runLater(() -> imageView.setImage(image));
-                            //System.out.println(String.format("Time: %s;  StressThickness: %f; Curvature: %f; distance: %f", nextValue.getTimestamp().toString(), nextValue.getStressThickness(), nextValue.getCurvature(), nextValue.getDistance()));
-                        } catch (InterruptedException e) {
-                            break;
+                int checkPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000;
+                // SessionFactory sessionFactory = dBConfiguration.buildSessionFactory();
+                // Session session = sessionFactory.openSession();
+                //   session.beginTransaction();
+                while (true) {
+                    Values nextValue = null;
+                    MedianOfList medianOfList = new MedianOfList();
+                    // GraphAverageData graphAverageData = new GraphAverageData();
+                    try {
+                        nextValue = values.take();
+                        if (nextValue == null) continue;
+                        counter++;
+
+                        Image image = nextValue.getImage();
+                        medianOfList.save(nextValue);
+                        //  graphAverageData.save(nextValue.getDistance());
+                        DetailedTable dtValues = new DetailedTable(nextValue.getTimestamp(), nextValue.getDistance(), nextValue.getStressThickness(), nextValue.getCurvature());
+                        detailedTableValues.addValue(dtValues);
+                        //  session.save(dbValues);
+                        System.out.println(counter);
+                        if (counter % 1000 == 0) {
+                            //  session.getTransaction().commit();
+                            //  session.beginTransaction();
+                            //  series.getData().clear();
+                            DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
+                            detailedTableHelper.addTableList(detailedTableValues.getList());
+                            detailedTableValues.reset();
                         }
+
+                        if (counter % checkPoint == 0) {
+                            Values RegularTableValues = medianOfList.getMedianValueAndClear();
+
+                            Number x = RegularTableValues.getTimestamp().getTime();
+                            Number y = RegularTableValues.getDistance();
+                            //  double value = graphAverageData.submit();
+                            //  Number y = value;
+                            //  session.save(new RegularTable(nextValue.getTimestamp(),value));
+                            System.out.println(x + "   " + RegularTableValues.getTimestamp().toString());
+                            Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
+                        }
+                        Platform.runLater(() -> imageView.setImage(image));
+                        //System.out.println(String.format("Time: %s;  StressThickness: %f; Curvature: %f; distance: %f", nextValue.getTimestamp().toString(), nextValue.getStressThickness(), nextValue.getCurvature(), nextValue.getDistance()));
+                    } catch (InterruptedException e) {
+                        break;
                     }
-                    session.close();
-                    sessionFactory.close();
                 }
+                // session.close();
+                // sessionFactory.close();
+            }
         });
     }
 
@@ -164,7 +197,9 @@ public class MainController implements Initializable {
         if (file != null) {
             file.createNewFile();
             System.out.println(file.getAbsolutePath());
-            String shortPath = file.getParentFile().getPath() + "\\";
+
+           /*
+                       String shortPath = file.getParentFile().getPath() + "\\";
             System.out.println(shortPath);
             String name = file.getName();
             String[] nameParts = name.split("\\.");
@@ -172,8 +207,13 @@ public class MainController implements Initializable {
             System.out.println(shortName);
             File txtFile = new File(String.format("%s%s.txt", shortPath, shortName));
             txtFile.createNewFile();
+            */
 
-            String url = "jdbc:sqlite:" + file.getAbsolutePath();
+            hibernateUtil = new HibernateUtil(file.getAbsolutePath());
+
+
+            /*
+                      String url = "jdbc:sqlite:" + file.getAbsolutePath();
             System.out.println(url);
             dBConfiguration = new Configuration()
                     .setProperty("hibernate.dialect", "org.hibernate.dialect.SQLiteDialect")
@@ -183,6 +223,7 @@ public class MainController implements Initializable {
                     .setProperty("hibernate.show_sql", "true")
                     .setProperty("hibernate.hbm2ddl.auto", "update")
                     .configure();
+             */
         }
 
     }

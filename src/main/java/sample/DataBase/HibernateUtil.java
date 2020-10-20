@@ -8,7 +8,7 @@ public class HibernateUtil {
     private String path;
     private Configuration dBConfiguration;
 
-    public HibernateUtil(String path) {
+    public  HibernateUtil(String path) {
         this.path = path;
         String url = "jdbc:sqlite:" + path;
         dBConfiguration = new Configuration()
@@ -22,8 +22,10 @@ public class HibernateUtil {
         sessionFactory = dBConfiguration.buildSessionFactory();
     }
 
-    public static SessionFactory getSessionFactory() {
+    public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
+
+
 
 }

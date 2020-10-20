@@ -130,9 +130,9 @@ public class MainController implements Initializable {
                 // SessionFactory sessionFactory = dBConfiguration.buildSessionFactory();
                 // Session session = sessionFactory.openSession();
                 //   session.beginTransaction();
+                MedianOfList medianOfList = new MedianOfList();
                 while (true) {
                     Values nextValue = null;
-                    MedianOfList medianOfList = new MedianOfList();
                     // GraphAverageData graphAverageData = new GraphAverageData();
                     try {
                         nextValue = values.take();

@@ -8,13 +8,18 @@ import java.util.List;
 
 public class MedianOfList {
 
-    private List<Values> list = new ArrayList<>(30);
+    private List<Values> list ;
+
+    public MedianOfList() {
+       list = new ArrayList<>(30);
+    }
 
     public void save (Values values ){
         list.add(values);
     }
 
     public Values getMedianValueAndClear (){
+        System.out.println("size--- " + list.size());
         Collections.sort(list);
         int size = list.size();
         Values result = null;
@@ -34,7 +39,12 @@ public class MedianOfList {
             result = list.get((size-1)/2);
         }
         result.setTimestamp(list.get(list.size()-1).getTimestamp()); // берем самую последнюю дату в выборке
+        System.out.println("Начало выборки");
+        for (Values val:list) {
+            System.out.println(val.getDistance());
+        }
         list.clear();
+        System.out.println("медиана ------- " + result.getDistance());
         return  result;
     }
 

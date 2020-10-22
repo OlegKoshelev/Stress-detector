@@ -1,5 +1,7 @@
 package sample.DataBase.Entities;
 
+import sample.DataGetting.Values;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -20,11 +22,11 @@ public abstract class BaseTable {
     public BaseTable() {
     }
 
-    public BaseTable(Date timestamp, double distance, double stressThickness, double curvature) {
-        this.timestamp = timestamp;
-        this.distance = distance;
-        this.stressThickness = stressThickness;
-        this.curvature = curvature;
+    public BaseTable(Values values) {
+        this.timestamp = values.getTimestamp();
+        this.distance = values.getDistance();
+        this.stressThickness = values.getStressThickness();
+        this.curvature = values.getCurvature();
     }
 
     public Date getTimestamp() {

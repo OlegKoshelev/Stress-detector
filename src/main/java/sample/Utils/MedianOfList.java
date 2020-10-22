@@ -57,5 +57,7 @@ public class MedianOfList {
         return result;
     }
 
-
+    public List<Values> getList() {
+        return list;
+    }
 }

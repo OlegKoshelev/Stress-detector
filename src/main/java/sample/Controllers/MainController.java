@@ -1,13 +1,16 @@
 package sample.Controllers;
 
+import javafx.collections.ObservableList;
+import sample.DataBase.AbbreviatedTableHelper;
 import sample.DataBase.DetailedTableHelper;
+import sample.DataBase.Entities.AbbreviatedTable;
 import sample.DataBase.Entities.RegularTable;
 import sample.DataBase.Entities.DetailedTable;
 import sample.DataBase.HibernateUtil;
+import sample.DataBase.RegularTableHelper;
 import sample.DataSaving.SettingsData;
 import sample.DataSaving.SettingsTransfer;
-import sample.Utils.GraphAverageData;
-import sample.Utils.GraphsSettings;
+import sample.Utils.*;
 import javafx.application.Platform;
 
 import javafx.fxml.FXML;
@@ -24,14 +27,10 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import sample.DataGetting.Values;
 import sample.DataGetting.ModelLayer;
 import sample.DataGetting.ValuesLayer;
-import sample.Utils.MedianOfList;
-import sample.Utils.TemporaryValues;
 
 
 import java.io.File;
@@ -121,39 +120,80 @@ public class MainController implements Initializable {
             @Override
             public void run() {
                 Date date = new Date();
-                int counter = 0;
+                int detailedTableCounter = 0;
+                int regularTableCounter = 0;
+                int abbreviatedTableCounter = 0;
                 TemporaryValues detailedTableValues = new TemporaryValues();
                 TemporaryValues regularTableValues = new TemporaryValues();
-                TemporaryValues AbbreviatedValues = new TemporaryValues();
+                TemporaryValues abbreviatedTableValues = new TemporaryValues();
+                GraphValuesFromAbbreviatedTable graphValuesFromAbbreviatedTable = new GraphValuesFromAbbreviatedTable();
 
                 int checkPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000;
-                MedianOfList medianOfList = new MedianOfList();
+                MedianOfList regularTableMedian = new MedianOfList();
+                MedianOfList abbreviatedTableMedian = new MedianOfList();
                 while (true) {
                     Values nextValue = null;
                     try {
                         nextValue = values.take();
                         if (nextValue == null) continue;
-                        counter++;
+                        detailedTableCounter++;
 
                         Image image = nextValue.getImage();
-                        medianOfList.save(nextValue);
-                        DetailedTable dtValues = new DetailedTable(nextValue.getTimestamp(), nextValue.getDistance(), nextValue.getStressThickness(), nextValue.getCurvature());
+                        regularTableMedian.save(nextValue);
+                        DetailedTable dtValues = new DetailedTable(nextValue);
                         detailedTableValues.addValue(dtValues);
-                        System.out.println(counter);
+                        System.out.println(detailedTableCounter);
 
-                        if (counter % 1000 == 0) {
+                        if (detailedTableCounter % 1000 == 0) {
+                            // заносим данные в подробную таблицу
                             DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
                             detailedTableHelper.addTableList(detailedTableValues.getList());
                             detailedTableValues.reset();
+                            // заносим данные в обычную таблицу
+                            RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
+                            regularTableHelper.addTableList(regularTableValues.getList());
+                            regularTableValues.reset();
+                            // заносим данные в сокращенную таблицу
+                            AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
+                            abbreviatedTableHelper.addTableList(abbreviatedTableValues.getList());
+                            abbreviatedTableValues.reset();
                         }
 
-                        if (counter % checkPoint == 0) {
-                            Values RegularTableValues = medianOfList.getMedianValueAndClear();
-                            Number x = RegularTableValues.getTimestamp().getTime();
-                            Number y = RegularTableValues.getDistance();
-                            System.out.println(x + "   " + RegularTableValues.getTimestamp().toString());
-                            Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
+                        if (detailedTableCounter % checkPoint == 0) { // вычисляем медиану выборки для обычной таблицы (учитывая скорость вращеняи подложки и частоту камеры) и выводим ее на график
+                            regularTableCounter++;
+                            Values regularTableValue = regularTableMedian.getMedianValueAndClear();
+                            abbreviatedTableMedian.save(regularTableValue);
+                            System.out.println("размер -- " + abbreviatedTableMedian.getList());
+                            RegularTable rtValue = new RegularTable(regularTableValue);
+                            regularTableValues.addValue(rtValue);
+                            Number x = regularTableValue.getTimestamp().getTime();
+                            Number y = regularTableValue.getDistance();
+                            System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
+                            if (detailedTableCounter % 300 != 0 ) {
+                                Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
+                            }
                         }
+
+
+                        if ((detailedTableCounter % 180 == 0) && (abbreviatedTableMedian.getList().size() > 0)) {
+                            System.out.println(regularTableCounter);// вычисялем медиану выборки для сокращенной таблицы
+                            abbreviatedTableCounter++;
+                            System.out.println(abbreviatedTableMedian.getList().size() + " -----РАЗМЕР");
+                            Values abbreviatedTableValue = abbreviatedTableMedian.getMedianValueAndClear();
+                            AbbreviatedTable atValue = new AbbreviatedTable(abbreviatedTableValue);
+                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(),abbreviatedTableValue.getDistance());
+                            abbreviatedTableValues.addValue(atValue);
+                        }
+
+                        if (detailedTableCounter % 300 == 0 && detailedTableCounter !=0) {
+                            Platform.runLater(() -> {
+                                series.getData().clear();
+                                ObservableList<XYChart.Data<Number,Number>> clone = graphValuesFromAbbreviatedTable.clone();
+                                series.getData().addAll(clone);
+                            });
+                        }
+
+
                         Platform.runLater(() -> imageView.setImage(image));
                     } catch (InterruptedException e) {
                         break;

@@ -11,7 +11,7 @@ import java.util.Date;
 public abstract class BaseTable {
     @Id
     @Column(name = "DATE")
-    private Date timestamp;
+    private long timestamp;
     @Column(name = "Distance")
     private double distance;
     @Column(name = "StressThickness")
@@ -23,17 +23,17 @@ public abstract class BaseTable {
     }
 
     public BaseTable(Values values) {
-        this.timestamp = values.getTimestamp();
+        this.timestamp = values.getTimestamp().getTime();
         this.distance = values.getDistance();
         this.stressThickness = values.getStressThickness();
         this.curvature = values.getCurvature();
     }
 
-    public Date getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

@@ -12,15 +12,15 @@
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
+      <profile name="Annotation profile for stressDetector" enabled="true">
+        <sourceOutputDir name="src/main/metamodel" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="stress-detector" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="stress-detector" target="8" />
+      <module name="stress-detector" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

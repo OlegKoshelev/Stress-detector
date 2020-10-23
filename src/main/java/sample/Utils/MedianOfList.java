@@ -38,7 +38,7 @@ public class MedianOfList {
         else{ // для нечетной выборки
             result = list.get((size-1)/2);
         }
-        result.setTimestamp(list.get(list.size()-1).getTimestamp()); // берем самую последнюю дату в выборке
+        result.setTimestamp(list.get(0).getTimestamp()); // берем самую первую дату в выборке
         System.out.println("Начало выборки");
         for (Values val:list) {
             System.out.println(val.getDistance());

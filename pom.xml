@@ -20,6 +20,14 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <generatedSourcesDirectory>src/main/metamodel</generatedSourcesDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -49,6 +57,11 @@
             <groupId>com.zsoltfabok</groupId>
             <artifactId>sqlite-dialect</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>5.4.22.Final</version>
         </dependency>
     </dependencies>
 

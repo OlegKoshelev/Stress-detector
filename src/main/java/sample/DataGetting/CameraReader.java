@@ -11,6 +11,7 @@ import java.util.concurrent.BlockingQueue;
 public class CameraReader implements Runnable {
     private SettingsData settingsData = SettingsData.getInstance();
     static {
+        nu.pattern.OpenCV.loadShared();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 

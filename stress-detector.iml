@@ -30,6 +30,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/metamodel" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -56,5 +57,6 @@
     <orderEntry type="library" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" level="project" />
     <orderEntry type="library" name="Maven: org.xerial:sqlite-jdbc:3.32.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.zsoltfabok:sqlite-dialect:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate:hibernate-jpamodelgen:5.4.22.Final" level="project" />
   </component>
 </module>

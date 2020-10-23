@@ -65,6 +65,8 @@ public class MainController implements Initializable {
         this.values = values;
     }
 
+    private GraphValuesFromAbbreviatedTable graphValuesFromAbbreviatedTable = new GraphValuesFromAbbreviatedTable();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -95,14 +97,10 @@ public class MainController implements Initializable {
         if (hibernateUtil == null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
             Parent root = loader.load();
-            SettingsController controller = loader.getController();
             Stage primaryStage = new Stage();
             primaryStage.setTitle("Checking DB");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
-            primaryStage.setOnCloseRequest(event -> {
-                controller.shutdown();
-            });
             return;
         }
         if (thread == null) {
@@ -120,15 +118,12 @@ public class MainController implements Initializable {
             @Override
             public void run() {
                 Date date = new Date();
-                int detailedTableCounter = 0;
-                int regularTableCounter = 0;
-                int abbreviatedTableCounter = 0;
+                int counter = 0;
                 TemporaryValues detailedTableValues = new TemporaryValues();
                 TemporaryValues regularTableValues = new TemporaryValues();
                 TemporaryValues abbreviatedTableValues = new TemporaryValues();
-                GraphValuesFromAbbreviatedTable graphValuesFromAbbreviatedTable = new GraphValuesFromAbbreviatedTable();
 
-                int checkPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000;
+                int pushPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000; // коэффициент используемый для выгрузки данных в таблицы
                 MedianOfList regularTableMedian = new MedianOfList();
                 MedianOfList abbreviatedTableMedian = new MedianOfList();
                 while (true) {
@@ -136,15 +131,15 @@ public class MainController implements Initializable {
                     try {
                         nextValue = values.take();
                         if (nextValue == null) continue;
-                        detailedTableCounter++;
+                        counter++;
 
                         Image image = nextValue.getImage();
                         regularTableMedian.save(nextValue);
                         DetailedTable dtValues = new DetailedTable(nextValue);
                         detailedTableValues.addValue(dtValues);
-                        System.out.println(detailedTableCounter);
+                        System.out.println(counter);
 
-                        if (detailedTableCounter % 1000 == 0) {
+                        if (counter % 1000 == 0) {
                             // заносим данные в подробную таблицу
                             DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
                             detailedTableHelper.addTableList(detailedTableValues.getList());
@@ -159,8 +154,7 @@ public class MainController implements Initializable {
                             abbreviatedTableValues.reset();
                         }
 
-                        if (detailedTableCounter % checkPoint == 0) { // вычисляем медиану выборки для обычной таблицы (учитывая скорость вращеняи подложки и частоту камеры) и выводим ее на график
-                            regularTableCounter++;
+                        if (counter % pushPoint == 0) { // вычисляем медиану выборки для обычной таблицы (учитывая скорость вращеняи подложки и частоту камеры) и выводим ее на график
                             Values regularTableValue = regularTableMedian.getMedianValueAndClear();
                             abbreviatedTableMedian.save(regularTableValue);
                             System.out.println("размер -- " + abbreviatedTableMedian.getList());
@@ -169,15 +163,13 @@ public class MainController implements Initializable {
                             Number x = regularTableValue.getTimestamp().getTime();
                             Number y = regularTableValue.getDistance();
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
-                            if (detailedTableCounter % 300 != 0 ) {
+                            if (counter % (pushPoint * 20) != 0 ) {
                                 Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
                             }
                         }
 
 
-                        if ((detailedTableCounter % 180 == 0) && (abbreviatedTableMedian.getList().size() > 0)) {
-                            System.out.println(regularTableCounter);// вычисялем медиану выборки для сокращенной таблицы
-                            abbreviatedTableCounter++;
+                        if ((counter % (pushPoint * 12) == 0) && (abbreviatedTableMedian.getList().size() > 0)) {
                             System.out.println(abbreviatedTableMedian.getList().size() + " -----РАЗМЕР");
                             Values abbreviatedTableValue = abbreviatedTableMedian.getMedianValueAndClear();
                             AbbreviatedTable atValue = new AbbreviatedTable(abbreviatedTableValue);
@@ -185,15 +177,13 @@ public class MainController implements Initializable {
                             abbreviatedTableValues.addValue(atValue);
                         }
 
-                        if (detailedTableCounter % 300 == 0 && detailedTableCounter !=0) {
+                        if (counter % (pushPoint * 20) == 0 && counter !=0) {
                             Platform.runLater(() -> {
                                 series.getData().clear();
                                 ObservableList<XYChart.Data<Number,Number>> clone = graphValuesFromAbbreviatedTable.clone();
                                 series.getData().addAll(clone);
                             });
                         }
-
-
                         Platform.runLater(() -> imageView.setImage(image));
                     } catch (InterruptedException e) {
                         break;

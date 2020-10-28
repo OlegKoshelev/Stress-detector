@@ -152,6 +152,15 @@ public class MainController implements Initializable {
                             AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
                             abbreviatedTableHelper.addTableList(abbreviatedTableValues.getList());
                             abbreviatedTableValues.reset();
+
+
+                        }
+
+                        if (counter % 1100 == 0){
+                            DetailedTableHelper detailedTableHelper1 = new DetailedTableHelper(hibernateUtil);
+                            System.out.println(detailedTableHelper1.getInitialId()+ " -------- первая строчка");
+                            System.out.println(detailedTableHelper1.getSecondId()+ " -------- Вторая строчка");
+                            System.out.println(detailedTableHelper1.getIncrement() + " -------- приращение");
                         }
 
                         if (counter % pushPoint == 0) { // вычисляем медиану выборки для обычной таблицы (учитывая скорость вращеняи подложки и частоту камеры) и выводим ее на график

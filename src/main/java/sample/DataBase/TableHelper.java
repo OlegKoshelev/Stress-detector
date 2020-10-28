@@ -2,8 +2,8 @@ package sample.DataBase;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import sample.DataBase.Entities.BaseTable;
-import sample.DataBase.Entities.BaseTable_;
+import org.hibernate.type.EntityType;
+import sample.DataBase.Entities.*;
 
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
@@ -16,7 +16,7 @@ public class TableHelper {
         sessionFactory = hibernateUtil.getSessionFactory();
     }
 
-    public List<BaseTable> addTableList (List<BaseTable> list){
+    public List<BaseTable> addTableList(List<BaseTable> list) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         for (int i = 0; i < list.size(); i++) {
@@ -30,20 +30,86 @@ public class TableHelper {
         return list;
     }
 
-   /*
-    public long getInitialId (){
+    public BaseTable getTableType() {
+        if (this instanceof DetailedTableHelper)
+            return new DetailedTable();
+        if (this instanceof RegularTableHelper)
+            return new RegularTable();
+        if (this instanceof AbbreviatedTableHelper)
+            return new AbbreviatedTable();
+
+        return null;
+    }
+
+    public CriteriaQuery getCriteriaQuery(CriteriaBuilder cb) {
+        if (this instanceof DetailedTableHelper)
+            return cb.createQuery(DetailedTable.class);
+        if (this instanceof RegularTableHelper)
+            return cb.createQuery(RegularTable.class);
+        if (this instanceof AbbreviatedTableHelper)
+            return cb.createQuery(AbbreviatedTable.class);
+
+        return null;
+    }
+
+    public Root<BaseTable> getRoot(CriteriaQuery cq){
+        if (this instanceof DetailedTableHelper)
+            return cq.from(DetailedTable.class);
+        if (this instanceof RegularTableHelper)
+            return cq.from(RegularTable.class);
+        if (this instanceof AbbreviatedTableHelper)
+            return cq.from(AbbreviatedTable.class);
+
+        return null;
+    }
+
+    public Class<? extends BaseTable> getTableClass(){
+        if (this instanceof DetailedTableHelper)
+            return DetailedTable.class;
+        if (this instanceof RegularTableHelper)
+            return RegularTable.class;
+        if (this instanceof AbbreviatedTableHelper)
+            return AbbreviatedTable.class;
+
+        return null;
+    }
+
+
+
+    public long getInitialId() {
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(BaseTable.class);
-        Root<BaseTable> root = cq.from(BaseTable.class);
-        Selection selection = root.get(BaseTable_.timestamp);
-        cq.select(cb.construct(BaseTable.class, selection)).where(cb.min(root.get(BaseTable_.timestamp)));
+        CriteriaQuery cq = cb.createQuery(getTableClass());;
+        Root<BaseTable> root = cq.from(getTableClass());
+        Selection[] selections = {root.get(BaseTable_.timestamp)};
+        cb.construct(getTableType().getClass(), selections);
+        cq.select(cb.least((root.get(BaseTable_.timestamp))));
         Query query = session.createQuery(cq);
-        long id = query.getFirstResult();
+        Long id = (Long) query.getSingleResult();
         session.close();
         return id;
     }
 
+    public long getSecondId(){
+        Long firstId = getInitialId();
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(getTableClass());;
+        Root<BaseTable> root = cq.from(getTableClass());
+        Selection[] selections = {root.get(BaseTable_.timestamp)};
+        cb.construct(getTableType().getClass(), selections);
+        cq.select(cb.least((root.get(BaseTable_.timestamp)))).where(cb.notEqual(root.get(BaseTable_.timestamp),firstId));
+        Query query = session.createQuery(cq);
+        Long id = (Long) query.getSingleResult();
+        session.close();
+        return id;
+    }
+
+    public long getIncrement(){
+        return getSecondId()-getInitialId();
+    }
+
+/*
     public void writeToTxt (){
         long minId = getInitialId();
         Long maxId = minId +

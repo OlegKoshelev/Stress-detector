@@ -12,4 +12,8 @@ public class RegularTable extends BaseTable {
     public RegularTable(Values values) {
         super(values);
     }
+
+    public RegularTable(long timestamp) {
+        super(timestamp);
+    }
 }

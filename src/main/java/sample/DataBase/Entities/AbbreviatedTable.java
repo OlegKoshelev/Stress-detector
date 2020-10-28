@@ -13,4 +13,8 @@ public class AbbreviatedTable extends BaseTable {
     public AbbreviatedTable(Values values) {
         super(values);
     }
+
+    public AbbreviatedTable(long timestamp) {
+        super(timestamp);
+    }
 }

@@ -13,4 +13,8 @@ public class DetailedTable extends BaseTable {
     public DetailedTable(Values values) {
         super(values);
     }
+
+    public DetailedTable(long timestamp) {
+        super(timestamp);
+    }
 }

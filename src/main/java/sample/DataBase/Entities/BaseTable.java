@@ -22,6 +22,10 @@ public abstract class BaseTable {
     public BaseTable() {
     }
 
+    public BaseTable(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public BaseTable(Values values) {
         this.timestamp = values.getTimestamp().getTime();
         this.distance = values.getDistance();

@@ -3,7 +3,7 @@ package sample.DataGetting;
 
 import javafx.scene.image.Image;
 import sample.Utils.ImageUtils;
-import sample.DataSaving.SettingsData;
+import sample.DataSaving.SettingsSaving.SettingsData;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;

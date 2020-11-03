@@ -7,8 +7,8 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import sample.DataSaving.CameraCustomizations;
-import sample.DataSaving.SettingsData;
+import sample.DataSaving.SettingsSaving.CameraCustomizations;
+import sample.DataSaving.SettingsSaving.SettingsData;
 
 import java.io.ByteArrayInputStream;
 

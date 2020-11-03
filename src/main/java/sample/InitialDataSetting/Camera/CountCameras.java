@@ -1,6 +1,6 @@
 package sample.InitialDataSetting.Camera;
 
-import sample.DataSaving.CameraCustomizations;
+import sample.DataSaving.SettingsSaving.CameraCustomizations;
 import javafx.scene.control.MenuItem;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;

@@ -23,7 +23,14 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#Edit" text="New file" />
+                        <MenuItem mnemonicParsing="false" onAction="#Edit" text="New DB" />
+                  <Menu mnemonicParsing="false" text="Save to txt">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#SaveAsDetailedTable" text="Save as Detailed Table" />
+                        <MenuItem mnemonicParsing="false" onAction="#SaveAsRegularTable" text="Save as Regular Table" />
+                        <MenuItem mnemonicParsing="false" onAction="#Edit" text="Save as Abbreviated Table" />
+                     </items>
+                  </Menu>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">

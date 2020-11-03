@@ -8,8 +8,8 @@ import sample.DataBase.Entities.RegularTable;
 import sample.DataBase.Entities.DetailedTable;
 import sample.DataBase.HibernateUtil;
 import sample.DataBase.RegularTableHelper;
-import sample.DataSaving.SettingsData;
-import sample.DataSaving.SettingsTransfer;
+import sample.DataSaving.SettingsSaving.SettingsData;
+import sample.DataSaving.SettingsSaving.SettingsTransfer;
 import sample.Utils.*;
 import javafx.application.Platform;
 
@@ -61,6 +61,10 @@ public class MainController implements Initializable {
 
     private HibernateUtil hibernateUtil;
 
+    private double maxY = 0;
+
+    private double minY = 0;
+
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
     }
@@ -94,6 +98,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void print() throws Exception {
+
         if (hibernateUtil == null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
             Parent root = loader.load();
@@ -113,6 +118,13 @@ public class MainController implements Initializable {
         thread.start();
     }
 
+    private double changeMaxY(double value){
+        if (maxY < value)
+        return value * 5;
+        else
+            return maxY;
+    }
+
     private void createThread() {
         thread = new Thread(new Runnable() {
             @Override
@@ -126,6 +138,9 @@ public class MainController implements Initializable {
                 int pushPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000; // коэффициент используемый для выгрузки данных в таблицы
                 MedianOfList regularTableMedian = new MedianOfList();
                 MedianOfList abbreviatedTableMedian = new MedianOfList();
+
+
+
                 while (true) {
                     Values nextValue = null;
                     try {
@@ -156,12 +171,6 @@ public class MainController implements Initializable {
 
                         }
 
-                        if (counter % 1100 == 0){
-                            DetailedTableHelper detailedTableHelper1 = new DetailedTableHelper(hibernateUtil);
-                            System.out.println(detailedTableHelper1.getInitialId()+ " -------- первая строчка");
-                            System.out.println(detailedTableHelper1.getSecondId()+ " -------- Вторая строчка");
-                            System.out.println(detailedTableHelper1.getIncrement() + " -------- приращение");
-                        }
 
                         if (counter % pushPoint == 0) { // вычисляем медиану выборки для обычной таблицы (учитывая скорость вращеняи подложки и частоту камеры) и выводим ее на график
                             Values regularTableValue = regularTableMedian.getMedianValueAndClear();
@@ -216,7 +225,6 @@ public class MainController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create file");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("DOC", "*.doc"));
         File file = fileChooser.showSaveDialog(null);
         if (file != null) {
             file.createNewFile();
@@ -250,6 +258,34 @@ public class MainController implements Initializable {
              */
         }
 
+    }
+
+    @FXML
+    public void SaveAsDetailedTable() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Saving to file");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            file.createNewFile();
+            System.out.println(file.getAbsolutePath());
+            DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
+            detailedTableHelper.tableToTxt(file.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    public void SaveAsRegularTable() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Saving to file");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            file.createNewFile();
+            System.out.println(file.getAbsolutePath());
+            RegularTableHelper detailedTableHelper = new RegularTableHelper(hibernateUtil);
+            detailedTableHelper.tableToTxt(file.getAbsolutePath());
+        }
     }
 
 }

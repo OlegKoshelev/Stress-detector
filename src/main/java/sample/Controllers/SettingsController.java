@@ -1,6 +1,6 @@
 package sample.Controllers;
 
-import sample.DataSaving.*;
+import sample.DataSaving.SettingsSaving.*;
 import sample.InitialDataSetting.Camera.CountCameras;
 import sample.InitialDataSetting.Camera.Resolution;
 import sample.InitialDataSetting.Graph.GraphType;

@@ -3,7 +3,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
-import sample.DataSaving.SettingsData;
+import sample.DataSaving.SettingsSaving.SettingsData;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;

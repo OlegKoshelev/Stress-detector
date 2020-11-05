@@ -65,12 +65,6 @@ public class MainController implements Initializable {
 
     private double minY = 0;
 
-    private long maxX = 0;
-
-    private long minX = 0;
-
-    private long stratTime = new Date().getTime();
-
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
     }
@@ -126,50 +120,16 @@ public class MainController implements Initializable {
 
     private double changeMaxY(double value){
         if (maxY < value)
-        return value + Math.abs(value * 2);
+        return value * 5;
         else
             return maxY;
-    }
-
-    private double changeMinY (double value){
-        if (minY > value)
-            return value - Math.abs(value * 2);
-        else
-            return minY;
-    }
-
-    private void changeBoundaries (long xValue, double yValue){
-        if (xValue > maxX - 50000){
-            maxX = xValue + 100000;
-            xAxis.setUpperBound(maxX);
-            double v = (double)(maxX -stratTime)/5;
-            xAxis.setTickUnit(v);
-        }
-
-        if (yValue > maxY){
-            maxY = yValue + Math.abs(yValue * 0.1);
-            yAxis.setUpperBound(maxY);
-            yAxis.setTickUnit((maxY - minY)/ 5);
-        }
-
-        if (yValue < minY){
-            minY = yValue - Math.abs(yValue * 0.1);
-            yAxis.setLowerBound(minY);
-            yAxis.setTickUnit((maxY - minY)/ 5);
-        }
-
     }
 
     private void createThread() {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                   xAxis.setLowerBound(stratTime);
-                   xAxis.setUpperBound(maxX);
-
-                   yAxis.setLowerBound(minY);
-                   yAxis.setUpperBound(maxY);
-
+                Date date = new Date();
                 int counter = 0;
                 TemporaryValues detailedTableValues = new TemporaryValues();
                 TemporaryValues regularTableValues = new TemporaryValues();
@@ -188,7 +148,6 @@ public class MainController implements Initializable {
                         if (nextValue == null) continue;
                         counter++;
 
-                        changeBoundaries(nextValue.getTimestamp().getTime(),nextValue.getDistance());
                         Image image = nextValue.getImage();
                         regularTableMedian.save(nextValue);
                         DetailedTable dtValues = new DetailedTable(nextValue);

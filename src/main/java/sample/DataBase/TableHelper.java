@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TableHelper {
@@ -140,6 +142,8 @@ public class TableHelper {
 
     public void tableToTxt(String path) {
         int rowsCount = (int) getCount();
+        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])   Distance(pixels) \n";
+        writeListToFile(columnNames,path);
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(getTableClass());
@@ -167,9 +171,9 @@ public class TableHelper {
     private String listToString (List <BaseTable> list){
         StringBuilder stringBuilder = new StringBuilder();
         for (BaseTable bt:list) {
-            stringBuilder.append(bt.getTimestamp()).append(" ").
-                    append(bt.getStressThickness()).append(" ").
-                    append(bt.getCurvature()).append(" ").
+            stringBuilder.append(new Date(bt.getTimestamp())).append("   ").
+                    append(bt.getStressThickness()).append("   ").
+                    append(bt.getCurvature()).append("   ").
                     append(bt.getDistance()).append("\n");
         }
         return stringBuilder.toString();
@@ -182,8 +186,23 @@ public class TableHelper {
             e.printStackTrace();
         }
     }
-
-
+    public List<BaseTable> getTable(){
+        List<BaseTable> result = new ArrayList<>();
+        int rowsCount = (int) getCount();
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(getTableClass());
+        Root<BaseTable> root = cq.from(getTableClass());
+        cb.asc(root.get(BaseTable_.timestamp));
+        for(int first = 0; first < rowsCount; first = first +100 ){
+            List<BaseTable> list = null;
+            int max = 100;
+            list = getRows(session,cq,first,max);
+            result.addAll(list);
+        }
+        session.close();
+        return result;
+    }
 
     public long getCount(){ // возвращает кол-во строк в таблице
         Session session = sessionFactory.openSession();

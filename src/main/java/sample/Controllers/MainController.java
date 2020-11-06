@@ -1,13 +1,12 @@
 package sample.Controllers;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import sample.DataBase.AbbreviatedTableHelper;
-import sample.DataBase.DetailedTableHelper;
+import sample.DataBase.*;
 import sample.DataBase.Entities.AbbreviatedTable;
+import sample.DataBase.Entities.BaseTable;
 import sample.DataBase.Entities.RegularTable;
 import sample.DataBase.Entities.DetailedTable;
-import sample.DataBase.HibernateUtil;
-import sample.DataBase.RegularTableHelper;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
 import sample.Utils.*;
@@ -36,7 +35,9 @@ import sample.DataGetting.ValuesLayer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
@@ -120,6 +121,8 @@ public class MainController implements Initializable {
         }
         if (thread == null) {
             GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
+            chart.getData().clear();
+            series= new XYChart.Series<>();
             chart.getData().add(series);
         }
         modelLayer = new ValuesLayer(2);
@@ -128,19 +131,6 @@ public class MainController implements Initializable {
         thread.start();
     }
 
-    private double changeMaxY(double value) {
-        if (maxY < value)
-            return value + Math.abs(value * 2);
-        else
-            return maxY;
-    }
-
-    private double changeMinY(double value) {
-        if (minY > value)
-            return value - Math.abs(value * 2);
-        else
-            return minY;
-    }
 
     private void changeBoundaries(long xValue, double yValue) {
         if (xValue > maxX - 50000) {
@@ -286,7 +276,7 @@ public class MainController implements Initializable {
             txtFile.createNewFile();
             */
 
-            hibernateUtil = new HibernateUtil(file.getAbsolutePath());
+            hibernateUtil = new HibernateUtilForSaving(file.getAbsolutePath());
 
 
             /*
@@ -303,6 +293,51 @@ public class MainController implements Initializable {
              */
         }
 
+    }
+    @FXML
+    public void openDB(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Opening DB");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
+        File file = fileChooser.showOpenDialog(null);
+        hibernateUtil = new HibernateUtilForOpening(file.getAbsolutePath());
+        RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
+        List<BaseTable> data = regularTableHelper.getTable();
+        GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
+        chart.getData().clear();
+        chart.getData().add(series);
+        ObservableList<XYChart.Data<Number,Number>> result = FXCollections.observableArrayList();
+        for (BaseTable values :
+                data) {
+            result.add(new XYChart.Data<>(values.getTimestamp(), values.getStressThickness()));
+        }
+        double max = 0;
+        double min = 0;
+        for (BaseTable values :
+                data) {
+            if (max < values.getStressThickness())
+                max = values.getStressThickness();
+            if (min > values.getStressThickness())
+                min = values.getStressThickness();
+        }
+        System.out.println(max);
+        System.out.println(min);
+
+        series.getData().addAll(result);
+
+
+        System.out.println(new Date(data.get(0).getTimestamp()));
+        System.out.println(new Date(data.get(data.size()-1).getTimestamp()));
+          xAxis.setLowerBound(data.get(0).getTimestamp());
+           xAxis.setUpperBound(data.get(data.size()-1).getTimestamp());
+           xAxis.setTickUnit((double) (data.get(data.size()-1).getTimestamp()-data.get(0).getTimestamp())/5);
+             yAxis.setLowerBound(min);
+             yAxis.setUpperBound(max);
+             yAxis.setTickUnit((max - min) / 5);
+        yAxis.setAutoRanging(false);
+        xAxis.setAutoRanging(false);
+        xAxis.setAnimated(true);
+        yAxis.setAnimated(true);
     }
 
     @FXML

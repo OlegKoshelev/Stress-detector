@@ -20,7 +20,7 @@ public class GraphValuesFromAbbreviatedTable {
     }
 
     public ObservableList<XYChart.Data<Number,Number>> clone(){
-        ObservableList<XYChart.Data<Number,Number>> result = FXCollections.observableArrayList();;
+        ObservableList<XYChart.Data<Number,Number>> result = FXCollections.observableArrayList();
         for (XYChart.Data<Number, Number> values :
                 data) {
             result.add(new XYChart.Data<>(values.getXValue(), values.getYValue()));

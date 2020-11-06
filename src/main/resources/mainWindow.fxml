@@ -31,6 +31,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#Edit" text="Save as Abbreviated Table" />
                      </items>
                   </Menu>
+                  <MenuItem mnemonicParsing="false" onAction="#openDB" text="Open DB" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">

@@ -71,6 +71,10 @@ public class MainController implements Initializable {
 
     private long stratTime = new Date().getTime();
 
+    private TemporaryValues detailedTableValues = new TemporaryValues();
+    private TemporaryValues regularTableValues = new TemporaryValues();
+    private TemporaryValues abbreviatedTableValues = new TemporaryValues();
+
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
     }
@@ -124,61 +128,74 @@ public class MainController implements Initializable {
         thread.start();
     }
 
-    private double changeMaxY(double value){
+    private double changeMaxY(double value) {
         if (maxY < value)
-        return value + Math.abs(value * 2);
+            return value + Math.abs(value * 2);
         else
             return maxY;
     }
 
-    private double changeMinY (double value){
+    private double changeMinY(double value) {
         if (minY > value)
             return value - Math.abs(value * 2);
         else
             return minY;
     }
 
-    private void changeBoundaries (long xValue, double yValue){
-        if (xValue > maxX - 50000){
+    private void changeBoundaries(long xValue, double yValue) {
+        if (xValue > maxX - 50000) {
             maxX = xValue + 100000;
             xAxis.setUpperBound(maxX);
-            double v = (double)(maxX -stratTime)/5;
+            double v = (double) (maxX - stratTime) / 5;
             xAxis.setTickUnit(v);
         }
 
-        if (yValue > maxY){
+        if (yValue > maxY) {
             maxY = yValue + Math.abs(yValue * 0.1);
             yAxis.setUpperBound(maxY);
-            yAxis.setTickUnit((maxY - minY)/ 5);
+            yAxis.setTickUnit((maxY - minY) / 5);
         }
 
-        if (yValue < minY){
+        if (yValue < minY) {
             minY = yValue - Math.abs(yValue * 0.1);
             yAxis.setLowerBound(minY);
-            yAxis.setTickUnit((maxY - minY)/ 5);
+            yAxis.setTickUnit((maxY - minY) / 5);
         }
 
     }
+
+    public void addDataToTable(){
+        // заносим данные в подробную таблицу
+        DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
+        detailedTableHelper.addTableList(detailedTableValues.getList());
+        detailedTableValues.reset();
+        // заносим данные в обычную таблицу
+        RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
+        regularTableHelper.addTableList(regularTableValues.getList());
+        regularTableValues.reset();
+        // заносим данные в сокращенную таблицу
+        AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
+        abbreviatedTableHelper.addTableList(abbreviatedTableValues.getList());
+        abbreviatedTableValues.reset();
+    }
+
 
     private void createThread() {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                   xAxis.setLowerBound(stratTime);
-                   xAxis.setUpperBound(maxX);
+                xAxis.setLowerBound(stratTime);
+                xAxis.setUpperBound(maxX);
 
-                   yAxis.setLowerBound(minY);
-                   yAxis.setUpperBound(maxY);
+                yAxis.setLowerBound(minY);
+                yAxis.setUpperBound(maxY);
 
                 int counter = 0;
-                TemporaryValues detailedTableValues = new TemporaryValues();
-                TemporaryValues regularTableValues = new TemporaryValues();
-                TemporaryValues abbreviatedTableValues = new TemporaryValues();
+
 
                 int pushPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000; // коэффициент используемый для выгрузки данных в таблицы
                 MedianOfList regularTableMedian = new MedianOfList();
                 MedianOfList abbreviatedTableMedian = new MedianOfList();
-
 
 
                 while (true) {
@@ -188,7 +205,7 @@ public class MainController implements Initializable {
                         if (nextValue == null) continue;
                         counter++;
 
-                        changeBoundaries(nextValue.getTimestamp().getTime(),nextValue.getStressThickness());
+                        changeBoundaries(nextValue.getTimestamp().getTime(), nextValue.getStressThickness());
                         Image image = nextValue.getImage();
                         regularTableMedian.save(nextValue);
                         DetailedTable dtValues = new DetailedTable(nextValue);
@@ -196,20 +213,7 @@ public class MainController implements Initializable {
                         System.out.println(counter);
 
                         if (counter % 1000 == 0) {
-                            // заносим данные в подробную таблицу
-                            DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
-                            detailedTableHelper.addTableList(detailedTableValues.getList());
-                            detailedTableValues.reset();
-                            // заносим данные в обычную таблицу
-                            RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
-                            regularTableHelper.addTableList(regularTableValues.getList());
-                            regularTableValues.reset();
-                            // заносим данные в сокращенную таблицу
-                            AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
-                            abbreviatedTableHelper.addTableList(abbreviatedTableValues.getList());
-                            abbreviatedTableValues.reset();
-
-
+                            addDataToTable();
                         }
 
 
@@ -222,7 +226,7 @@ public class MainController implements Initializable {
                             Number x = regularTableValue.getTimestamp().getTime();
                             Number y = regularTableValue.getStressThickness();
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
-                            if (counter % (pushPoint * 20) != 0 ) {
+                            if (counter % (pushPoint * 20) != 0) {
                                 Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
                             }
                         }
@@ -232,14 +236,14 @@ public class MainController implements Initializable {
                             System.out.println(abbreviatedTableMedian.getList().size() + " -----РАЗМЕР");
                             Values abbreviatedTableValue = abbreviatedTableMedian.getMedianValueAndClear();
                             AbbreviatedTable atValue = new AbbreviatedTable(abbreviatedTableValue);
-                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(),abbreviatedTableValue.getStressThickness());
+                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(), abbreviatedTableValue.getStressThickness());
                             abbreviatedTableValues.addValue(atValue);
                         }
 
-                        if (counter % (pushPoint * 20) == 0 && counter !=0) {
+                        if (counter % (pushPoint * 20) == 0 && counter != 0) {
                             Platform.runLater(() -> {
                                 series.getData().clear();
-                                ObservableList<XYChart.Data<Number,Number>> clone = graphValuesFromAbbreviatedTable.clone();
+                                ObservableList<XYChart.Data<Number, Number>> clone = graphValuesFromAbbreviatedTable.clone();
                                 series.getData().addAll(clone);
                             });
                         }
@@ -309,7 +313,7 @@ public class MainController implements Initializable {
         File file = fileChooser.showSaveDialog(null);
         if (file != null) {
             file.createNewFile();
-            System.out.println(file.getAbsolutePath());
+            addDataToTable();
             DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
             detailedTableHelper.tableToTxt(file.getAbsolutePath());
         }
@@ -323,7 +327,7 @@ public class MainController implements Initializable {
         File file = fileChooser.showSaveDialog(null);
         if (file != null) {
             file.createNewFile();
-            System.out.println(file.getAbsolutePath());
+            addDataToTable();
             RegularTableHelper detailedTableHelper = new RegularTableHelper(hibernateUtil);
             detailedTableHelper.tableToTxt(file.getAbsolutePath());
         }

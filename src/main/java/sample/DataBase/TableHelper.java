@@ -150,11 +150,6 @@ public class TableHelper {
             List<BaseTable> list = null;
             int max = 100;
             list = getRows(session,cq,first,max);
-            System.out.println("\n\n --------LIST------ \n\n");
-            for (BaseTable bt :
-                    list) {
-                System.out.println(bt.getTimestamp());
-            }
             String text = listToString(list);
             writeListToFile(text, path);
         }
@@ -171,7 +166,6 @@ public class TableHelper {
 
     private String listToString (List <BaseTable> list){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\n").append("\n").append("-----------НАЧАЛО ЗАПИСИ----------").append("\n").append("\n");
         for (BaseTable bt:list) {
             stringBuilder.append(bt.getTimestamp()).append(" ").
                     append(bt.getStressThickness()).append(" ").

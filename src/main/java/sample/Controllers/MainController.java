@@ -188,7 +188,7 @@ public class MainController implements Initializable {
                         if (nextValue == null) continue;
                         counter++;
 
-                        changeBoundaries(nextValue.getTimestamp().getTime(),nextValue.getDistance());
+                        changeBoundaries(nextValue.getTimestamp().getTime(),nextValue.getStressThickness());
                         Image image = nextValue.getImage();
                         regularTableMedian.save(nextValue);
                         DetailedTable dtValues = new DetailedTable(nextValue);
@@ -220,7 +220,7 @@ public class MainController implements Initializable {
                             RegularTable rtValue = new RegularTable(regularTableValue);
                             regularTableValues.addValue(rtValue);
                             Number x = regularTableValue.getTimestamp().getTime();
-                            Number y = regularTableValue.getDistance();
+                            Number y = regularTableValue.getStressThickness();
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
                             if (counter % (pushPoint * 20) != 0 ) {
                                 Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
@@ -232,7 +232,7 @@ public class MainController implements Initializable {
                             System.out.println(abbreviatedTableMedian.getList().size() + " -----РАЗМЕР");
                             Values abbreviatedTableValue = abbreviatedTableMedian.getMedianValueAndClear();
                             AbbreviatedTable atValue = new AbbreviatedTable(abbreviatedTableValue);
-                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(),abbreviatedTableValue.getDistance());
+                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(),abbreviatedTableValue.getStressThickness());
                             abbreviatedTableValues.addValue(atValue);
                         }
 

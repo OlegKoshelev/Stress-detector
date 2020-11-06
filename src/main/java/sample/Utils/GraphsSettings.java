@@ -54,5 +54,27 @@ public class GraphsSettings {
                 return result;
             }
         });
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                double number = object.floatValue();
+
+                return String.format("%.1e %n", number);
+            }
+
+            @Override
+            public Number fromString(String string) {
+                Date todayDate = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                Number result = null;
+                try {
+                    Date date = formatter.parse(string);
+                    result = date.getTime();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return result;
+            }
+        });
     }
 }

@@ -16,11 +16,12 @@
         <sourceOutputDir name="src/main/metamodel" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="stress-detector" />
+        <module name="stressDetector" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="stress-detector" target="1.8" />
+      <module name="stressDetector" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

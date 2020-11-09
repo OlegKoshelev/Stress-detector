@@ -28,7 +28,7 @@
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#SaveAsDetailedTable" text="Save as Detailed Table" />
                         <MenuItem mnemonicParsing="false" onAction="#SaveAsRegularTable" text="Save as Regular Table" />
-                        <MenuItem mnemonicParsing="false" onAction="#Edit" text="Save as Abbreviated Table" />
+                        <MenuItem mnemonicParsing="false" onAction="#SaveAsAbbreviatedTable" text="Save as Abbreviated Table" />
                      </items>
                   </Menu>
                   <MenuItem mnemonicParsing="false" onAction="#openDB" text="Open DB" />
@@ -53,7 +53,7 @@
         <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
             <items>
                 <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
-                <Button mnemonicParsing="false" onAction="#print" text="Run" />
+                <Button mnemonicParsing="false" onAction="#print" text="Run" fx:id="run"/>
             </items>
             <VBox.margin>
                 <Insets />

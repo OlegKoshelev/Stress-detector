@@ -2,6 +2,7 @@ package sample.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import sample.DataBase.*;
 import sample.DataBase.Entities.AbbreviatedTable;
 import sample.DataBase.Entities.BaseTable;
@@ -35,7 +36,6 @@ import sample.DataGetting.ValuesLayer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -75,6 +75,9 @@ public class MainController implements Initializable {
     private TemporaryValues detailedTableValues = new TemporaryValues();
     private TemporaryValues regularTableValues = new TemporaryValues();
     private TemporaryValues abbreviatedTableValues = new TemporaryValues();
+
+    @FXML
+    private Button run;
 
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
@@ -365,6 +368,20 @@ public class MainController implements Initializable {
             addDataToTable();
             RegularTableHelper detailedTableHelper = new RegularTableHelper(hibernateUtil);
             detailedTableHelper.tableToTxt(file.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    public void SaveAsAbbreviatedTable() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Saving to file");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            file.createNewFile();
+            addDataToTable();
+            AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
+            abbreviatedTableHelper.tableToTxt(file.getAbsolutePath());
         }
     }
 

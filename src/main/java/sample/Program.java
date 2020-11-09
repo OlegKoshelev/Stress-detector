@@ -5,6 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 
 
@@ -16,8 +18,10 @@ public class Program extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        URL mainWindow = getClass().getResource("/mainWindow.fxml");
-        Parent root = FXMLLoader.load(mainWindow);
+
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("mainWindow.fxml");
+        Parent root = new FXMLLoader().load(inputStream);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

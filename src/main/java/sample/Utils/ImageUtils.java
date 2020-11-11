@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 
 public class ImageUtils {
 
-    private static Mat matReform(Mat img, CameraCustomizations cameraCustomizations) {
+    public static Mat matReform(Mat img, CameraCustomizations cameraCustomizations) {
         int hueMax = cameraCustomizations.getHueMax();
         int hueMin = cameraCustomizations.getHueMin();
         int saturationMax = cameraCustomizations.getSaturationMax();

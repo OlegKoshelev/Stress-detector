@@ -13,9 +13,11 @@ public class ValuesLayer implements ModelLayer {
     private int threadsCount;
     private ExecutorService averageDCalculating;
     private ExecutorService valuesCalculating;
+    private double d0 = 0;
 
 
-    public ValuesLayer(int threadsCount) throws Exception {
+    public ValuesLayer(int threadsCount, double d0) throws Exception {
+        this.d0 = d0;
         this.threadsCount = threadsCount;
         inputQueue = new LinkedBlockingQueue<>();
         calculatorDQueue = new LinkedBlockingQueue<>();
@@ -29,21 +31,30 @@ public class ValuesLayer implements ModelLayer {
 
     public void start() throws InterruptedException {
         new Thread(cameraReader).start();
-        CountDownLatch countDownLatchList = new CountDownLatch(threadsCount); // to wait until the list averageD is filled
-        for (int i = 0; i < threadsCount; i++) {
-            averageDCalculating.submit(new CalculatorDAverage(inputQueue, calculatorDQueue, averageD, countDownLatchList));
+        if (d0 == 0) {
+            CountDownLatch countDownLatchList = new CountDownLatch(threadsCount); // to wait until the list averageD is filled
+            for (int i = 0; i < threadsCount; i++) {
+                averageDCalculating.submit(new CalculatorDAverage(inputQueue, calculatorDQueue, averageD, countDownLatchList));
+            }
+            averageDCalculating.shutdown();
+            countDownLatchList.await();
+            d0 = calculateD0();
         }
-        averageDCalculating.shutdown();
-        countDownLatchList.await();
-        double d0 = getD0();
         for (int i = 0; i < threadsCount; i++) {
             valuesCalculating.submit(new CalculatorStressAndCurvature(inputQueue, calculatorDQueue, d0, values));
         }
         valuesCalculating.shutdown();
     }
 
+    public void setD0 (double value){
+        d0 = value;
+    }
 
-    public double getD0() {
+    public double getD0(){
+        return d0;
+    }
+
+    public double calculateD0() {
         double result = 0;
         for (Distance d : averageD) {
             result += d.getDistance();

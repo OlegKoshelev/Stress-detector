@@ -1,5 +1,6 @@
 package sample.Controllers;
 
+import sample.DataGetting.CvUtils;
 import sample.DataSaving.SettingsSaving.*;
 import sample.InitialDataSetting.Camera.CountCameras;
 import sample.InitialDataSetting.Camera.Resolution;
@@ -70,6 +71,8 @@ public class SettingsController implements Initializable {
     private Button apply;
     @FXML
     private Button ok;
+    @FXML
+    private Label countors;
     // Usual fields
     SettingsData settingsData = SettingsData.getInstance();
     private CameraCustomizations cameraCustomizations = CameraCustomizations.getInstance();
@@ -295,8 +298,11 @@ public class SettingsController implements Initializable {
                     Mat nextMat = inputQueue.poll();
                     if (nextMat == null) continue;
                     Image image = null;
-                    if (hsvView)
+                    if (hsvView){
+                        Platform.runLater(() -> countors.setText("" + CvUtils.getContours(nextMat)));
                         image = ImageUtils.getHsvImage(nextMat, cameraCustomizations);
+                    }
+
                     else
                         image = ImageUtils.getPrimaryImage(nextMat);
                     Image finalImage = image;

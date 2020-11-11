@@ -27,11 +27,15 @@ public class CalculatorStressAndCurvature implements Runnable {
     @Override
     public void run() {
         while (true) {
-            Spots spots;
+            Spots spots = null;
             try {
                 spots = queueIn.take();
+                System.out.println(spots + " пятна");
                 if (spots == null) continue;
-                double d = CvUtils.coordinates(spots.getImg());
+                System.out.println(spots.getImg() + " изображеие");
+                Double d = CvUtils.coordinates(spots.getImg());
+                if (d == null) continue;
+
                 Distance distance = new Distance(d, spots.getDate(),spots.getImg());
                 queueD.put(distance);
                 Distance D = queueD.take();

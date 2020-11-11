@@ -26,7 +26,7 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <ImageView fx:id="imageView" fitHeight="240.0" fitWidth="360.0" layoutX="426.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
+                                <ImageView fx:id="imageView" fitHeight="240.0" fitWidth="360.0" layoutX="416.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
                                 <Separator layoutX="412.0" layoutY="-2.0" orientation="VERTICAL" prefHeight="365.0" prefWidth="8.0" />
                                 <Text layoutX="580.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="View" />
                                 <GridPane layoutX="1.0" layoutY="160.0" prefHeight="177.0" prefWidth="406.0">
@@ -120,6 +120,16 @@
                               <Label text="HSV" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
+                        <Label layoutX="428.0" layoutY="298.0" text="Count of contours:" >
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                        <Label layoutX="565.0" layoutY="298.0" text="countors" fx:id="countors">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
                             </children>
                         </AnchorPane>
                     </content>
@@ -191,13 +201,13 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Line color " GridPane.rowIndex="1"/>
-                              <ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="line"/>
+                              <Label text="Line color " GridPane.rowIndex="1" />
+                              <ColorPicker fx:id="line" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <MenuButton fx:id="menuGraphTypeButton" mnemonicParsing="false" text=" Data (Time)" GridPane.columnIndex="1">
                               </MenuButton>
                               <Label text="Graph type" />
                               <Label text="Grid color " GridPane.rowIndex="2" />
-                              <ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="grid"/>
+                              <ColorPicker fx:id="grid" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                      </children></AnchorPane>
@@ -205,8 +215,8 @@
             </Tab>
             </tabs>
         </TabPane>
-      <Button layoutX="700.0" layoutY="406.0" mnemonicParsing="false" prefHeight="14.0" prefWidth="65.0" text="OK" fx:id="ok" onAction="#okAction"/>
-      <Button layoutX="633.0" layoutY="406.0" mnemonicParsing="false" text="Apply" fx:id="apply" onAction="#applyAction"/>
+      <Button fx:id="ok" layoutX="700.0" layoutY="406.0" mnemonicParsing="false" onAction="#okAction" prefHeight="14.0" prefWidth="65.0" text="OK" />
+      <Button fx:id="apply" layoutX="633.0" layoutY="406.0" mnemonicParsing="false" onAction="#applyAction" text="Apply" />
       <Separator layoutY="385.0" prefHeight="31.0" prefWidth="800.0" />
     </children>
 </Pane>

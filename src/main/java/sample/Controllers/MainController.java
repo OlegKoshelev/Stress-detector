@@ -42,12 +42,12 @@ import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
 public class MainController implements Initializable {
-
+    private double d0 = 0;
 
     @FXML
     private Stage settings;
     private BlockingQueue<Values> values;
-    private ModelLayer modelLayer;
+    private ValuesLayer modelLayer;
     @FXML
     private ImageView imageView;
     @FXML
@@ -128,7 +128,7 @@ public class MainController implements Initializable {
             series= new XYChart.Series<>();
             chart.getData().add(series);
         }
-        modelLayer = new ValuesLayer(2);
+        modelLayer = new ValuesLayer(2,d0);
         values = modelLayer.getValuesQueue();
         createThread();
         thread.start();
@@ -233,7 +233,7 @@ public class MainController implements Initializable {
                             abbreviatedTableValues.addValue(atValue);
                         }
 
-                        if (counter % (pushPoint * 20) == 0 && counter != 0) {
+                        if (counter % (pushPoint * 1000) == 0 && counter != 0) {
                             Platform.runLater(() -> {
                                 series.getData().clear();
                                 ObservableList<XYChart.Data<Number, Number>> clone = graphValuesFromAbbreviatedTable.clone();
@@ -252,6 +252,7 @@ public class MainController implements Initializable {
     @FXML
     public void stop() {
         if (thread != null) {
+            d0 = modelLayer.getD0();
             modelLayer.stop();
             thread.interrupt();
         }

@@ -5,6 +5,7 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 import sample.DataSaving.SettingsSaving.SettingsData;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
@@ -45,7 +46,10 @@ public class CameraReader implements Runnable {
 
             while ( read ) {
                 if (camera.read(frame)) {
+                    System.out.println(frame.empty());
                     inputQueue.put(new Spots(frame, new Date()));
+                    System.out.println(inputQueue.size() + "размер очереди");
+                    System.out.println("изображенеи захвачено" );
                     try {
                         Thread.sleep(1000/ settingsData.getFps()); // 10 кадров в секунду
                     } catch (InterruptedException e) {}

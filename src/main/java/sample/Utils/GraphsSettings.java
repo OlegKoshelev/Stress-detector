@@ -14,8 +14,8 @@ public class GraphsSettings {
 
 
     public static void DistanceGraph(LineChart<Number, Number> chart, NumberAxis xAxis, NumberAxis yAxis, XYChart.Series<Number, Number> series) {
-        series.setName("Distance(time)");
-        yAxis.setLabel("Distance");
+        series.setName("Stress*Thickness(time)");
+        yAxis.setLabel("Stress*Thickness(GPa*um)");
         xAxis.setLabel("Time");
    //     Date date = new Date();
         xAxis.setAutoRanging(true);

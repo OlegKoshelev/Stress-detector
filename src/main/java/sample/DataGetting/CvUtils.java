@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import sample.DataSaving.SettingsSaving.CameraCustomizations;
+import sample.Utils.ImageUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,6 +14,8 @@ import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -67,11 +71,31 @@ public class CvUtils {
         return (curvature * biaxialModulus * (Math.pow(substrateThickness, 2))) / 6;
     }
 
-    public static double coordinates(Mat img) {
+
+
+    public static Double coordinates(Mat img) {
+        if (img == null)
+            return null;
         //  System.load("C:\\opencv_3_3\\build\\java\\x64\\opencv_java330.dll");
-        Mat img2 = matReform(img);
+        Mat img2 = ImageUtils.matReform(img, CameraCustomizations.getInstance());
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(img2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+        if (contours.size() < 2)
+            return  null;
+        System.out.println("size of countours++++++++++++++++++++" + contours.size());
+        Collections.sort(contours, new Comparator<MatOfPoint>() {
+            @Override
+            public int compare(MatOfPoint o1, MatOfPoint o2) {
+              return   (int) (o2.size().area() - o1.size().area());
+            }
+        });
+
+        System.out.println(contours.get(0).size() + "===============первая точка" );
+        System.out.println(contours.get(1).size() + "===============вторая точка" );
+        for (MatOfPoint point :
+                contours) {
+            System.out.println("размер точки ---------" + point.size());
+        }
         Point pointOne = new Point();
         Point pointTwo = new Point();
         Imgproc.minEnclosingCircle(new MatOfPoint2f(contours.get(0).toArray()), pointOne, new float[1]);
@@ -79,10 +103,21 @@ public class CvUtils {
         Imgproc.cvtColor(img2, img2, Imgproc.COLOR_BayerGB2BGR);
         Imgproc.circle(img2, pointOne, 1, new Scalar(0, 0, 255), 8);
         Imgproc.circle(img2, pointTwo, 1, new Scalar(0, 0, 255), 8);
+        System.out.println(pointOne + " точка 1" );
+        System.out.println(pointTwo + "точка 2");
         return distance(pointOne, pointTwo);
     }
 
+   public static int getContours (Mat img){
+       Mat img2 = ImageUtils.matReform(img, CameraCustomizations.getInstance());
+       List<MatOfPoint> contours = new ArrayList<>();
+       Imgproc.findContours(img2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+       return contours.size();
+   }
+
+/*
     private static Mat matReform(Mat img) {
+
         Mat hsv = new Mat();
         Imgproc.cvtColor(img, hsv, Imgproc.COLOR_BGR2HSV);
         Mat img2 = new Mat();
@@ -90,6 +125,7 @@ public class CvUtils {
                 new Scalar(200, 70, 255), img2);
         return img2;
     }
+ */
 
     private static double distance(Point one, Point two) {
         double result;
@@ -117,7 +153,7 @@ public class CvUtils {
     }
 
     public static Image getImage(Mat img) {
-        Mat img2 = matReform(img);
+        Mat img2 = ImageUtils.matReform(img,CameraCustomizations.getInstance());
        // Mat img2 = img;
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".jpg", img2, matOfByte);

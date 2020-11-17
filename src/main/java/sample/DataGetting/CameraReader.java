@@ -30,6 +30,8 @@ public class CameraReader implements Runnable {
         // Задаем размеры кадра
         camera.set(Videoio.CAP_PROP_FRAME_WIDTH, settingsData.getResolution().getWidth());
         camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, settingsData.getResolution().getHeight());
+        System.out.println(settingsData.getResolution().getWidth());
+        System.out.println(settingsData.getResolution().getHeight());
     }
 
     public void Stop(){

@@ -9,13 +9,13 @@ public enum Resolution {
     private int height;
     private int width;
 
-    Resolution(int height, int width) {
+    Resolution(int width, int height) {
         this.height = height;
         this.width = width;
     }
 
     public String getName(){
-        return height + " x " + width;
+        return width + " x " + height;
     }
 
     public int getWidth() {

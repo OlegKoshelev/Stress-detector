@@ -3,6 +3,8 @@ package sample.AdditionalUtils;
 import javafx.scene.chart.NumberAxis;
 import sample.Graph.AxisBoundaries;
 
+import java.awt.event.MouseEvent;
+
 public  class GraphUtils {
     public static AxisBoundaries getBoundary (double x, double y, NumberAxis axis){
 
@@ -16,14 +18,16 @@ public  class GraphUtils {
         }
         else{ // ось Х
             if ((x > axis.getTickMarks().get(axis.getTickMarks().size()-1).getPosition() - 10)){
-                return AxisBoundaries.MaxY;
+                return AxisBoundaries.MaxX;
             }
             if ((x < axis.getTickMarks().get(0).getPosition() + 10)){
-                return AxisBoundaries.MinY;
+                return AxisBoundaries.MinX;
             }
         }
-
         return null;
     }
+
+
+
 
 }

@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import sample.AdditionalUtils.GraphUtils;
 import sample.DataBase.*;
 import sample.DataBase.Entities.AbbreviatedTable;
 import sample.DataBase.Entities.BaseTable;
@@ -42,6 +43,7 @@ import sample.DataGetting.Values;
 import sample.DataGetting.ValuesLayer;
 
 
+import javax.persistence.Id;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -105,12 +107,26 @@ public class MainController implements Initializable {
     private AxisBoundaries maxYAxis = AxisBoundaries.MaxY;
 
     @FXML
-    public void mouseClicked(MouseEvent event){
-        if(event.getButton().equals(MouseButton.PRIMARY)){
-            if (event.getClickCount() == 1){
-                if (stackPane.getChildren().size() == 2){
+    public void singleMouseClick(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (event.getClickCount() == 1) {
+                if (stackPane.getChildren().size() == 2) {
                     stackPane.getChildren().remove(1);
-                    textField  = null;
+                    textField = null;
+                }
+            }
+        }
+    }
+    @FXML
+    public void doubleMouseClick(MouseEvent event){
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (event.getClickCount() == 2){
+                if ((stackPane.getChildren().size() == 1)) {
+                    textField = new TextField("");
+                    textField.setFont(new Font("SansSerif", 12));
+                    textField.setMaxSize(45, 5);
+                    AxisBoundaries axisBoundary = GraphUtils.getBoundary(event.getX(), event.getY(),(NumberAxis) event.getSource());
+                    addToStackPain(axisBoundary,textField);
                 }
             }
         }
@@ -127,47 +143,34 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        yAxis.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-
-                    if(mouseEvent.getClickCount() == 2){
-
-                        System.out.println(yAxis.getBoundsInLocal().getWidth()+ " ширина Y");
-                        System.out.println(yAxis.getBoundsInLocal().getHeight() + " высота Y");
-                        System.out.println(xAxis.getBoundsInLocal().getWidth()+ " ширина X");
-                        System.out.println(xAxis.getBoundsInLocal().getHeight() + " высота X");
-
-                        System.out.println(yAxis.getTickMarks().get(0).getPosition());
-                        System.out.println(yAxis.getTickMarks().get(1).getPosition());
-                        System.out.println(yAxis.getTickMarks().get(2).getPosition());
-                        System.out.println();
-                        System.out.println();
-                        System.out.println(yAxis.getBoundsInLocal().getMinX() + " ----- minX");
-                        System.out.println(yAxis.getBoundsInLocal().getMinY() + " ----- minY");
-                        System.out.println(yAxis.getBoundsInLocal().getMaxX() + " ----- maxX");
-                        System.out.println(yAxis.getBoundsInLocal().getMaxY() + " ----- maxY");
-                        System.out.println();
-                        System.out.println();
-                        System.out.println(mouseEvent.getX()+ "------ X");
-                        System.out.println(mouseEvent.getY()+ "------ Y");
-                        if ((stackPane.getChildren().size() == 1)) {
-                            textField = new TextField("");
-                            textField.setFont(new Font("SansSerif",  12));
-                            textField.setMaxSize(45,5);
-                            stackPane.getChildren().add(textField);
-                            StackPane.setAlignment( stackPane.getChildren().get(1), Pos.TOP_LEFT);
-                            StackPane.setMargin( stackPane.getChildren().get(1), new Insets(40,0,0,5));
-                        }                    }
-                }
-            }
-        });
     }
 
-
-
+    private void addToStackPain(AxisBoundaries axisBoundaries, TextField textField) {
+        if (axisBoundaries != null){
+            switch (axisBoundaries){
+                case MaxX:
+                    stackPane.getChildren().add(textField);
+                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.BOTTOM_RIGHT);
+                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(0, 10, 12, 0));
+                    break;
+                case MinX:
+                    stackPane.getChildren().add(textField);
+                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.BOTTOM_LEFT);
+                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(0, 0, 12, 40));
+                    break;
+                case MaxY:
+                    stackPane.getChildren().add(textField);
+                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.TOP_LEFT);
+                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(40, 0, 0, 5));
+                    break;
+                case MinY:
+                    stackPane.getChildren().add(textField);
+                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.BOTTOM_LEFT);
+                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(0, 0, 35, 5));
+                    break;
+            }
+        }
+    }
 
 
     @FXML
@@ -199,10 +202,10 @@ public class MainController implements Initializable {
         if (thread == null) {
             GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
             chart.getData().clear();
-            series= new XYChart.Series<>();
+            series = new XYChart.Series<>();
             chart.getData().add(series);
         }
-        modelLayer = new ValuesLayer(2,d0);
+        modelLayer = new ValuesLayer(2, d0);
         values = modelLayer.getValuesQueue();
         createThread();
         thread.start();
@@ -231,7 +234,7 @@ public class MainController implements Initializable {
 
     }
 
-    public void addDataToTable(){
+    public void addDataToTable() {
         // заносим данные в подробную таблицу
         DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
         detailedTableHelper.addTableList(detailedTableValues.getList());
@@ -372,8 +375,9 @@ public class MainController implements Initializable {
         }
 
     }
+
     @FXML
-    public void openDB(){
+    public void openDB() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Opening DB");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
@@ -384,7 +388,7 @@ public class MainController implements Initializable {
         GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
         chart.getData().clear();
         chart.getData().add(series);
-        ObservableList<XYChart.Data<Number,Number>> result = FXCollections.observableArrayList();
+        ObservableList<XYChart.Data<Number, Number>> result = FXCollections.observableArrayList();
         for (BaseTable values :
                 data) {
             result.add(new XYChart.Data<>(values.getTimestamp(), values.getStressThickness()));
@@ -405,13 +409,13 @@ public class MainController implements Initializable {
 
 
         System.out.println(new Date(data.get(0).getTimestamp()));
-        System.out.println(new Date(data.get(data.size()-1).getTimestamp()));
-          xAxis.setLowerBound(data.get(0).getTimestamp());
-           xAxis.setUpperBound(data.get(data.size()-1).getTimestamp());
-           xAxis.setTickUnit((double) (data.get(data.size()-1).getTimestamp()-data.get(0).getTimestamp())/5);
-             yAxis.setLowerBound(min);
-             yAxis.setUpperBound(max);
-             yAxis.setTickUnit((max - min) / 5);
+        System.out.println(new Date(data.get(data.size() - 1).getTimestamp()));
+        xAxis.setLowerBound(data.get(0).getTimestamp());
+        xAxis.setUpperBound(data.get(data.size() - 1).getTimestamp());
+        xAxis.setTickUnit((double) (data.get(data.size() - 1).getTimestamp() - data.get(0).getTimestamp()) / 5);
+        yAxis.setLowerBound(min);
+        yAxis.setUpperBound(max);
+        yAxis.setTickUnit((max - min) / 5);
         yAxis.setAutoRanging(false);
         xAxis.setAutoRanging(false);
         xAxis.setAnimated(true);

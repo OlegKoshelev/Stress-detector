@@ -2,7 +2,16 @@ package sample.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import sample.DataBase.*;
 import sample.DataBase.Entities.AbbreviatedTable;
 import sample.DataBase.Entities.BaseTable;
@@ -10,6 +19,7 @@ import sample.DataBase.Entities.RegularTable;
 import sample.DataBase.Entities.DetailedTable;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
+import sample.Graph.AxisBoundaries;
 import sample.Utils.*;
 import javafx.application.Platform;
 
@@ -29,7 +39,6 @@ import javafx.stage.Stage;
 
 import org.hibernate.cfg.Configuration;
 import sample.DataGetting.Values;
-import sample.DataGetting.ModelLayer;
 import sample.DataGetting.ValuesLayer;
 
 
@@ -43,6 +52,10 @@ import java.util.concurrent.BlockingQueue;
 
 public class MainController implements Initializable {
     private double d0 = 0;
+    @FXML
+    private StackPane stackPane;
+    @FXML
+    private VBox vBox;
 
     @FXML
     private Stage settings;
@@ -72,6 +85,8 @@ public class MainController implements Initializable {
 
     private long stratTime = new Date().getTime();
 
+    private TextField textField = null;
+
     private TemporaryValues detailedTableValues = new TemporaryValues();
     private TemporaryValues regularTableValues = new TemporaryValues();
     private TemporaryValues abbreviatedTableValues = new TemporaryValues();
@@ -84,6 +99,24 @@ public class MainController implements Initializable {
     }
 
     private GraphValuesFromAbbreviatedTable graphValuesFromAbbreviatedTable = new GraphValuesFromAbbreviatedTable();
+    private AxisBoundaries minXAxis = AxisBoundaries.MinX;
+    private AxisBoundaries maxXAxis = AxisBoundaries.MaxX;
+    private AxisBoundaries minYAxis = AxisBoundaries.MinY;
+    private AxisBoundaries maxYAxis = AxisBoundaries.MaxY;
+
+    @FXML
+    public void mouseClicked(MouseEvent event){
+        if(event.getButton().equals(MouseButton.PRIMARY)){
+            if (event.getClickCount() == 1){
+                if (stackPane.getChildren().size() == 2){
+                    stackPane.getChildren().remove(1);
+                    textField  = null;
+                }
+            }
+        }
+    }
+
+
 
 
     @Override
@@ -94,7 +127,48 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        yAxis.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+
+                    if(mouseEvent.getClickCount() == 2){
+
+                        System.out.println(yAxis.getBoundsInLocal().getWidth()+ " ширина Y");
+                        System.out.println(yAxis.getBoundsInLocal().getHeight() + " высота Y");
+                        System.out.println(xAxis.getBoundsInLocal().getWidth()+ " ширина X");
+                        System.out.println(xAxis.getBoundsInLocal().getHeight() + " высота X");
+
+                        System.out.println(yAxis.getTickMarks().get(0).getPosition());
+                        System.out.println(yAxis.getTickMarks().get(1).getPosition());
+                        System.out.println(yAxis.getTickMarks().get(2).getPosition());
+                        System.out.println();
+                        System.out.println();
+                        System.out.println(yAxis.getBoundsInLocal().getMinX() + " ----- minX");
+                        System.out.println(yAxis.getBoundsInLocal().getMinY() + " ----- minY");
+                        System.out.println(yAxis.getBoundsInLocal().getMaxX() + " ----- maxX");
+                        System.out.println(yAxis.getBoundsInLocal().getMaxY() + " ----- maxY");
+                        System.out.println();
+                        System.out.println();
+                        System.out.println(mouseEvent.getX()+ "------ X");
+                        System.out.println(mouseEvent.getY()+ "------ Y");
+                        if ((stackPane.getChildren().size() == 1)) {
+                            textField = new TextField("");
+                            textField.setFont(new Font("SansSerif",  12));
+                            textField.setMaxSize(45,5);
+                            stackPane.getChildren().add(textField);
+                            StackPane.setAlignment( stackPane.getChildren().get(1), Pos.TOP_LEFT);
+                            StackPane.setMargin( stackPane.getChildren().get(1), new Insets(40,0,0,5));
+                        }                    }
+                }
+            }
+        });
     }
+
+
+
+
 
     @FXML
     void showSettings() throws IOException {

@@ -49,6 +49,7 @@ import sample.DataGetting.ValuesLayer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -107,7 +108,7 @@ public class MainController implements Initializable {
 
 
     @FXML
-    public void singleMouseClickAndPushingEnter(MouseEvent event) {
+    public void singleMouseClickAndPushingEnter(MouseEvent event) throws ParseException {
         if (event.getButton().equals(MouseButton.PRIMARY)) {// сброс отображения полей ввода диапазонов осей
             if (event.getClickCount() == 1) {
                 if (stackPane.getChildren().size() == 2) {
@@ -123,8 +124,22 @@ public class MainController implements Initializable {
                             yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
                             break;
                         case MinX:
+                            if (textField.getText() == null ||
+                                    textField.getText().isEmpty() ||
+                                    GraphUtils.stringToDate(textField.getText()) == null){
+                                break;
+                            }
+                            xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound())/5);
                             break;
                         case MaxX:
+                            if (textField.getText() == null ||
+                                    textField.getText().isEmpty() ||
+                                    GraphUtils.stringToDate(textField.getText()) == null){
+                                break;
+                            }
+                            xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                            xAxis.setTickUnit( (xAxis.getUpperBound() - xAxis.getLowerBound())/5);
                             break;
                     }
                     textField = null;
@@ -154,8 +169,38 @@ public class MainController implements Initializable {
                                          yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
                                          break;
                                      case MinX:
+                                         try {
+                                             if (textField.getText() == null ||
+                                                     textField.getText().isEmpty() ||
+                                                     GraphUtils.stringToDate(textField.getText()) == null){
+                                                 break;
+                                             }
+                                         } catch (ParseException e) {
+                                             e.printStackTrace();
+                                         }
+                                         try {
+                                             xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                                         } catch (ParseException e) {
+                                             e.printStackTrace();
+                                         }
+                                         xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound())/5);
                                          break;
                                      case MaxX:
+                                         try {
+                                             if (textField.getText() == null ||
+                                                     textField.getText().isEmpty() ||
+                                                     GraphUtils.stringToDate(textField.getText()) == null){
+                                                 break;
+                                             }
+                                         } catch (ParseException e) {
+                                             e.printStackTrace();
+                                         }
+                                         try {
+                                             xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                                         } catch (ParseException e) {
+                                             e.printStackTrace();
+                                         }
+                                         xAxis.setTickUnit( (xAxis.getUpperBound() - xAxis.getLowerBound())/5);
                                          break;
                                  }
                                  textField = null;
@@ -177,12 +222,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         chart.setTitle("Graph");
-        yAxis.setAutoRanging(false);
-        xAxis.setAutoRanging(false);
-        xAxis.setAnimated(true);
-        yAxis.setAnimated(true);
-
-
+        GraphUtils.InitialGraph(chart,xAxis,yAxis,series);
 
         try {
             SettingsTransfer.readFromSettingsFile(SettingsData.getInstance());

@@ -2,11 +2,14 @@ package sample.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -43,7 +46,6 @@ import sample.DataGetting.Values;
 import sample.DataGetting.ValuesLayer;
 
 
-import javax.persistence.Id;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -101,17 +103,30 @@ public class MainController implements Initializable {
     }
 
     private GraphValuesFromAbbreviatedTable graphValuesFromAbbreviatedTable = new GraphValuesFromAbbreviatedTable();
-    private AxisBoundaries minXAxis = AxisBoundaries.MinX;
-    private AxisBoundaries maxXAxis = AxisBoundaries.MaxX;
-    private AxisBoundaries minYAxis = AxisBoundaries.MinY;
-    private AxisBoundaries maxYAxis = AxisBoundaries.MaxY;
+    private AxisBoundaries axisBoundary = null;
+
 
     @FXML
-    public void singleMouseClick(MouseEvent event) {
-        if (event.getButton().equals(MouseButton.PRIMARY)) {
+    public void singleMouseClickAndPushingEnter(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY)) {// сброс отображения полей ввода диапазонов осей
             if (event.getClickCount() == 1) {
                 if (stackPane.getChildren().size() == 2) {
                     stackPane.getChildren().remove(1);
+                    switch (axisBoundary) {
+                        case MinY:
+                            System.out.println(textField.getText());
+                            yAxis.setLowerBound(Double.parseDouble(textField.getText()));
+                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
+                            break;
+                        case MaxY:
+                            yAxis.setUpperBound(Double.parseDouble(textField.getText()));
+                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
+                            break;
+                        case MinX:
+                            break;
+                        case MaxX:
+                            break;
+                    }
                     textField = null;
                 }
             }
@@ -119,25 +134,56 @@ public class MainController implements Initializable {
     }
     @FXML
     public void doubleMouseClick(MouseEvent event){
-        if (event.getButton().equals(MouseButton.PRIMARY)) {
+        if (event.getButton().equals(MouseButton.PRIMARY)) { // отобразить поле ввода для изменения диапазона оси
             if (event.getClickCount() == 2){
                 if ((stackPane.getChildren().size() == 1)) {
                     textField = new TextField("");
+                     axisBoundary = GraphUtils.setBoundaryValue(event.getX(),event.getY(),(NumberAxis) event.getSource(),textField,stackPane);
+                     textField.addEventHandler(KeyEvent.KEY_PRESSED, event1 -> {
+                         if (event1.getCode() == KeyCode.ENTER) {
+                             if (stackPane.getChildren().size() == 2) {
+                                 stackPane.getChildren().remove(1);
+                                 switch (axisBoundary) {
+                                     case MinY:
+                                         System.out.println(textField.getText());
+                                         yAxis.setLowerBound(Double.parseDouble(textField.getText()));
+                                         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
+                                         break;
+                                     case MaxY:
+                                         yAxis.setUpperBound(Double.parseDouble(textField.getText()));
+                                         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
+                                         break;
+                                     case MinX:
+                                         break;
+                                     case MaxX:
+                                         break;
+                                 }
+                                 textField = null;
+                             }
+
+                         }
+                     });
+/*
                     textField.setFont(new Font("SansSerif", 12));
                     textField.setMaxSize(45, 5);
                     AxisBoundaries axisBoundary = GraphUtils.getBoundary(event.getX(), event.getY(),(NumberAxis) event.getSource());
-                    addToStackPain(axisBoundary,textField);
+                    GraphUtils.addToStackPain(axisBoundary,textField, stackPane);
+ */
                 }
             }
         }
     }
 
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         chart.setTitle("Graph");
+        yAxis.setAutoRanging(false);
+        xAxis.setAutoRanging(false);
+        xAxis.setAnimated(true);
+        yAxis.setAnimated(true);
+
+
+
         try {
             SettingsTransfer.readFromSettingsFile(SettingsData.getInstance());
         } catch (IOException e) {
@@ -145,32 +191,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void addToStackPain(AxisBoundaries axisBoundaries, TextField textField) {
-        if (axisBoundaries != null){
-            switch (axisBoundaries){
-                case MaxX:
-                    stackPane.getChildren().add(textField);
-                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.BOTTOM_RIGHT);
-                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(0, 10, 12, 0));
-                    break;
-                case MinX:
-                    stackPane.getChildren().add(textField);
-                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.BOTTOM_LEFT);
-                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(0, 0, 12, 40));
-                    break;
-                case MaxY:
-                    stackPane.getChildren().add(textField);
-                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.TOP_LEFT);
-                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(40, 0, 0, 5));
-                    break;
-                case MinY:
-                    stackPane.getChildren().add(textField);
-                    StackPane.setAlignment(stackPane.getChildren().get(1),Pos.BOTTOM_LEFT);
-                    StackPane.setMargin(stackPane.getChildren().get(1), new Insets(0, 0, 35, 5));
-                    break;
-            }
-        }
-    }
+
 
 
     @FXML

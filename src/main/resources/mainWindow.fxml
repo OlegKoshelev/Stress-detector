@@ -18,9 +18,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.MainController" fx:id="vBox"  onMouseClicked="#singleMouseClick">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.MainController" fx:id="vBox"  onMouseClicked="#singleMouseClickAndPushingEnter"  >
     <children>
-        <MenuBar onMouseClicked="#singleMouseClick">
+        <MenuBar onMouseClicked="#singleMouseClickAndPushingEnter">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -51,7 +51,7 @@
                </items></Menu>
             </menus>
         </MenuBar>
-        <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#singleMouseClick">
+        <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#singleMouseClickAndPushingEnter">
             <items>
                 <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
                 <Button fx:id="run" mnemonicParsing="false" onAction="#print" text="Run" />
@@ -63,7 +63,7 @@
                 <Insets left="100.0" />
             </padding>
         </ToolBar>
-        <SplitPane dividerPositions="0.2904841402337229" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#singleMouseClick">
+        <SplitPane dividerPositions="0.2904841402337229" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#singleMouseClickAndPushingEnter">
             <items>
                 <Pane prefHeight="200.0" prefWidth="200.0">
                     <children>
@@ -79,7 +79,7 @@
                <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                             <graphic>
-                                <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="808.0" prefWidth="816.0"  onMouseClicked="#singleMouseClick">
+                                <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="808.0" prefWidth="816.0"  onMouseClicked="#singleMouseClickAndPushingEnter">
                                     <xAxis>
                                         <NumberAxis side="BOTTOM" fx:id="xAxis" onMouseClicked="#doubleMouseClick" />
                                     </xAxis>

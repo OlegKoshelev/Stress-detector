@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.MainController" fx:id="vBox"  onMouseClicked="#singleMouseClickAndPushingEnter"  >
+<VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.MainController">
     <children>
         <MenuBar onMouseClicked="#singleMouseClickAndPushingEnter">
             <menus>
@@ -51,7 +51,7 @@
                </items></Menu>
             </menus>
         </MenuBar>
-        <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#singleMouseClickAndPushingEnter">
+        <ToolBar nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
             <items>
                 <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
                 <Button fx:id="run" mnemonicParsing="false" onAction="#print" text="Run" />
@@ -63,7 +63,7 @@
                 <Insets left="100.0" />
             </padding>
         </ToolBar>
-        <SplitPane dividerPositions="0.2904841402337229" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS" onMouseClicked="#singleMouseClickAndPushingEnter">
+        <SplitPane dividerPositions="0.2904841402337229" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
             <items>
                 <Pane prefHeight="200.0" prefWidth="200.0">
                     <children>
@@ -79,32 +79,19 @@
                <children>
                         <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                             <graphic>
-                                <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="808.0" prefWidth="816.0"  onMouseClicked="#singleMouseClickAndPushingEnter">
+                                <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="808.0" prefWidth="816.0">
                                     <xAxis>
-                                        <NumberAxis side="BOTTOM" fx:id="xAxis" onMouseClicked="#doubleMouseClick" />
+                                        <NumberAxis onMouseClicked="#doubleMouseClick" side="BOTTOM" fx:id="xAxis" />
                                     </xAxis>
                                     <yAxis>
-                                        <NumberAxis fx:id="yAxis" side="LEFT" onMouseClicked="#doubleMouseClick" />
+                                        <NumberAxis fx:id="yAxis" onMouseClicked="#doubleMouseClick" side="LEFT" />
                                     </yAxis>
                                 </LineChart>
                             </graphic>
                             <contextMenu>
                                 <ContextMenu>
                                     <items>
-                                        <CheckMenuItem mnemonicParsing="false" text="Unspecified Action" />
-                                        <CheckMenuItem mnemonicParsing="false" text="Unspecified Action" />
-                                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                                        <Menu mnemonicParsing="false" text="Unspecified Menu">
-                                            <items>
-                                                <MenuItem mnemonicParsing="false" text="Action 1" />
-                                            </items>
-                                        </Menu>
-                                        <Menu mnemonicParsing="false" text="Unspecified Menu">
-                                            <items>
-                                                <MenuItem mnemonicParsing="false" text="Action 1" />
-                                            </items>
-                                        </Menu>
+                                        <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false"  text="Autoranging" onAction="#changeAutoRanging"/>
                                     </items>
                                 </ContextMenu>
                             </contextMenu>

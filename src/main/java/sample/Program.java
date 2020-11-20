@@ -4,6 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.Controllers.MainController;
+import sample.Controllers.SettingsController;
 
 import java.io.File;
 import java.io.InputStream;
@@ -18,12 +20,14 @@ public class Program extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("mainWindow.fxml");
-        Parent root = new FXMLLoader().load(inputStream);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainWindow.fxml"));
+        Parent root = loader.load();
+        MainController controller = loader.getController();
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> {
+            controller.shutdown();
+        });
     }
 
 }

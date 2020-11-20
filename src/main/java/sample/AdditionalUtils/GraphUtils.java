@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-import org.omg.CORBA.WStringSeqHelper;
 import sample.Graph.AxisBoundaries;
 
 import java.text.DateFormat;
@@ -29,30 +28,30 @@ public class GraphUtils {
             if ((y < axis.getTickMarks().get(axis.getTickMarks().size() - 1).getPosition() + 10)) {// max Y
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.TOP_LEFT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(40, 0, 0, 5));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(5, 0, 0, 5));
                 textField.setText(axis.getUpperBound() + "");
                 return AxisBoundaries.MaxY;
             }
-            if ((y > axis.getTickMarks().get(0).getPosition() - 10)) { // min Y
+            if ((y > axis.getTickMarks().get(0).getPosition() - 15)) { // min Y
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.BOTTOM_LEFT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 35, 5));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 60, 5));
                 textField.setText(axis.getLowerBound() + "");
                 return AxisBoundaries.MinY;
             }
         } else { // ось Х
-            textField.setMaxSize(60, 30);
-            if ((x > axis.getTickMarks().get(axis.getTickMarks().size() - 1).getPosition() - 10)) {// max X
+            textField.setMaxSize(80, 30);
+            if ((x > axis.getTickMarks().get(axis.getTickMarks().size() - 1).getPosition() - 25)) {// max X
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.BOTTOM_RIGHT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 10, 7, 0));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 1, 30, 0));
                 textField.setText(dateToString(new Date((long) axis.getUpperBound())));
                 return AxisBoundaries.MaxX;
             }
-            if ((x < axis.getTickMarks().get(0).getPosition() + 10)) { // min X
+            if ((x < axis.getTickMarks().get(0).getPosition() + 25)) { // min X
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.BOTTOM_LEFT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 7, 40));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 30, 85));
                 textField.setText(dateToString(new Date((long) axis.getLowerBound())));
                 return AxisBoundaries.MinX;
             }
@@ -65,7 +64,7 @@ public class GraphUtils {
         return dateFormat.format(date);
     }
 
-    public static Date stringToDate(String string) throws ParseException {
+    public static Date stringToDate(String string) throws ParseException { // выясняем в кааом формате ввел время пользователь
         if (!string.matches("(\\d\\d:?){1,3}"))
             return null;
 
@@ -90,17 +89,14 @@ public class GraphUtils {
 
 
     public static void InitialGraph(LineChart<Number, Number> chart, NumberAxis xAxis, NumberAxis yAxis, XYChart.Series<Number, Number> series) {
-    /*
-        series.setName("Stress*Thickness(time)");
         yAxis.setLabel("Stress*Thickness(GPa*um)");
         xAxis.setLabel("Time");
-     */
         xAxis.setAutoRanging(false);
         yAxis.setAutoRanging(false);
         Date date = new Date();
         xAxis.setLowerBound(date.getTime());
-        xAxis.setUpperBound(date.getTime() + 400000);
-        xAxis.setTickUnit(100000);
+        xAxis.setUpperBound(date.getTime() + 40000000);
+        xAxis.setTickUnit(10000000);
         xAxis.setTickLabelsVisible(true);
         yAxis.setLowerBound(0);
         yAxis.setUpperBound(150);

@@ -1,5 +1,6 @@
 package sample.Utils;
 
+import com.sun.javafx.charts.Legend;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -17,6 +18,7 @@ public class GraphsSettings {
         series.setName("Stress*Thickness(time)");
         yAxis.setLabel("Stress*Thickness(GPa*um)");
         xAxis.setLabel("Time");
+        chart.setLegendVisible(false);
    //     Date date = new Date();
         xAxis.setAutoRanging(true);
         yAxis.setAutoRanging(true);

@@ -2,11 +2,8 @@ package sample.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -14,8 +11,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import sample.AdditionalUtils.GraphUtils;
+import sample.AdditionalUtils.MainControllerUtils;
 import sample.DataBase.*;
 import sample.DataBase.Entities.AbbreviatedTable;
 import sample.DataBase.Entities.BaseTable;
@@ -56,6 +53,9 @@ import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
 public class MainController implements Initializable {
+
+    @FXML
+    CheckMenuItem autoRanging;
     private double d0 = 0;
     @FXML
     private StackPane stackPane;
@@ -77,6 +77,7 @@ public class MainController implements Initializable {
     private XYChart.Series<Number, Number> series = new XYChart.Series<>();
     private Thread thread;
     private Configuration dBConfiguration;
+    private Boolean autoRangingFlag = false;
 
     private HibernateUtil hibernateUtil;
 
@@ -88,7 +89,7 @@ public class MainController implements Initializable {
 
     private long minX = 0;
 
-    private long stratTime = new Date().getTime();
+    private long stratTime = 0;
 
     private TextField textField = null;
 
@@ -117,103 +118,100 @@ public class MainController implements Initializable {
                         case MinY:
                             System.out.println(textField.getText());
                             yAxis.setLowerBound(Double.parseDouble(textField.getText()));
-                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
+                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
                             break;
                         case MaxY:
                             yAxis.setUpperBound(Double.parseDouble(textField.getText()));
-                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
+                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
                             break;
                         case MinX:
                             if (textField.getText() == null ||
                                     textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText()) == null){
+                                    GraphUtils.stringToDate(textField.getText()) == null) {
                                 break;
                             }
                             xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
-                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound())/5);
+                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                             break;
                         case MaxX:
                             if (textField.getText() == null ||
                                     textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText()) == null){
+                                    GraphUtils.stringToDate(textField.getText()) == null) {
                                 break;
                             }
                             xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
-                            xAxis.setTickUnit( (xAxis.getUpperBound() - xAxis.getLowerBound())/5);
+                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                             break;
                     }
+                    autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
                     textField = null;
                 }
             }
         }
     }
+
     @FXML
-    public void doubleMouseClick(MouseEvent event){
+    public void doubleMouseClick(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY)) { // отобразить поле ввода для изменения диапазона оси
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 if ((stackPane.getChildren().size() == 1)) {
                     textField = new TextField("");
-                     axisBoundary = GraphUtils.setBoundaryValue(event.getX(),event.getY(),(NumberAxis) event.getSource(),textField,stackPane);
-                     textField.addEventHandler(KeyEvent.KEY_PRESSED, event1 -> {
-                         if (event1.getCode() == KeyCode.ENTER) {
-                             if (stackPane.getChildren().size() == 2) {
-                                 stackPane.getChildren().remove(1);
-                                 switch (axisBoundary) {
-                                     case MinY:
-                                         System.out.println(textField.getText());
-                                         yAxis.setLowerBound(Double.parseDouble(textField.getText()));
-                                         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
-                                         break;
-                                     case MaxY:
-                                         yAxis.setUpperBound(Double.parseDouble(textField.getText()));
-                                         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound())/5);
-                                         break;
-                                     case MinX:
-                                         try {
-                                             if (textField.getText() == null ||
-                                                     textField.getText().isEmpty() ||
-                                                     GraphUtils.stringToDate(textField.getText()) == null){
-                                                 break;
-                                             }
-                                         } catch (ParseException e) {
-                                             e.printStackTrace();
-                                         }
-                                         try {
-                                             xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
-                                         } catch (ParseException e) {
-                                             e.printStackTrace();
-                                         }
-                                         xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound())/5);
-                                         break;
-                                     case MaxX:
-                                         try {
-                                             if (textField.getText() == null ||
-                                                     textField.getText().isEmpty() ||
-                                                     GraphUtils.stringToDate(textField.getText()) == null){
-                                                 break;
-                                             }
-                                         } catch (ParseException e) {
-                                             e.printStackTrace();
-                                         }
-                                         try {
-                                             xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
-                                         } catch (ParseException e) {
-                                             e.printStackTrace();
-                                         }
-                                         xAxis.setTickUnit( (xAxis.getUpperBound() - xAxis.getLowerBound())/5);
-                                         break;
-                                 }
-                                 textField = null;
-                             }
+                    axisBoundary = GraphUtils.setBoundaryValue(event.getX(), event.getY(), (NumberAxis) event.getSource(), textField, stackPane);
+                    textField.addEventHandler(KeyEvent.KEY_PRESSED, event1 -> {
+                        if (event1.getCode() == KeyCode.ENTER) {
+                            if (stackPane.getChildren().size() == 2) {
+                                stackPane.getChildren().remove(1);
+                                switch (axisBoundary) {
+                                    case MinY:
+                                        System.out.println(textField.getText());
+                                        yAxis.setLowerBound(Double.parseDouble(textField.getText()));
+                                        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
+                                        break;
+                                    case MaxY:
+                                        yAxis.setUpperBound(Double.parseDouble(textField.getText()));
+                                        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
+                                        break;
+                                    case MinX:
+                                        try {
+                                            if (textField.getText() == null ||
+                                                    textField.getText().isEmpty() ||
+                                                    GraphUtils.stringToDate(textField.getText()) == null) {
+                                                break;
+                                            }
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
+                                        break;
+                                    case MaxX:
+                                        try {
+                                            if (textField.getText() == null ||
+                                                    textField.getText().isEmpty() ||
+                                                    GraphUtils.stringToDate(textField.getText()) == null) {
+                                                break;
+                                            }
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
+                                        break;
+                                }
+                                autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
+                                textField = null;
+                            }
 
-                         }
-                     });
-/*
-                    textField.setFont(new Font("SansSerif", 12));
-                    textField.setMaxSize(45, 5);
-                    AxisBoundaries axisBoundary = GraphUtils.getBoundary(event.getX(), event.getY(),(NumberAxis) event.getSource());
-                    GraphUtils.addToStackPain(axisBoundary,textField, stackPane);
- */
+                        }
+                    });
                 }
             }
         }
@@ -221,17 +219,15 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        chart.setTitle("Graph");
-        GraphUtils.InitialGraph(chart,xAxis,yAxis,series);
-
+        GraphUtils.InitialGraph(chart, xAxis, yAxis, series);
+        chart.setLegendVisible(false);
         try {
             SettingsTransfer.readFromSettingsFile(SettingsData.getInstance());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
-
-
 
 
     @FXML
@@ -261,38 +257,49 @@ public class MainController implements Initializable {
             return;
         }
         if (thread == null) {
-            GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
             chart.getData().clear();
+            xAxis.setUpperBound(xAxis.getUpperBound() + 40000);
             series = new XYChart.Series<>();
             chart.getData().add(series);
         }
+        chart.setLegendVisible(false);
         modelLayer = new ValuesLayer(2, d0);
         values = modelLayer.getValuesQueue();
         createThread();
         thread.start();
     }
 
+    @FXML
+    public void changeAutoRanging() {
+        if (autoRanging.isSelected()) {
+            autoRangingFlag = MainControllerUtils.setAutoranging(autoRanging);
+        } else {
+            autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
+        }
+    }
+
 
     private void changeBoundaries(long xValue, double yValue) {
-        if (xValue > maxX - 50000) {
-            maxX = xValue + 100000;
-            xAxis.setUpperBound(maxX);
-            double v = (double) (maxX - stratTime) / 5;
-            xAxis.setTickUnit(v);
-        }
+        if (autoRangingFlag) {
+            if (xValue > maxX - 50000) {
+                maxX = xValue + 100000;
+                xAxis.setUpperBound(maxX);
+                double v = (double) (maxX - stratTime) / 5;
+                xAxis.setTickUnit(v);
+            }
 
-        if (yValue > maxY) {
-            maxY = yValue + Math.abs(yValue * 0.1);
-            yAxis.setUpperBound(maxY);
-            yAxis.setTickUnit((maxY - minY) / 5);
-        }
+            if (yValue > maxY) {
+                maxY = yValue + Math.abs(yValue * 0.1);
+                yAxis.setUpperBound(maxY);
+                yAxis.setTickUnit((maxY - minY) / 5);
+            }
 
-        if (yValue < minY) {
-            minY = yValue - Math.abs(yValue * 0.1);
-            yAxis.setLowerBound(minY);
-            yAxis.setTickUnit((maxY - minY) / 5);
+            if (yValue < minY) {
+                minY = yValue - Math.abs(yValue * 0.1);
+                yAxis.setLowerBound(minY);
+                yAxis.setTickUnit((maxY - minY) / 5);
+            }
         }
-
     }
 
     public void addDataToTable() {
@@ -315,6 +322,9 @@ public class MainController implements Initializable {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                if (stratTime == 0) {
+                    stratTime = new Date().getTime();
+                }
                 xAxis.setLowerBound(stratTime);
                 xAxis.setUpperBound(maxX);
 
@@ -389,13 +399,16 @@ public class MainController implements Initializable {
 
     @FXML
     public void stop() {
+        shutdown();
+    }
+
+    public void shutdown() {
         if (thread != null) {
             d0 = modelLayer.getD0();
             modelLayer.stop();
             thread.interrupt();
         }
     }
-
 
     @FXML
     public void Edit() throws IOException {
@@ -406,33 +419,7 @@ public class MainController implements Initializable {
         if (file != null) {
             file.createNewFile();
             System.out.println(file.getAbsolutePath());
-
-           /*
-                       String shortPath = file.getParentFile().getPath() + "\\";
-            System.out.println(shortPath);
-            String name = file.getName();
-            String[] nameParts = name.split("\\.");
-            String shortName = nameParts[0];
-            System.out.println(shortName);
-            File txtFile = new File(String.format("%s%s.txt", shortPath, shortName));
-            txtFile.createNewFile();
-            */
-
             hibernateUtil = new HibernateUtilForSaving(file.getAbsolutePath());
-
-
-            /*
-                      String url = "jdbc:sqlite:" + file.getAbsolutePath();
-            System.out.println(url);
-            dBConfiguration = new Configuration()
-                    .setProperty("hibernate.dialect", "org.hibernate.dialect.SQLiteDialect")
-                    .setProperty("hibernate.connection.url", url)
-                    .setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC")
-                    .setProperty("hibernate.current_session_context_class", "thread")
-                    .setProperty("hibernate.show_sql", "true")
-                    .setProperty("hibernate.hbm2ddl.auto", "update")
-                    .configure();
-             */
         }
 
     }

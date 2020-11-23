@@ -3,7 +3,7 @@ package sample.AdditionalUtils;
 import javafx.scene.control.CheckMenuItem;
 
 public class MainControllerUtils {
-    public static boolean setAutoranging(CheckMenuItem autoRanging){
+    public static boolean setAutoRanging(CheckMenuItem autoRanging){
         autoRanging.setSelected(true);
         return true;
     }

@@ -68,7 +68,7 @@ public class CvUtils {
 
     public static double stressThickness(int biaxialModulus, double substrateThickness, double curvature) {
 
-        return (curvature * biaxialModulus * (Math.pow(substrateThickness, 2))) / 6;
+        return (curvature * biaxialModulus * 1000000 * (Math.pow(substrateThickness, 2))) / 6;
     }
 
 

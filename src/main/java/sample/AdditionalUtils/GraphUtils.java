@@ -14,7 +14,9 @@ import sample.Graph.AxisBoundaries;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class GraphUtils {
@@ -64,7 +66,7 @@ public class GraphUtils {
         return dateFormat.format(date);
     }
 
-    public static Date stringToDate(String string) throws ParseException { // выясняем в кааом формате ввел время пользователь
+    public static Date stringToDate(String string, Date plottingDate ) throws ParseException { // выясняем в кааом формате ввел время пользователь
         if (!string.matches("(\\d\\d:?){1,3}"))
             return null;
 
@@ -84,7 +86,19 @@ public class GraphUtils {
                 formatter = new SimpleDateFormat("HH:mm:ss");
                 break;
         }
-        return formatter.parse(string);
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(formatter.parse(string));
+        int hour = calendar.get(Calendar.HOUR);
+        int minutes = calendar.get(Calendar.MINUTE);
+        int seconds = calendar.get(Calendar.SECOND);
+        int milliseconds =calendar.get(Calendar.MILLISECOND);
+        calendar.setTime(plottingDate);
+        calendar.set(Calendar.HOUR,hour);
+        calendar.set(Calendar.MINUTE,minutes);
+        calendar.set(Calendar.SECOND,seconds);
+        calendar.set(Calendar.MILLISECOND,milliseconds);
+        return calendar.getTime();
     }
 
 
@@ -93,6 +107,7 @@ public class GraphUtils {
         xAxis.setLabel("Time");
         xAxis.setAutoRanging(false);
         yAxis.setAutoRanging(false);
+        chart.setCreateSymbols(false);
         Date date = new Date();
         xAxis.setLowerBound(date.getTime());
         xAxis.setUpperBound(date.getTime() + 40000000);

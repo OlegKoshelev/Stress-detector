@@ -21,6 +21,8 @@ import sample.DataBase.Entities.DetailedTable;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
 import sample.Graph.AxisBoundaries;
+import sample.Graph.BoundaryValues;
+import sample.InitialDataSetting.Graph.GraphType;
 import sample.Utils.*;
 import javafx.application.Platform;
 
@@ -49,6 +51,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
@@ -127,19 +130,19 @@ public class MainController implements Initializable {
                         case MinX:
                             if (textField.getText() == null ||
                                     textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText()) == null) {
+                                    GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getLowerBound())) == null) {
                                 break;
                             }
-                            xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getLowerBound()))).getTime());
                             xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                             break;
                         case MaxX:
                             if (textField.getText() == null ||
                                     textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText()) == null) {
+                                    GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getUpperBound())) == null) {
                                 break;
                             }
-                            xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                            xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound()))).getTime());
                             xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                             break;
                     }
@@ -175,14 +178,14 @@ public class MainController implements Initializable {
                                         try {
                                             if (textField.getText() == null ||
                                                     textField.getText().isEmpty() ||
-                                                    GraphUtils.stringToDate(textField.getText()) == null) {
+                                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound())) == null) {
                                                 break;
                                             }
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            xAxis.setLowerBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getLowerBound()))).getTime());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
@@ -192,18 +195,19 @@ public class MainController implements Initializable {
                                         try {
                                             if (textField.getText() == null ||
                                                     textField.getText().isEmpty() ||
-                                                    GraphUtils.stringToDate(textField.getText()) == null) {
+                                                    GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getUpperBound())) == null) {
                                                 break;
                                             }
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            xAxis.setUpperBound(GraphUtils.stringToDate(textField.getText()).getTime());
+                                            xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getUpperBound()))).getTime());
+                                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
-                                        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
+
                                         break;
                                 }
                                 autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
@@ -220,7 +224,6 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         GraphUtils.InitialGraph(chart, xAxis, yAxis, series);
-        chart.setLegendVisible(false);
         try {
             SettingsTransfer.readFromSettingsFile(SettingsData.getInstance());
         } catch (IOException e) {
@@ -261,8 +264,9 @@ public class MainController implements Initializable {
             xAxis.setUpperBound(xAxis.getUpperBound() + 40000);
             series = new XYChart.Series<>();
             chart.getData().add(series);
+            chart.setLegendVisible(false);
         }
-        chart.setLegendVisible(false);
+
         modelLayer = new ValuesLayer(2, d0);
         values = modelLayer.getValuesQueue();
         createThread();
@@ -271,8 +275,26 @@ public class MainController implements Initializable {
 
     @FXML
     public void changeAutoRanging() {
+        addDataToTable();
         if (autoRanging.isSelected()) {
-            autoRangingFlag = MainControllerUtils.setAutoranging(autoRanging);
+            autoRangingFlag = MainControllerUtils.setAutoRanging(autoRanging);
+            RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
+            BoundaryValues boundaryValues =  regularTableHelper.getBoundaryValues(GraphType.StressThickness);
+            if (boundaryValues != null){
+                stratTime = boundaryValues.getMinX();
+                maxX = boundaryValues.getMaxX() + 100000;
+                xAxis.setLowerBound(stratTime);
+                xAxis.setUpperBound(maxX);
+                xAxis.setTickUnit((double) (maxX - stratTime) / 5);
+
+
+                minY = boundaryValues.getMinY() - Math.abs(boundaryValues.getMinY())*2;
+                maxY = boundaryValues.getMaxY() + Math.abs(boundaryValues.getMaxY())*2;
+                yAxis.setLowerBound(minY);
+                yAxis.setUpperBound(maxY);
+                yAxis.setTickUnit((maxY - minY) / 5);
+            }
+
         } else {
             autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
         }
@@ -324,12 +346,13 @@ public class MainController implements Initializable {
             public void run() {
                 if (stratTime == 0) {
                     stratTime = new Date().getTime();
-                }
-                xAxis.setLowerBound(stratTime);
-                xAxis.setUpperBound(maxX);
+                    xAxis.setLowerBound(stratTime);
+                    xAxis.setUpperBound(maxX);
 
-                yAxis.setLowerBound(minY);
-                yAxis.setUpperBound(maxY);
+                    yAxis.setLowerBound(minY);
+                    yAxis.setUpperBound(maxY);
+                }
+
 
                 int counter = 0;
 

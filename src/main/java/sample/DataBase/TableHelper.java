@@ -3,7 +3,10 @@ package sample.DataBase;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.EntityType;
+import sample.AdditionalUtils.TableHelperUtils;
 import sample.DataBase.Entities.*;
+import sample.Graph.BoundaryValues;
+import sample.InitialDataSetting.Graph.GraphType;
 
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
@@ -85,7 +88,6 @@ public class TableHelper {
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(getTableClass());
-        ;
         Root<BaseTable> root = cq.from(getTableClass());
         Selection[] selections = {root.get(BaseTable_.timestamp)};
         cb.construct(getTableType().getClass(), selections);
@@ -116,44 +118,21 @@ public class TableHelper {
         return getSecondId() - getInitialId();
     }
 
-/*
-    public List<BaseTable> getList() {
-        int rowsCount = (int) getCount();
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(getTableClass());
-        Root<BaseTable> root = cq.from(getTableClass());
-        cb.asc(root.get(BaseTable_.timestamp));
-
-        int first = 0;
-        List<BaseTable> result = null;
-        while (first < rowsCount) {
-            int max = first +100;
-            List<BaseTable> list = getRows(session,cq,first,max);
-            String text = listToString(list);
-            writeListToFile(text, "D:\\abc.txt");
-            first = first+ 100;
-        }
-        session.close();
-
-        return null ;
-    }
- */
 
     public void tableToTxt(String path) {
         int rowsCount = (int) getCount();
-        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])   Distance(pixels) \n";
-        writeListToFile(columnNames,path);
+        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])   Distance(pixels) \r\n";
+        writeListToFile(columnNames, path);
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(getTableClass());
         Root<BaseTable> root = cq.from(getTableClass());
         cb.asc(root.get(BaseTable_.timestamp));
 
-        for(int first = 0; first < rowsCount; first = first +100 ){
+        for (int first = 0; first < rowsCount; first = first + 100) {
             List<BaseTable> list = null;
             int max = 100;
-            list = getRows(session,cq,first,max);
+            list = getRows(session, cq, first, max);
             String text = listToString(list);
             writeListToFile(text, path);
         }
@@ -161,32 +140,71 @@ public class TableHelper {
     }
 
 
-    private List<BaseTable> getRows(Session session,CriteriaQuery cq ,int first, int max){
+    private List<BaseTable> getRows(Session session, CriteriaQuery cq, int first, int max) {
         Query query = session.createQuery(cq);
         query.setFirstResult(first);
         query.setMaxResults(max);
-        return  query.getResultList();
+        return query.getResultList();
     }
 
-    private String listToString (List <BaseTable> list){
+    public BoundaryValues getBoundaryValues(GraphType graphType) {
+        if (getCount() == 0)
+            return null;
+        long minX = 0;
+        long maxX = 0;
+        double minY = 0;
+        double maxY = 0;
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(getTableClass());
+        Root<BaseTable> root = cq.from(getTableClass());
+        minX = (Long) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.timestamp);
+        maxX = (Long) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.timestamp);
+
+
+        switch (graphType) {
+            case Distance:
+                minY = (Double) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.distance);
+                maxY = (Double) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.distance);
+                break;
+            case Curvature:
+                minY = (Double) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.curvature);
+                maxY = (Double) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.curvature);
+                break;
+            case StressThickness:
+                minY = (Double) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.stressThickness);
+                maxY = (Double) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.stressThickness);
+                break;
+        }
+           session.close();
+        System.out.println(maxY + "-------------------------------------------------MAXY");
+        System.out.println(minY + "-------------------------------------------------MINY");
+        System.out.println(maxX + "-------------------------------------------------MAXX");
+        System.out.println(minX + "-------------------------------------------------MINX");
+        return new BoundaryValues(minX,minY,maxX,maxY);
+    }
+
+
+    private String listToString(List<BaseTable> list) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (BaseTable bt:list) {
+        for (BaseTable bt : list) {
             stringBuilder.append(new Date(bt.getTimestamp())).append("   ").
                     append(bt.getStressThickness()).append("   ").
                     append(bt.getCurvature()).append("   ").
-                    append(bt.getDistance()).append("\n");
+                    append(bt.getDistance()).append("\r\n");
         }
         return stringBuilder.toString();
     }
 
-    private void writeListToFile (String text, String path){
+    private void writeListToFile(String text, String path) {
         try {
             Files.write(Paths.get(path), text.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public List<BaseTable> getTable(){
+
+    public List<BaseTable> getTable() {
         List<BaseTable> result = new ArrayList<>();
         int rowsCount = (int) getCount();
         Session session = sessionFactory.openSession();
@@ -194,20 +212,20 @@ public class TableHelper {
         CriteriaQuery cq = cb.createQuery(getTableClass());
         Root<BaseTable> root = cq.from(getTableClass());
         cb.asc(root.get(BaseTable_.timestamp));
-        for(int first = 0; first < rowsCount; first = first +100 ){
+        for (int first = 0; first < rowsCount; first = first + 100) {
             List<BaseTable> list = null;
             int max = 100;
-            list = getRows(session,cq,first,max);
+            list = getRows(session, cq, first, max);
             result.addAll(list);
         }
         session.close();
         return result;
     }
 
-    public long getCount(){ // возвращает кол-во строк в таблице
+    public long getCount() { // возвращает кол-во строк в таблице
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery <Long> cq = cb.createQuery(Long.class);
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<? extends BaseTable> root = cq.from(getTableClass());
         cq.select(cb.count(root));
         Query query = session.createQuery(cq);
@@ -216,24 +234,5 @@ public class TableHelper {
         return count;
     }
 
-/*
-    public void writeToTxt (){
-        long minId = getInitialId();
-        Long maxId = minId +
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(BaseTable.class);
-        Root<BaseTable> root = cq.from(BaseTable.class);
-        Selection [] selections = {root.get(BaseTable_.timestamp),
-                root.get(BaseTable_.stressThickness),
-                root.get(BaseTable_.curvature),
-                root.get(BaseTable_.distance)};
-        ParameterExpression<Long> parameterIdStop = cb.parameter(Long.class, "idStop");
-        cq.select(cb.construct(BaseTable.class, selections)).where(cb.min(root.get(BaseTable_.timestamp)));
-        Query query = session.createQuery(cq);
-        query.setParameter("length",6);
-
-    }
-    */
 
 }

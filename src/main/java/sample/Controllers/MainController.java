@@ -88,11 +88,10 @@ public class MainController implements Initializable {
 
     private double minY = 0;
 
+
     private long maxX = 0;
 
     private long minX = 0;
-
-    private long stratTime = 0;
 
     private TextField textField = null;
 
@@ -107,7 +106,8 @@ public class MainController implements Initializable {
         this.values = values;
     }
 
-    private GraphValuesFromAbbreviatedTable graphValuesFromAbbreviatedTable = new GraphValuesFromAbbreviatedTable();
+    private graphValuesFromTable graphValuesFromAbbreviatedTable = new graphValuesFromTable();
+    private graphValuesFromTable graphValuesFromRegularTable = new graphValuesFromTable();
     private AxisBoundaries axisBoundary = null;
 
 
@@ -275,9 +275,14 @@ public class MainController implements Initializable {
 
     @FXML
     public void changeAutoRanging() {
-        addDataToTable();
         if (autoRanging.isSelected()) {
             autoRangingFlag = MainControllerUtils.setAutoRanging(autoRanging);
+            minY = graphValuesFromRegularTable.getMinY();
+            maxY = graphValuesFromRegularTable.getMAxY();
+            minX = graphValuesFromRegularTable.getMinX();
+            maxX = graphValuesFromRegularTable.getMAxX();
+
+     /*
             RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
             BoundaryValues boundaryValues =  regularTableHelper.getBoundaryValues(GraphType.StressThickness);
             if (boundaryValues != null){
@@ -294,6 +299,7 @@ public class MainController implements Initializable {
                 yAxis.setUpperBound(maxY);
                 yAxis.setTickUnit((maxY - minY) / 5);
             }
+      */
 
         } else {
             autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
@@ -306,7 +312,7 @@ public class MainController implements Initializable {
             if (xValue > maxX - 50000) {
                 maxX = xValue + 100000;
                 xAxis.setUpperBound(maxX);
-                double v = (double) (maxX - stratTime) / 5;
+                double v = (double) (maxX - minX) / 5;
                 xAxis.setTickUnit(v);
             }
 
@@ -344,9 +350,9 @@ public class MainController implements Initializable {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                if (stratTime == 0) {
-                    stratTime = new Date().getTime();
-                    xAxis.setLowerBound(stratTime);
+                if (minX == 0) {
+                    minX = new Date().getTime();
+                    xAxis.setLowerBound(minX);
                     xAxis.setUpperBound(maxX);
 
                     yAxis.setLowerBound(minY);
@@ -389,6 +395,7 @@ public class MainController implements Initializable {
                             regularTableValues.addValue(rtValue);
                             Number x = regularTableValue.getTimestamp().getTime();
                             Number y = regularTableValue.getStressThickness();
+                            graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(),regularTableValue.getStressThickness());
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
                             if (counter % (pushPoint * 20) != 0) {
                                 Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));

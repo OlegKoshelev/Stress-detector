@@ -87,7 +87,7 @@ public class GraphUtils {
                 break;
         }
 
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = new GregorianCalendar(); // установка даты соответствующей таде создания данных графика
         calendar.setTime(formatter.parse(string));
         int hour = calendar.get(Calendar.HOUR);
         int minutes = calendar.get(Calendar.MINUTE);

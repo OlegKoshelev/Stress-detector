@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import sample.Graph.AxisBoundaries;
+import sample.Graph.BoundaryValues;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -89,17 +90,74 @@ public class GraphUtils {
 
         Calendar calendar = new GregorianCalendar(); // установка даты соответствующей таде создания данных графика
         calendar.setTime(formatter.parse(string));
-        int hour = calendar.get(Calendar.HOUR);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minutes = calendar.get(Calendar.MINUTE);
         int seconds = calendar.get(Calendar.SECOND);
         int milliseconds =calendar.get(Calendar.MILLISECOND);
         calendar.setTime(plottingDate);
-        calendar.set(Calendar.HOUR,hour);
+        calendar.set(Calendar.HOUR_OF_DAY,hour);
         calendar.set(Calendar.MINUTE,minutes);
         calendar.set(Calendar.SECOND,seconds);
         calendar.set(Calendar.MILLISECOND,milliseconds);
         return calendar.getTime();
     }
+
+    public static  void changeBoundaries (long xValue, double yValue, NumberAxis xAxis, NumberAxis yAxis, BoundaryValues boundaryValues, boolean autoRangingIsSelected ){
+        if (autoRangingIsSelected) {
+            double deltaX  =  (boundaryValues.getMaxX() - boundaryValues.getMinX()) * 0.4;
+            double deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
+            if (xValue > (boundaryValues.getMaxX() + deltaX/2)) {
+                boundaryValues.setMaxX(xValue);
+                deltaX  =  (boundaryValues.getMaxX() - boundaryValues.getMinX()) * 0.4;
+                setAxisSettings(xAxis,boundaryValues.getMinX(),(long) (boundaryValues.getMaxX() + deltaX));
+            }
+
+            if (yValue > boundaryValues.getMaxY()) {
+                boundaryValues.setMaxY(yValue);
+                deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()))*3;
+                setAxisSettings(yAxis,(boundaryValues.getMinY() - deltaY),(boundaryValues.getMaxY() + deltaY));
+            }
+
+            if (yValue < boundaryValues.getMinY()) {
+                boundaryValues.setMinY(yValue);
+                deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
+                setAxisSettings(yAxis,(boundaryValues.getMinY() - deltaY),(boundaryValues.getMaxY() + deltaY));
+            }
+        }
+    }
+
+
+
+    public static void setAxisSettings(NumberAxis axis, long minValue, long maxValue){
+        axis.setLowerBound(minValue);
+        axis.setUpperBound(maxValue);
+        axis.setTickUnit((double) (maxValue - minValue) / 5);
+        axis.setAutoRanging(false);
+        axis.setAnimated(true);
+    }
+
+    public static   void setAxisSettings (NumberAxis axis, double minValue, double maxValue){
+        axis.setLowerBound(minValue);
+        axis.setUpperBound(maxValue);
+        axis.setTickUnit( (maxValue - minValue) / 5);
+        axis.setAutoRanging(false);
+        axis.setAnimated(true);
+    }
+
+
+    public static void setBoundaries(NumberAxis xAxis, NumberAxis yAxis, long minX, long maxX, double minY, double maxY){
+        double deltaX  =  (maxX - minX) * 0.4;
+        double deltaY =  (Math.abs(maxY) - Math.abs(minY)) *0.8;
+        System.out.println(deltaX);
+        System.out.println(deltaY);
+        maxX = (long) (maxX + deltaX);
+        minY =  minY - deltaY;
+        maxY =  maxY + deltaY;
+        setAxisSettings(xAxis,minX,maxX);
+        setAxisSettings(yAxis,minY,maxY);
+    }
+
+
 
 
     public static void InitialGraph(LineChart<Number, Number> chart, NumberAxis xAxis, NumberAxis yAxis, XYChart.Series<Number, Number> series) {

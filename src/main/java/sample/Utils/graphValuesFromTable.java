@@ -31,7 +31,7 @@ public class graphValuesFromTable {
         return result;
     }
 
-    public long getMAxX(){
+    public long getMaxX(){
         ObservableList<XYChart.Data<Number,Number>> cloneData = clone();
         sortXData(cloneData);
         return cloneData.get(cloneData.size()-1).getXValue().longValue();
@@ -42,7 +42,7 @@ public class graphValuesFromTable {
         sortXData(cloneData);
         return cloneData.get(0).getXValue().longValue();
     }
-    public double getMAxY(){
+    public double getMaxY(){
         ObservableList<XYChart.Data<Number,Number>> cloneData = clone();
         sortYData(cloneData);
         return cloneData.get(cloneData.size()-1).getYValue().doubleValue();

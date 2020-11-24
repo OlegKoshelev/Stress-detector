@@ -22,7 +22,6 @@ import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
 import sample.Graph.AxisBoundaries;
 import sample.Graph.BoundaryValues;
-import sample.InitialDataSetting.Graph.GraphType;
 import sample.Utils.*;
 import javafx.application.Platform;
 
@@ -84,6 +83,8 @@ public class MainController implements Initializable {
 
     private HibernateUtil hibernateUtil;
 
+    private BoundaryValues boundaryValues = new BoundaryValues(0, 0, 0, 0);
+
     private double maxY = 0;
 
     private double minY = 0;
@@ -130,16 +131,16 @@ public class MainController implements Initializable {
                         case MinX:
                             if (textField.getText() == null ||
                                     textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getLowerBound())) == null) {
+                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound())) == null) {
                                 break;
                             }
-                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getLowerBound()))).getTime());
+                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound()))).getTime());
                             xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                             break;
                         case MaxX:
                             if (textField.getText() == null ||
                                     textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getUpperBound())) == null) {
+                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound())) == null) {
                                 break;
                             }
                             xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound()))).getTime());
@@ -185,7 +186,7 @@ public class MainController implements Initializable {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getLowerBound()))).getTime());
+                                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound()))).getTime());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
@@ -195,14 +196,14 @@ public class MainController implements Initializable {
                                         try {
                                             if (textField.getText() == null ||
                                                     textField.getText().isEmpty() ||
-                                                    GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getUpperBound())) == null) {
+                                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound())) == null) {
                                                 break;
                                             }
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(),new Date((long) xAxis.getUpperBound()))).getTime());
+                                            xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound()))).getTime());
                                             xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
                                         } catch (ParseException e) {
                                             e.printStackTrace();
@@ -277,36 +278,21 @@ public class MainController implements Initializable {
     public void changeAutoRanging() {
         if (autoRanging.isSelected()) {
             autoRangingFlag = MainControllerUtils.setAutoRanging(autoRanging);
-            minY = graphValuesFromRegularTable.getMinY();
-            maxY = graphValuesFromRegularTable.getMAxY();
+            boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
+            /*
+                        minY = graphValuesFromRegularTable.getMinY();
+            maxY = graphValuesFromRegularTable.getMaxY();
             minX = graphValuesFromRegularTable.getMinX();
-            maxX = graphValuesFromRegularTable.getMAxX();
-
-     /*
-            RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
-            BoundaryValues boundaryValues =  regularTableHelper.getBoundaryValues(GraphType.StressThickness);
-            if (boundaryValues != null){
-                stratTime = boundaryValues.getMinX();
-                maxX = boundaryValues.getMaxX() + 100000;
-                xAxis.setLowerBound(stratTime);
-                xAxis.setUpperBound(maxX);
-                xAxis.setTickUnit((double) (maxX - stratTime) / 5);
-
-
-                minY = boundaryValues.getMinY() - Math.abs(boundaryValues.getMinY())*2;
-                maxY = boundaryValues.getMaxY() + Math.abs(boundaryValues.getMaxY())*2;
-                yAxis.setLowerBound(minY);
-                yAxis.setUpperBound(maxY);
-                yAxis.setTickUnit((maxY - minY) / 5);
-            }
-      */
-
+            maxX = graphValuesFromRegularTable.getMaxX();
+             */
+            GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
         } else {
             autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
         }
     }
 
 
+/*
     private void changeBoundaries(long xValue, double yValue) {
         if (autoRangingFlag) {
             if (xValue > maxX - 50000) {
@@ -329,6 +315,7 @@ public class MainController implements Initializable {
             }
         }
     }
+ */
 
     public void addDataToTable() {
         // заносим данные в подробную таблицу
@@ -350,13 +337,16 @@ public class MainController implements Initializable {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                if (minX == 0) {
-                    minX = new Date().getTime();
-                    xAxis.setLowerBound(minX);
-                    xAxis.setUpperBound(maxX);
+                if (boundaryValues.getMinX() == 0) {
+                    boundaryValues.setMinX(new Date().getTime());
+                  //  minX = new Date().getTime();
+                    GraphUtils.setAxisSettings(xAxis,boundaryValues.getMinX(),boundaryValues.getMaxX());
+                    GraphUtils.setAxisSettings(yAxis,boundaryValues.getMinY(),boundaryValues.getMaxY());
+                    //xAxis.setLowerBound(minX);
+                  //  xAxis.setUpperBound(maxX);
 
-                    yAxis.setLowerBound(minY);
-                    yAxis.setUpperBound(maxY);
+                   // yAxis.setLowerBound(minY);
+                   // yAxis.setUpperBound(maxY);
                 }
 
 
@@ -375,7 +365,8 @@ public class MainController implements Initializable {
                         if (nextValue == null) continue;
                         counter++;
 
-                        changeBoundaries(nextValue.getTimestamp().getTime(), nextValue.getStressThickness());
+                        //changeBoundaries(nextValue.getTimestamp().getTime(), nextValue.getStressThickness());
+                        GraphUtils.changeBoundaries(nextValue.getTimestamp().getTime(),nextValue.getStressThickness(),xAxis,yAxis,boundaryValues,autoRangingFlag);
                         Image image = nextValue.getImage();
                         regularTableMedian.save(nextValue);
                         DetailedTable dtValues = new DetailedTable(nextValue);
@@ -395,7 +386,7 @@ public class MainController implements Initializable {
                             regularTableValues.addValue(rtValue);
                             Number x = regularTableValue.getTimestamp().getTime();
                             Number y = regularTableValue.getStressThickness();
-                            graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(),regularTableValue.getStressThickness());
+                            graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(), regularTableValue.getStressThickness());
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
                             if (counter % (pushPoint * 20) != 0) {
                                 Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
@@ -469,35 +460,17 @@ public class MainController implements Initializable {
         ObservableList<XYChart.Data<Number, Number>> result = FXCollections.observableArrayList();
         for (BaseTable values :
                 data) {
-            result.add(new XYChart.Data<>(values.getTimestamp(), values.getStressThickness()));
+            graphValuesFromRegularTable.addData(values.getTimestamp(), values.getStressThickness());
         }
-        double max = 0;
-        double min = 0;
-        for (BaseTable values :
-                data) {
-            if (max < values.getStressThickness())
-                max = values.getStressThickness();
-            if (min > values.getStressThickness())
-                min = values.getStressThickness();
-        }
-        System.out.println(max);
-        System.out.println(min);
-
-        series.getData().addAll(result);
-
-
-        System.out.println(new Date(data.get(0).getTimestamp()));
-        System.out.println(new Date(data.get(data.size() - 1).getTimestamp()));
-        xAxis.setLowerBound(data.get(0).getTimestamp());
-        xAxis.setUpperBound(data.get(data.size() - 1).getTimestamp());
-        xAxis.setTickUnit((double) (data.get(data.size() - 1).getTimestamp() - data.get(0).getTimestamp()) / 5);
-        yAxis.setLowerBound(min);
-        yAxis.setUpperBound(max);
-        yAxis.setTickUnit((max - min) / 5);
-        yAxis.setAutoRanging(false);
-        xAxis.setAutoRanging(false);
-        xAxis.setAnimated(true);
-        yAxis.setAnimated(true);
+        boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(),graphValuesFromRegularTable.getMinY(),graphValuesFromRegularTable.getMaxX(),graphValuesFromRegularTable.getMaxY());
+      /*
+        maxX = graphValuesFromRegularTable.getMaxX();
+        minX = graphValuesFromRegularTable.getMinX();
+        maxY = graphValuesFromRegularTable.getMaxY();
+        minY = graphValuesFromRegularTable.getMinY();
+       */
+        series.getData().addAll(graphValuesFromRegularTable.clone());
+        GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
     }
 
     @FXML

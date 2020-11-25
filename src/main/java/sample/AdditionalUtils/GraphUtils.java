@@ -113,8 +113,9 @@ public class GraphUtils {
             }
 
             if (yValue > boundaryValues.getMaxY()) {
+
                 boundaryValues.setMaxY(yValue);
-                deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()))*3;
+                deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
                 setAxisSettings(yAxis,(boundaryValues.getMinY() - deltaY),(boundaryValues.getMaxY() + deltaY));
             }
 
@@ -122,6 +123,7 @@ public class GraphUtils {
                 boundaryValues.setMinY(yValue);
                 deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
                 setAxisSettings(yAxis,(boundaryValues.getMinY() - deltaY),(boundaryValues.getMaxY() + deltaY));
+
             }
         }
     }

@@ -339,14 +339,8 @@ public class MainController implements Initializable {
             public void run() {
                 if (boundaryValues.getMinX() == 0) {
                     boundaryValues.setMinX(new Date().getTime());
-                  //  minX = new Date().getTime();
                     GraphUtils.setAxisSettings(xAxis,boundaryValues.getMinX(),boundaryValues.getMaxX());
                     GraphUtils.setAxisSettings(yAxis,boundaryValues.getMinY(),boundaryValues.getMaxY());
-                    //xAxis.setLowerBound(minX);
-                  //  xAxis.setUpperBound(maxX);
-
-                   // yAxis.setLowerBound(minY);
-                   // yAxis.setUpperBound(maxY);
                 }
 
 
@@ -366,7 +360,6 @@ public class MainController implements Initializable {
                         counter++;
 
                         //changeBoundaries(nextValue.getTimestamp().getTime(), nextValue.getStressThickness());
-                        GraphUtils.changeBoundaries(nextValue.getTimestamp().getTime(),nextValue.getStressThickness(),xAxis,yAxis,boundaryValues,autoRangingFlag);
                         Image image = nextValue.getImage();
                         regularTableMedian.save(nextValue);
                         DetailedTable dtValues = new DetailedTable(nextValue);
@@ -386,10 +379,12 @@ public class MainController implements Initializable {
                             regularTableValues.addValue(rtValue);
                             Number x = regularTableValue.getTimestamp().getTime();
                             Number y = regularTableValue.getStressThickness();
+                            GraphUtils.changeBoundaries(regularTableValue.getTimestamp().getTime(),regularTableValue.getStressThickness(),xAxis,yAxis,boundaryValues,autoRangingFlag);
                             graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(), regularTableValue.getStressThickness());
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
+                            Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
                             if (counter % (pushPoint * 20) != 0) {
-                                Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
+
                             }
                         }
 

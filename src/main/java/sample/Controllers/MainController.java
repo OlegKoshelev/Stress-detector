@@ -2,6 +2,7 @@ package sample.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.Chart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TextField;
@@ -68,6 +69,7 @@ public class MainController implements Initializable {
     private Stage settings;
     private BlockingQueue<Values> values;
     private ValuesLayer modelLayer;
+
     @FXML
     private ImageView imageView;
     @FXML
@@ -107,8 +109,8 @@ public class MainController implements Initializable {
         this.values = values;
     }
 
-    private graphValuesFromTable graphValuesFromAbbreviatedTable = new graphValuesFromTable();
-    private graphValuesFromTable graphValuesFromRegularTable = new graphValuesFromTable();
+    private GraphValuesFromTable graphValuesFromAbbreviatedTable = new GraphValuesFromTable();
+    private GraphValuesFromTable graphValuesFromRegularTable = new GraphValuesFromTable();
     private AxisBoundaries axisBoundary = null;
 
 
@@ -224,13 +226,12 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        GraphUtils.InitialGraph(chart, xAxis, yAxis, series);
         try {
             SettingsTransfer.readFromSettingsFile(SettingsData.getInstance());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
     }
 
 
@@ -243,9 +244,14 @@ public class MainController implements Initializable {
         primaryStage.setTitle("Settings");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> {
+        primaryStage.setOnHidden(event -> {
+            GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
             controller.shutdown();
         });
+    }
+
+    public void graphRepaint (){
+        GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
     }
 
     @FXML
@@ -378,9 +384,9 @@ public class MainController implements Initializable {
                             RegularTable rtValue = new RegularTable(regularTableValue);
                             regularTableValues.addValue(rtValue);
                             Number x = regularTableValue.getTimestamp().getTime();
-                            Number y = regularTableValue.getStressThickness();
-                            GraphUtils.changeBoundaries(regularTableValue.getTimestamp().getTime(),regularTableValue.getStressThickness(),xAxis,yAxis,boundaryValues,autoRangingFlag);
-                            graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(), regularTableValue.getStressThickness());
+                            Number y = regularTableValue.getMeasuredValue(SettingsData.getInstance().getType());
+                            GraphUtils.changeBoundaries(regularTableValue.getTimestamp().getTime(),regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()),xAxis,yAxis,boundaryValues,autoRangingFlag);
+                            graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(), regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()));
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
                             Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
                             if (counter % (pushPoint * 20) != 0) {
@@ -393,7 +399,7 @@ public class MainController implements Initializable {
                             System.out.println(abbreviatedTableMedian.getList().size() + " -----РАЗМЕР");
                             Values abbreviatedTableValue = abbreviatedTableMedian.getMedianValueAndClear();
                             AbbreviatedTable atValue = new AbbreviatedTable(abbreviatedTableValue);
-                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(), abbreviatedTableValue.getStressThickness());
+                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(), abbreviatedTableValue.getMeasuredValue(SettingsData.getInstance().getType()));
                             abbreviatedTableValues.addValue(atValue);
                         }
 
@@ -428,6 +434,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void Edit() throws IOException {
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create file");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
@@ -436,26 +443,32 @@ public class MainController implements Initializable {
             file.createNewFile();
             System.out.println(file.getAbsolutePath());
             hibernateUtil = new HibernateUtilForSaving(file.getAbsolutePath());
+            chart.getData().clear();
         }
 
     }
 
     @FXML
     public void openDB() {
+        chart.getData().clear();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Opening DB");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
         File file = fileChooser.showOpenDialog(null);
+        if (file == null)
+            return;
+        chart.getData().clear();
         hibernateUtil = new HibernateUtilForOpening(file.getAbsolutePath());
         RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
         List<BaseTable> data = regularTableHelper.getTable();
-        GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
+        GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
+       // GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
         chart.getData().clear();
         chart.getData().add(series);
         ObservableList<XYChart.Data<Number, Number>> result = FXCollections.observableArrayList();
         for (BaseTable values :
                 data) {
-            graphValuesFromRegularTable.addData(values.getTimestamp(), values.getStressThickness());
+            graphValuesFromRegularTable.addData(values.getTimestamp(), values.getMeasuredValue(SettingsData.getInstance().getType()));
         }
         boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(),graphValuesFromRegularTable.getMinY(),graphValuesFromRegularTable.getMaxX(),graphValuesFromRegularTable.getMaxY());
       /*

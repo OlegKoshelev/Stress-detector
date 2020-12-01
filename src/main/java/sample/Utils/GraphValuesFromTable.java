@@ -7,10 +7,10 @@ import javafx.scene.chart.XYChart;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class graphValuesFromTable {
+public class GraphValuesFromTable {
     private ObservableList<XYChart.Data<Number,Number>> data;
 
-    public graphValuesFromTable() {
+    public GraphValuesFromTable() {
       data = FXCollections.observableArrayList();
     }
 

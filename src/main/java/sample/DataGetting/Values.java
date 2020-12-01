@@ -2,6 +2,8 @@ package sample.DataGetting;
 
 
 import javafx.scene.image.Image;
+import sample.InitialDataSetting.Graph.GraphType;
+
 import java.util.Date;
 
 public class Values  implements Comparable<Values>{
@@ -20,6 +22,20 @@ public class Values  implements Comparable<Values>{
     }
 
     public Values() {
+    }
+
+
+    public double getMeasuredValue (GraphType graphType) {
+        switch (graphType){
+            case StressThickness:
+                return getStressThickness();
+            case Curvature:
+                return getCurvature();
+            case Distance:
+                return getDistance();
+            default:
+                return 0;
+        }
     }
 
     public double getStressThickness() {

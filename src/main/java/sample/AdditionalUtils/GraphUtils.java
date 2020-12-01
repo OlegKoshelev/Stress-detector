@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import sample.Graph.AxisBoundaries;
 import sample.Graph.BoundaryValues;
+import sample.InitialDataSetting.Graph.GraphType;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -162,8 +163,10 @@ public class GraphUtils {
 
 
 
-    public static void InitialGraph(LineChart<Number, Number> chart, NumberAxis xAxis, NumberAxis yAxis, XYChart.Series<Number, Number> series) {
-        yAxis.setLabel("Stress*Thickness(GPa*um)");
+    public static void InitialGraph(GraphType graphType,LineChart<Number, Number> chart, NumberAxis xAxis, NumberAxis yAxis, XYChart.Series<Number, Number> series) {
+
+        yAxis.setLabel(graphType.getName());
+        chart.setLegendVisible(false);
         xAxis.setLabel("Time");
         xAxis.setAutoRanging(false);
         yAxis.setAutoRanging(false);

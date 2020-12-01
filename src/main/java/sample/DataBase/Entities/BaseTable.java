@@ -1,6 +1,7 @@
 package sample.DataBase.Entities;
 
 import sample.DataGetting.Values;
+import sample.InitialDataSetting.Graph.GraphType;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -31,6 +32,19 @@ public abstract class BaseTable {
         this.distance = values.getDistance();
         this.stressThickness = values.getStressThickness();
         this.curvature = values.getCurvature();
+    }
+
+    public double getMeasuredValue (GraphType graphType) {
+        switch (graphType){
+            case StressThickness:
+                return getStressThickness();
+            case Curvature:
+                return getCurvature();
+            case Distance:
+                return getDistance();
+            default:
+                return 0;
+        }
     }
 
     public long getTimestamp() {

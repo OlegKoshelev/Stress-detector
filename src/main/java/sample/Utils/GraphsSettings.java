@@ -19,16 +19,9 @@ public class GraphsSettings {
         yAxis.setLabel("Stress*Thickness(GPa*um)");
         xAxis.setLabel("Time");
         chart.setLegendVisible(false);
-   //     Date date = new Date();
         xAxis.setAutoRanging(true);
         yAxis.setAutoRanging(true);
-     //   xAxis.setLowerBound(date.getTime());
-    //    xAxis.setUpperBound(date.getTime() + 400000);
-   //     xAxis.setTickUnit(100000);
         xAxis.setTickLabelsVisible(true);
-   //     yAxis.setLowerBound(0);
-   //     yAxis.setUpperBound(150);
-    //    yAxis.setTickUnit(25);
         yAxis.setAutoRanging(false);
         xAxis.setAutoRanging(false);
         xAxis.setAnimated(true);

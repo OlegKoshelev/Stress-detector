@@ -1,5 +1,8 @@
 package sample.Controllers;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import sample.DataGetting.CvUtils;
 import sample.DataSaving.SettingsSaving.*;
 import sample.InitialDataSetting.Camera.CountCameras;
@@ -125,8 +128,8 @@ public class SettingsController implements Initializable {
     public void okAction() throws IOException {
         Stage stage = (Stage) ok.getScene().getWindow();
         shutdown();
-        stage.close();
         SettingsTransfer.writeToSettingsFile(settingsData);
+        stage.close();
     }
 
 
@@ -299,7 +302,7 @@ public class SettingsController implements Initializable {
                     if (nextMat == null) continue;
                     Image image = null;
                     if (hsvView){
-                        Platform.runLater(() -> countors.setText("" + CvUtils.getContours(nextMat)));
+                        Platform.runLater(() -> countors.setText("" + CvUtils.getContours(nextMat))   );
                         image = ImageUtils.getHsvImage(nextMat, cameraCustomizations);
                     }
 

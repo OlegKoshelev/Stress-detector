@@ -165,7 +165,7 @@ public class SettingsController implements Initializable {
 
     private void initializeNumberTextField(TextField field) {
         setText(field);
-        field.textProperty().addListener(new ChangeListener<String>() {
+        field.textProperty().addListener(  new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                                 String newValue) {

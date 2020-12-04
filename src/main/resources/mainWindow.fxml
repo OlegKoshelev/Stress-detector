@@ -47,7 +47,8 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Settings">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#showSettings" text="CCD, substrate &amp; graph" />
+                  <MenuItem mnemonicParsing="false" onAction="#showSettings" text="Dynamic options" />
+                  <MenuItem mnemonicParsing="false" onAction="#showStaticSettings" text="Static options" />
                </items></Menu>
             </menus>
         </MenuBar>
@@ -91,7 +92,7 @@
                             <contextMenu>
                                 <ContextMenu>
                                     <items>
-                                        <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false"  text="Autoranging" onAction="#changeAutoRanging"/>
+                                        <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false" onAction="#changeAutoRanging" text="Autoranging" />
                                     </items>
                                 </ContextMenu>
                             </contextMenu>

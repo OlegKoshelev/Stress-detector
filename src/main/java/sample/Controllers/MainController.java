@@ -234,15 +234,27 @@ public class MainController implements Initializable {
         GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
     }
 
+    @FXML
+    public void showStaticSettings() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/StaticSettings.fxml"));
+        Parent root = loader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Static settings");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
+        primaryStage.show();
+
+    }
 
     @FXML
-    void showSettings() throws IOException {
+    public void showSettings() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
         SettingsController controller = loader.getController();
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Settings");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
         primaryStage.setOnHidden(event -> {
             GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
@@ -250,7 +262,7 @@ public class MainController implements Initializable {
         });
     }
 
-    public void graphRepaint (){
+    public void graphRepaint() {
         GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
     }
 
@@ -345,8 +357,8 @@ public class MainController implements Initializable {
             public void run() {
                 if (boundaryValues.getMinX() == 0) {
                     boundaryValues.setMinX(new Date().getTime());
-                    GraphUtils.setAxisSettings(xAxis,boundaryValues.getMinX(),boundaryValues.getMaxX());
-                    GraphUtils.setAxisSettings(yAxis,boundaryValues.getMinY(),boundaryValues.getMaxY());
+                    GraphUtils.setAxisSettings(xAxis, boundaryValues.getMinX(), boundaryValues.getMaxX());
+                    GraphUtils.setAxisSettings(yAxis, boundaryValues.getMinY(), boundaryValues.getMaxY());
                 }
 
 
@@ -385,7 +397,7 @@ public class MainController implements Initializable {
                             regularTableValues.addValue(rtValue);
                             Number x = regularTableValue.getTimestamp().getTime();
                             Number y = regularTableValue.getMeasuredValue(SettingsData.getInstance().getType());
-                            GraphUtils.changeBoundaries(regularTableValue.getTimestamp().getTime(),regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()),xAxis,yAxis,boundaryValues,autoRangingFlag);
+                            GraphUtils.changeBoundaries(regularTableValue.getTimestamp().getTime(), regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()), xAxis, yAxis, boundaryValues, autoRangingFlag);
                             graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(), regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()));
                             System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
                             Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
@@ -462,7 +474,7 @@ public class MainController implements Initializable {
         RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
         List<BaseTable> data = regularTableHelper.getTable();
         GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
-       // GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
+        // GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
         chart.getData().clear();
         chart.getData().add(series);
         ObservableList<XYChart.Data<Number, Number>> result = FXCollections.observableArrayList();
@@ -470,7 +482,7 @@ public class MainController implements Initializable {
                 data) {
             graphValuesFromRegularTable.addData(values.getTimestamp(), values.getMeasuredValue(SettingsData.getInstance().getType()));
         }
-        boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(),graphValuesFromRegularTable.getMinY(),graphValuesFromRegularTable.getMaxX(),graphValuesFromRegularTable.getMaxY());
+        boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
       /*
         maxX = graphValuesFromRegularTable.getMaxX();
         minX = graphValuesFromRegularTable.getMinX();

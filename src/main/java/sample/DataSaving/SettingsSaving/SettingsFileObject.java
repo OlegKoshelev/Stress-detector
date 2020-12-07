@@ -22,6 +22,8 @@ public class SettingsFileObject {
     private GraphType type;
     private Color line;
     private Color grid;
+    private double distance;
+    private  int angle;
 
 
 
@@ -151,5 +153,21 @@ public class SettingsFileObject {
 
     public void setValueMax(int valueMax) {
         this.valueMax = valueMax;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public int getAngle() {
+        return angle;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
     }
 }

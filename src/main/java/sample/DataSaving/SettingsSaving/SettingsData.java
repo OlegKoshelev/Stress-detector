@@ -24,6 +24,8 @@ public class SettingsData {
     private GraphType type = GraphType.StressThickness;
     private Color line = Color.GREEN;
     private Color grid = Color.BLACK;
+    private double distance = 0.5;
+    private int angle = 70;
 
     private SettingsData() {
     }
@@ -161,5 +163,21 @@ public class SettingsData {
 
     public void setValueMax(int valueMax) {
         this.valueMax = valueMax;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public int getAngle() {
+        return angle;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
     }
 }

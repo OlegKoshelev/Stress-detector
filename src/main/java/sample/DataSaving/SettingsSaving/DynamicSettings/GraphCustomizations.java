@@ -1,4 +1,4 @@
-package sample.DataSaving.SettingsSaving;
+package sample.DataSaving.SettingsSaving.DynamicSettings;
 
 import sample.InitialDataSetting.Graph.GraphType;
 import javafx.scene.paint.Color;

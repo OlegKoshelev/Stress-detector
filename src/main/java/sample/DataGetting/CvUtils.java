@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import sample.DataSaving.SettingsSaving.CameraCustomizations;
+import sample.DataSaving.SettingsSaving.DynamicSettings.CameraCustomizations;
 import sample.Utils.ImageUtils;
 
 import javax.imageio.ImageIO;

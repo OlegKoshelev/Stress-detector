@@ -2,7 +2,6 @@ package sample.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.chart.Chart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TextField;
@@ -227,7 +226,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            SettingsTransfer.readFromSettingsFile(SettingsData.getInstance());
+            SettingsTransfer.getFullSettingsFromFile();
         } catch (IOException e) {
             e.printStackTrace();
         }

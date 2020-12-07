@@ -1,10 +1,10 @@
 package sample.Controllers;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import sample.DataGetting.CvUtils;
 import sample.DataSaving.SettingsSaving.*;
+import sample.DataSaving.SettingsSaving.DynamicSettings.CameraCustomizations;
+import sample.DataSaving.SettingsSaving.DynamicSettings.GraphCustomizations;
+import sample.DataSaving.SettingsSaving.DynamicSettings.SubstrateCustomizations;
 import sample.InitialDataSetting.Camera.CountCameras;
 import sample.InitialDataSetting.Camera.Resolution;
 import sample.InitialDataSetting.Graph.GraphType;
@@ -121,14 +121,14 @@ public class SettingsController implements Initializable {
 
     @FXML
     public void applyAction() {
-        SettingsTransfer.transferFromCustomizationsToSettings(settingsData,cameraCustomizations,substrateCustomizations,graphCustomizations);
+        SettingsTransfer.transferFromDynamicOptionsToFullSettings();
     }
 
     @FXML
     public void okAction() throws IOException {
         Stage stage = (Stage) ok.getScene().getWindow();
         shutdown();
-        SettingsTransfer.writeToSettingsFile(settingsData);
+        SettingsTransfer.writeToSettingsFile();
         stage.close();
     }
 
@@ -136,7 +136,7 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SettingsTransfer.transferFromSettingsToCustomizations(settingsData,cameraCustomizations,substrateCustomizations,graphCustomizations);
+        SettingsTransfer.transferFromFullSettingsToDynamicOptions();
 
         hsvFields = new TextField[]{hueMin, saturationMin, valueMin, hueMax, saturationMax, valueMax,
                 fps, additionalBiaxialModule, thickness, rotationTime};

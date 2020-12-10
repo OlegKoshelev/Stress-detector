@@ -13,9 +13,12 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
 <VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.MainController">
@@ -76,29 +79,84 @@
                         <TextFlow layoutY="259.0" prefHeight="467.0" prefWidth="344.0" />
                     </children>
                 </Pane>
-            <StackPane fx:id="stackPane">
-               <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                            <graphic>
-                                <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="808.0" prefWidth="816.0">
-                                    <xAxis>
-                                        <NumberAxis onMouseClicked="#doubleMouseClick" side="BOTTOM" fx:id="xAxis" />
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis fx:id="yAxis" onMouseClicked="#doubleMouseClick" side="LEFT" />
-                                    </yAxis>
-                                </LineChart>
-                            </graphic>
-                            <contextMenu>
-                                <ContextMenu>
-                                    <items>
-                                        <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false" onAction="#changeAutoRanging" text="Autoranging" />
-                                    </items>
-                                </ContextMenu>
-                            </contextMenu>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <StackPane fx:id="stackPane" BorderPane.alignment="CENTER">
+                     <children>
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                                  <graphic>
+                                      <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="808.0" prefWidth="816.0">
+                                          <xAxis>
+                                              <NumberAxis onMouseClicked="#doubleMouseClick" side="BOTTOM" fx:id="xAxis" />
+                                          </xAxis>
+                                          <yAxis>
+                                              <NumberAxis fx:id="yAxis" onMouseClicked="#doubleMouseClick" side="LEFT" />
+                                          </yAxis>
+                                      </LineChart>
+                                  </graphic>
+                                  <contextMenu>
+                                      <ContextMenu>
+                                          <items>
+                                              <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false" onAction="#changeAutoRanging" text="Autoranging" />
+                                          </items>
+                                      </ContextMenu>
+                                  </contextMenu>
+                              </Button>
+                     </children>
+                  </StackPane>
+               </center>
+               <bottom>
+                  <HBox alignment="TOP_CENTER" spacing="5.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" text="⬜">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
                         </Button>
-               </children>
-            </StackPane>
+                        <Button mnemonicParsing="false" text="↔" textAlignment="CENTER">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" text="⭾ ">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="↕">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" text="⭿">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" text="🔍-">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </bottom>
+            </BorderPane>
             </items>
         </SplitPane>
     </children>

@@ -58,7 +58,11 @@ public class GraphValuesFromTable {
         Collections.sort(data, new Comparator<XYChart.Data<Number, Number>>() {
             @Override
             public int compare(XYChart.Data<Number, Number> o1, XYChart.Data<Number, Number> o2) {
-                return(int) (o1.getXValue().longValue() - o2.getXValue().longValue());
+                if ((o1.getXValue().longValue() - o2.getXValue().longValue()) < 0)
+                    return -1;
+                if ((o1.getXValue().longValue() - o2.getXValue().longValue()) > 0)
+                    return 1;
+                return 0;
             }
         });
     }
@@ -67,7 +71,11 @@ public class GraphValuesFromTable {
         Collections.sort(data, new Comparator<XYChart.Data<Number, Number>>() {
             @Override
             public int compare(XYChart.Data<Number, Number> o1, XYChart.Data<Number, Number> o2) {
-                return(int) ((o1.getYValue().doubleValue() - o2.getYValue().doubleValue())*100000000);
+                if ((o1.getYValue().doubleValue() - o2.getYValue().doubleValue()) < 0)
+                    return -1;
+                if ((o1.getYValue().doubleValue() - o2.getYValue().doubleValue()) > 0)
+                    return 1;
+                return 0;
             }
         });
     }

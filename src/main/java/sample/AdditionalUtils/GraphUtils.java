@@ -106,7 +106,7 @@ public class GraphUtils {
     public static  void changeBoundaries (long xValue, double yValue, NumberAxis xAxis, NumberAxis yAxis, BoundaryValues boundaryValues, boolean autoRangingIsSelected ){
         if (autoRangingIsSelected) {
             double deltaX  =  (boundaryValues.getMaxX() - boundaryValues.getMinX()) * 0.4;
-            double deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
+
             if (xValue > (boundaryValues.getMaxX() + deltaX/2)) {
                 boundaryValues.setMaxX(xValue);
                 deltaX  =  (boundaryValues.getMaxX() - boundaryValues.getMinX()) * 0.4;
@@ -114,17 +114,15 @@ public class GraphUtils {
             }
 
             if (yValue > boundaryValues.getMaxY()) {
-
                 boundaryValues.setMaxY(yValue);
-                deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
+                double deltaY =   Math.abs(boundaryValues.getMaxY() - boundaryValues.getMinY());
                 setAxisSettings(yAxis,(boundaryValues.getMinY() - deltaY),(boundaryValues.getMaxY() + deltaY));
             }
 
             if (yValue < boundaryValues.getMinY()) {
                 boundaryValues.setMinY(yValue);
-                deltaY =  (Math.abs(boundaryValues.getMaxY()) - Math.abs(boundaryValues.getMinY()));
+                double deltaY =    Math.abs(boundaryValues.getMaxY() - boundaryValues.getMinY());
                 setAxisSettings(yAxis,(boundaryValues.getMinY() - deltaY),(boundaryValues.getMaxY() + deltaY));
-
             }
         }
     }
@@ -142,7 +140,7 @@ public class GraphUtils {
     public static   void setAxisSettings (NumberAxis axis, double minValue, double maxValue){
         axis.setLowerBound(minValue);
         axis.setUpperBound(maxValue);
-        axis.setTickUnit( (maxValue - minValue) / 5);
+        axis.setTickUnit((Math.abs(maxValue - minValue)) / 5);
         axis.setAutoRanging(false);
         axis.setAnimated(true);
     }
@@ -150,9 +148,7 @@ public class GraphUtils {
 
     public static void setBoundaries(NumberAxis xAxis, NumberAxis yAxis, long minX, long maxX, double minY, double maxY){
         double deltaX  =  (maxX - minX) * 0.4;
-        double deltaY =  (Math.abs(maxY) - Math.abs(minY)) *0.8;
-        System.out.println(deltaX);
-        System.out.println(deltaY);
+        double deltaY = Math.abs(maxY - minY) * 0.8;
         maxX = (long) (maxX + deltaX);
         minY =  minY - deltaY;
         maxY =  maxY + deltaY;

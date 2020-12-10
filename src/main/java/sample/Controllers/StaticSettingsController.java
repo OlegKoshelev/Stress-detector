@@ -32,8 +32,9 @@ public class StaticSettingsController implements Initializable {
     }
 
     @FXML
-    public void applyAction() {
+    public void applyAction() throws IOException {
         SettingsTransfer.transferFromStaticOptionsToFullSettings();
+        SettingsTransfer.writeToSettingsFile();
     }
 
     @FXML
@@ -43,8 +44,4 @@ public class StaticSettingsController implements Initializable {
         SettingsTransfer.writeToSettingsFile();
         stage.close();
     }
-
-
-
-
 }

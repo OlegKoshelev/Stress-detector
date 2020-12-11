@@ -97,6 +97,7 @@
                                   <contextMenu>
                                       <ContextMenu>
                                           <items>
+                                    <MenuItem mnemonicParsing="false" text="Work window" onAction="#showWorkWindow"/>
                                               <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false" onAction="#changeAutoRanging" text="Autoranging" />
                                           </items>
                                       </ContextMenu>

@@ -11,6 +11,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import sample.AdditionalUtils.GraphUtils;
 import sample.AdditionalUtils.MainControllerUtils;
 import sample.DataBase.*;
@@ -234,6 +235,18 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    public void showWorkWindow() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/WorkWindow.fxml"));
+        Parent root = loader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Work window");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.initModality(Modality.APPLICATION_MODAL);
+        primaryStage.show();
+
+    }
+
+    @FXML
     public void showStaticSettings() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/StaticSettings.fxml"));
         Parent root = loader.load();
@@ -241,8 +254,8 @@ public class MainController implements Initializable {
         primaryStage.setTitle("Static settings");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
+        primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
-
     }
 
     @FXML
@@ -254,6 +267,7 @@ public class MainController implements Initializable {
         primaryStage.setTitle("Settings");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
+        primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
         primaryStage.setOnHidden(event -> {
             GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);

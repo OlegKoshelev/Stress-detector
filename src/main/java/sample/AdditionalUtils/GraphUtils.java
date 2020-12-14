@@ -215,4 +215,64 @@ public class GraphUtils {
         });
     }
 
+
+
+    public static void InitialGraph(GraphType graphType,LineChart<Number, Number> chart) {
+        NumberAxis xAxis = (NumberAxis) chart.getXAxis();
+        NumberAxis yAxis = (NumberAxis) chart.getYAxis();
+
+        yAxis.setLabel(graphType.getName());
+        chart.setLegendVisible(false);
+        xAxis.setLabel("Time");
+        xAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
+        chart.setCreateSymbols(false);
+        Date date = new Date();
+        xAxis.setLowerBound(date.getTime());
+        xAxis.setUpperBound(date.getTime() + 40000000);
+        xAxis.setTickUnit(10000000);
+        xAxis.setTickLabelsVisible(true);
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(150);
+        yAxis.setTickUnit(30);
+        xAxis.setAnimated(true);
+        yAxis.setAnimated(true);
+
+        xAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                Date date = new Date(object.longValue());
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                return dateFormat.format(date);
+            }
+
+            @Override
+            public Number fromString(String string) {
+                Date todayDate = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                Number result = null;
+                try {
+                    Date date = formatter.parse(string);
+                    result = date.getTime();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return result;
+            }
+        });
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                double number = object.floatValue();
+
+                return String.format("%.1e %n", number);
+            }
+
+            @Override
+            public Number fromString(String string) {
+                return Double.valueOf(string);
+            }
+        });
+    }
+
 }

@@ -1,5 +1,6 @@
 package sample.AdditionalUtils;
 
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -10,7 +11,8 @@ import sample.WorkWindowSettings.WorkWindowSettings;
 
 public class WorkWindowControllerUtils {
 
-    public static void setGraphTypesMenuButton(MenuButton graphTypes, Label thicknessLabel, Label stressLabel, TextField thicknessTextField) {
+    public static void setGraphTypesMenuButton(MenuButton graphTypes, Label thicknessLabel, Label stressLabel, TextField thicknessTextField,
+                                               LineChart lineChart, WorkWindowSettings workWindowSettings) {
         for (GraphType type : GraphType.values()) {
             MenuItem item = new MenuItem();
             item.setText(type.getName());
@@ -18,27 +20,28 @@ public class WorkWindowControllerUtils {
             item.setOnAction(event -> {
                 graphTypes.setText(type.getName());
                 setFieldsActivity(type, thicknessLabel, stressLabel, thicknessTextField);
-                plotGraph();
+                workWindowSettings.setGraphType(type);
+                plotGraph(lineChart,workWindowSettings);
             });
         }
     }
 
-    public static void setTableTypesMenuButton(MenuButton tableTypes) {
+    public static void setTableTypesMenuButton(MenuButton tableTypes, LineChart lineChart, WorkWindowSettings workWindowSettings) {
         for (TableType type : TableType.values()) {
             MenuItem item = new MenuItem();
             item.setText(type.getName());
             tableTypes.getItems().add(item);
             item.setOnAction(event -> {
                 tableTypes.setText(type.getName());
-                plotGraph();
+                workWindowSettings.setTableType(type);
+                plotGraph(lineChart,workWindowSettings);
             });
         }
     }
 
-    public static void plotGraph() {
-        if (WorkWindowSettings.getInstance().getTableType() == null || WorkWindowSettings.getInstance().getGraphType() == null) {
-        } else {
-
+    public static void plotGraph( LineChart lineChart, WorkWindowSettings workWindowSettings) {
+        if (workWindowSettings.getTableType() != null && workWindowSettings.getGraphType() != null) {
+            GraphUtils.InitialGraph(workWindowSettings.getGraphType(),lineChart);
         }
     }
 

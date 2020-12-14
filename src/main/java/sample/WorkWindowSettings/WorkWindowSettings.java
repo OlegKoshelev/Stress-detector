@@ -4,19 +4,10 @@ import sample.DataBase.Entities.TableType;
 import sample.InitialDataSetting.Graph.GraphType;
 
 public class WorkWindowSettings {
-    private static WorkWindowSettings instance;
-    private GraphType graphType = null;
-    private TableType tableType = null;
+    private GraphType graphType;
+    private TableType tableType;
 
-    private WorkWindowSettings() {
-    }
 
-    public static WorkWindowSettings getInstance() {
-        if (instance == null) {
-            instance = new WorkWindowSettings();
-        }
-        return instance;
-    }
 
     public GraphType getGraphType() {
         return graphType;

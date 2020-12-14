@@ -30,13 +30,13 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Label>
-            <MenuButton mnemonicParsing="false" text="Table" fx:id="tableTypes" />
+            <MenuButton fx:id="tableTypes" mnemonicParsing="false" text="Table" />
             <CheckBox mnemonicParsing="false" text="Set area boundaries">
                <VBox.margin>
                   <Insets top="20.0" />
                </VBox.margin>
             </CheckBox>
-            <Label text="Enter thickness (um)" fx:id="thicknessLabel">
+            <Label fx:id="thicknessLabel" text="Enter thickness (um)">
                <VBox.margin>
                   <Insets top="20.0" />
                </VBox.margin>
@@ -46,7 +46,7 @@
                   <Insets />
                </VBox.margin>
             </TextField>
-            <Label text="Stress = value (GPa)" fx:id="stressLabel">
+            <Label fx:id="stressLabel" text="Stress = value (GPa)">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -64,7 +64,7 @@
                <children>
                   <Button mnemonicParsing="false" text="⬜">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Georgia" size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets right="30.0" />
@@ -72,12 +72,12 @@
                   </Button>
                   <Button mnemonicParsing="false" text="↔" textAlignment="CENTER">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Georgia" size="18.0" />
                      </font>
                   </Button>
                   <Button mnemonicParsing="false" text="⭾ ">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Georgia" size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets right="30.0" />
@@ -85,12 +85,12 @@
                   </Button>
                   <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="↕">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Georgia" size="18.0" />
                      </font>
                   </Button>
                   <Button mnemonicParsing="false" text="⭿">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Georgia" size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets right="30.0" />
@@ -98,7 +98,7 @@
                   </Button>
                   <Button mnemonicParsing="false" text="🔍-">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Georgia" size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets right="30.0" />
@@ -115,12 +115,12 @@
                <children>
                   <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                      <graphic>
-                        <LineChart>
+                        <LineChart fx:id="lineChart">
                           <xAxis>
-                            <CategoryAxis side="BOTTOM" />
+                            <NumberAxis side="BOTTOM" fx:id="xAxis"/>
                           </xAxis>
                           <yAxis>
-                            <NumberAxis side="LEFT" />
+                            <NumberAxis side="LEFT" fx:id="yAxis"/>
                           </yAxis>
                         </LineChart>
                      </graphic>

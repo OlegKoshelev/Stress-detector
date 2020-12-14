@@ -57,8 +57,20 @@
         </MenuBar>
         <ToolBar nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
             <items>
-                <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
-                <Button fx:id="run" mnemonicParsing="false" onAction="#print" text="Run" />
+                <Button graphicTextGap="0.0" mnemonicParsing="false" onAction="#stop" text="⏹">
+               <font>
+                  <Font name="Yu Gothic Regular" size="22.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Button>
+                <Button fx:id="run" graphicTextGap="0.0" mnemonicParsing="false" onAction="#print" text="▶">
+               <font>
+                  <Font name="Yu Gothic Regular" size="22.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Button>
             </items>
             <VBox.margin>
                 <Insets />
@@ -97,7 +109,7 @@
                                   <contextMenu>
                                       <ContextMenu>
                                           <items>
-                                    <MenuItem mnemonicParsing="false" text="Work window" onAction="#showWorkWindow"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#showWorkWindow" text="Work window" />
                                               <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false" onAction="#changeAutoRanging" text="Autoranging" />
                                           </items>
                                       </ContextMenu>
@@ -111,7 +123,7 @@
                      <children>
                         <Button mnemonicParsing="false" text="⬜">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Georgia" size="18.0" />
                            </font>
                            <HBox.margin>
                               <Insets right="30.0" />
@@ -119,12 +131,12 @@
                         </Button>
                         <Button mnemonicParsing="false" text="↔" textAlignment="CENTER">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Georgia" size="18.0" />
                            </font>
                         </Button>
                         <Button mnemonicParsing="false" text="⭾ ">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Georgia" size="18.0" />
                            </font>
                            <HBox.margin>
                               <Insets right="30.0" />
@@ -132,12 +144,12 @@
                         </Button>
                         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="↕">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Georgia" size="18.0" />
                            </font>
                         </Button>
                         <Button mnemonicParsing="false" text="⭿">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Georgia" size="18.0" />
                            </font>
                            <HBox.margin>
                               <Insets right="30.0" />
@@ -145,7 +157,7 @@
                         </Button>
                         <Button mnemonicParsing="false" text="🔍-">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="Georgia" size="18.0" />
                            </font>
                            <HBox.margin>
                               <Insets right="30.0" />

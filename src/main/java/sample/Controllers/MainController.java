@@ -236,6 +236,10 @@ public class MainController implements Initializable {
 
     @FXML
     public void showWorkWindow() throws IOException {
+        if (SettingsData.getInstance().getPathToDB() == null) {
+            showCheckingDBWindow();
+            return;
+        }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/WorkWindow.fxml"));
         Parent root = loader.load();
         Stage primaryStage = new Stage();
@@ -279,16 +283,21 @@ public class MainController implements Initializable {
         GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
     }
 
+    public void showCheckingDBWindow () throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
+        Parent root = loader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Checking DB");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.initModality(Modality.APPLICATION_MODAL);
+        primaryStage.show();
+    }
+
     @FXML
     public void print() throws Exception {
 
-        if (hibernateUtil == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
-            Parent root = loader.load();
-            Stage primaryStage = new Stage();
-            primaryStage.setTitle("Checking DB");
-            primaryStage.setScene(new Scene(root));
-            primaryStage.show();
+        if (SettingsData.getInstance().getPathToDB() == null) {
+            showCheckingDBWindow();
             return;
         }
         if (thread == null) {
@@ -482,8 +491,9 @@ public class MainController implements Initializable {
         File file = fileChooser.showOpenDialog(null);
         if (file == null)
             return;
+        SettingsData.getInstance().setPathToDB(file.getAbsolutePath());
         chart.getData().clear();
-        hibernateUtil = new HibernateUtilForOpening(file.getAbsolutePath());
+        hibernateUtil = new HibernateUtilForOpening(SettingsData.getInstance().getPathToDB());
         RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
         List<BaseTable> data = regularTableHelper.getTable();
         GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);

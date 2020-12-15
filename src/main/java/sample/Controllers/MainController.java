@@ -236,7 +236,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void showWorkWindow() throws IOException {
-        if (SettingsData.getInstance().getPathToDB() == null) {
+        if (hibernateUtil == null) {
             showCheckingDBWindow();
             return;
         }
@@ -295,8 +295,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void print() throws Exception {
-
-        if (SettingsData.getInstance().getPathToDB() == null) {
+        if (hibernateUtil == null) {
             showCheckingDBWindow();
             return;
         }

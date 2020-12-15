@@ -40,7 +40,7 @@ public class CalculatorStressAndCurvature implements Runnable {
                 queueD.put(distance);
                 Distance D = queueD.take();
                 Date timestamp = D.getTimestamp();
-                double curvature = CvUtils.curvature(1.22173, 0.5, D.getDistance(), D0);
+                double curvature = CvUtils.curvature( D.getDistance(), D0);
                 double stressThickness = CvUtils.stressThickness(602, 0.00043, curvature);
                 Image image = ImageUtils.getHsvImage(D.getImg(),settingsData);
                 values.put(new Values(stressThickness, curvature, timestamp,D.getDistance(),image));

@@ -39,7 +39,7 @@ public class GraphUtils {
             if ((y > axis.getTickMarks().get(0).getPosition() - 15)) { // min Y
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.BOTTOM_LEFT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 60, 5));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 50, 5));
                 textField.setText(axis.getLowerBound() + "");
                 return AxisBoundaries.MinY;
             }
@@ -48,14 +48,14 @@ public class GraphUtils {
             if ((x > axis.getTickMarks().get(axis.getTickMarks().size() - 1).getPosition() - 25)) {// max X
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.BOTTOM_RIGHT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 1, 30, 0));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 2, 24, 0));
                 textField.setText(dateToString(new Date((long) axis.getUpperBound())));
                 return AxisBoundaries.MaxX;
             }
             if ((x < axis.getTickMarks().get(0).getPosition() + 25)) { // min X
                 stP.getChildren().add(textField);
                 StackPane.setAlignment(stP.getChildren().get(1), Pos.BOTTOM_LEFT);
-                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 30, 85));
+                StackPane.setMargin(stP.getChildren().get(1), new Insets(0, 0, 24, 75));
                 textField.setText(dateToString(new Date((long) axis.getLowerBound())));
                 return AxisBoundaries.MinX;
             }

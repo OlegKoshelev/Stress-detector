@@ -5,6 +5,7 @@ import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import sample.DataSaving.SettingsSaving.DynamicSettings.CameraCustomizations;
+import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.Utils.ImageUtils;
 
 import javax.imageio.ImageIO;
@@ -62,8 +63,8 @@ public class CvUtils {
         return image;
     }
 
-    public static double curvature(double angle, double length, double D, double D0) {
-        return (Math.cos(angle) / (2 * length)) * (1 - (D / D0));
+    public static double curvature(double D, double D0) {
+        return (Math.cos(Math.toRadians(SettingsData.getInstance().getAngle())) / (2 * SettingsData.getInstance().getDistance())) * (1 - (D / D0));
     }
 
     public static double stressThickness(int biaxialModulus, double substrateThickness, double curvature) {

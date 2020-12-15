@@ -477,6 +477,7 @@ public class MainController implements Initializable {
             System.out.println(file.getAbsolutePath());
             hibernateUtil = new HibernateUtilForSaving(file.getAbsolutePath());
             chart.getData().clear();
+            SettingsData.getInstance().setPathToDB(file.getAbsolutePath());
         }
 
     }

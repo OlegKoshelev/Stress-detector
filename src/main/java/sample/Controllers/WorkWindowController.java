@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import sample.AdditionalUtils.WorkWindowControllerUtils;
+import sample.DataBase.HibernateUtil;
 import sample.WorkWindowSettings.WorkWindowSettings;
 
 
@@ -28,6 +29,8 @@ public class WorkWindowController implements Initializable {
     private LineChart lineChart;
 
     private WorkWindowSettings workWindowSettings = new WorkWindowSettings();
+
+
 
 
 

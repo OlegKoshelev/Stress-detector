@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -188,7 +190,8 @@ public class TableHelper {
     private String listToString(List<BaseTable> list) {
         StringBuilder stringBuilder = new StringBuilder();
         for (BaseTable bt : list) {
-            stringBuilder.append(new Date(bt.getTimestamp())).append("   ").
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SS");
+            stringBuilder.append(dateFormat.format(new Date(bt.getTimestamp()))).append("   ").
                     append(bt.getStressThickness()).append("   ").
                     append(bt.getCurvature()).append("   ").
                     append(bt.getDistance()).append("\r\n");

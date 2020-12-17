@@ -5,7 +5,6 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 import sample.DataSaving.SettingsSaving.SettingsData;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
@@ -28,6 +27,7 @@ public class CameraReader implements Runnable {
         if (!camera.isOpened()) throw new Exception("Не удалось подключить камеру.");
 
         // Задаем размеры кадра
+
         camera.set(Videoio.CAP_PROP_FRAME_WIDTH, settingsData.getResolution().getWidth());
         camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, settingsData.getResolution().getHeight());
         System.out.println(settingsData.getResolution().getWidth());

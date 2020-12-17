@@ -8,7 +8,7 @@ import sample.DataSaving.SettingsSaving.SettingsData;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
-public class CalculatorStressAndCurvature implements Runnable {
+public class CalculateStressAndCurvature implements Runnable {
     private BlockingQueue<Spots> queueIn;
     private BlockingQueue<Distance> queueD;
     private BlockingQueue<Values> values;
@@ -17,7 +17,7 @@ public class CalculatorStressAndCurvature implements Runnable {
 
 
 
-    public CalculatorStressAndCurvature(BlockingQueue<Spots> queueIn, BlockingQueue<Distance> queueD, double D0, BlockingQueue<Values> values) {
+    public CalculateStressAndCurvature(BlockingQueue<Spots> queueIn, BlockingQueue<Distance> queueD, double D0, BlockingQueue<Values> values) {
         this.queueIn = queueIn;
         this.queueD = queueD;
         this.D0 = D0;

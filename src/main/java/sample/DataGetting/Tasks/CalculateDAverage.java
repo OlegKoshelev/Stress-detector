@@ -5,7 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
-public class CalculatorDAverage implements Runnable{
+public class CalculateDAverage implements Runnable{
     private BlockingQueue<Spots> queueIn;
     private BlockingQueue<Distance> queueD;
     private CopyOnWriteArrayList<Distance> averageD;
@@ -13,7 +13,7 @@ public class CalculatorDAverage implements Runnable{
     private boolean stop = false;
 
 
-    public CalculatorDAverage(BlockingQueue<Spots> queueIn, BlockingQueue<Distance> queueD, CopyOnWriteArrayList<Distance> averageD, CountDownLatch countDownLatch) {
+    public CalculateDAverage(BlockingQueue<Spots> queueIn, BlockingQueue<Distance> queueD, CopyOnWriteArrayList<Distance> averageD, CountDownLatch countDownLatch) {
         this.queueIn = queueIn;
         this.queueD = queueD;
         this.averageD = averageD;

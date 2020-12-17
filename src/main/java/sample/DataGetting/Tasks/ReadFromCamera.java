@@ -1,14 +1,15 @@
-package sample.DataGetting;
+package sample.DataGetting.Tasks;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
+import sample.DataGetting.Spots;
 import sample.DataSaving.SettingsSaving.SettingsData;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
-public class CameraReader implements Runnable {
+public class ReadFromCamera implements Runnable {
     private SettingsData settingsData = SettingsData.getInstance();
     static {
         nu.pattern.OpenCV.loadShared();
@@ -19,7 +20,7 @@ public class CameraReader implements Runnable {
     private boolean read;
     private VideoCapture camera;
 
-    public CameraReader(BlockingQueue<Spots> inputQueue) throws Exception {
+    public ReadFromCamera(BlockingQueue<Spots> inputQueue) throws Exception {
         this.inputQueue = inputQueue;
         read = true;
         // Подключаемся к камере

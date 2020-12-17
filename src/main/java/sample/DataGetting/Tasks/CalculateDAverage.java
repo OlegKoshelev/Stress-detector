@@ -1,4 +1,8 @@
-package sample.DataGetting;
+package sample.DataGetting.Tasks;
+
+import sample.DataGetting.CvUtils;
+import sample.DataGetting.Distance;
+import sample.DataGetting.Spots;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;

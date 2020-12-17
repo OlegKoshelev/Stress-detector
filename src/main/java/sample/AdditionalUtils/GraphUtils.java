@@ -178,6 +178,7 @@ public class GraphUtils {
         xAxis.setAnimated(true);
         yAxis.setAnimated(true);
 
+
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
@@ -237,6 +238,7 @@ public class GraphUtils {
         yAxis.setTickUnit(30);
         xAxis.setAnimated(true);
         yAxis.setAnimated(true);
+        chart.setAnimated(false);
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override

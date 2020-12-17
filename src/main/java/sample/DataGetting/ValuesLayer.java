@@ -1,11 +1,15 @@
 package sample.DataGetting;
 
 
+import sample.DataGetting.Tasks.CalculateDAverage;
+import sample.DataGetting.Tasks.CalculateStressAndCurvature;
+import sample.DataGetting.Tasks.ReadFromCamera;
+
 import java.util.concurrent.*;
 
 public class ValuesLayer implements ModelLayer {
 
-    private CameraReader cameraReader;
+    private ReadFromCamera cameraReader;
     private BlockingQueue<Spots> inputQueue;
     private BlockingQueue<Distance> calculatorDQueue;
     private CopyOnWriteArrayList<Distance> averageD;
@@ -22,7 +26,7 @@ public class ValuesLayer implements ModelLayer {
         inputQueue = new LinkedBlockingQueue<>();
         calculatorDQueue = new LinkedBlockingQueue<>();
         averageD = new CopyOnWriteArrayList<>();
-        this.cameraReader = new CameraReader(inputQueue);
+        this.cameraReader = new ReadFromCamera(inputQueue);
         this.values = new LinkedBlockingQueue<>();
         averageDCalculating = Executors.newFixedThreadPool(threadsCount);
         valuesCalculating = Executors.newFixedThreadPool(threadsCount);
@@ -34,14 +38,14 @@ public class ValuesLayer implements ModelLayer {
         if (d0 == 0) {
             CountDownLatch countDownLatchList = new CountDownLatch(threadsCount); // to wait until the list averageD is filled
             for (int i = 0; i < threadsCount; i++) {
-                averageDCalculating.submit(new CalculatorDAverage(inputQueue, calculatorDQueue, averageD, countDownLatchList));
+                averageDCalculating.submit(new CalculateDAverage(inputQueue, calculatorDQueue, averageD, countDownLatchList));
             }
             averageDCalculating.shutdown();
             countDownLatchList.await();
             d0 = calculateD0();
         }
         for (int i = 0; i < threadsCount; i++) {
-            valuesCalculating.submit(new CalculatorStressAndCurvature(inputQueue, calculatorDQueue, d0, values));
+            valuesCalculating.submit(new CalculateStressAndCurvature(inputQueue, calculatorDQueue, d0, values));
         }
         valuesCalculating.shutdown();
     }

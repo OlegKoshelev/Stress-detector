@@ -307,7 +307,7 @@ public class MainController implements Initializable {
             chart.setLegendVisible(false);
         }
 
-        modelLayer = new ValuesLayer(2, d0);
+        modelLayer = new ValuesLayer(3, d0);
         values = modelLayer.getValuesQueue();
         createThread();
         thread.start();

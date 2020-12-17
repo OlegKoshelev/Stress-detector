@@ -1,7 +1,11 @@
-package sample.DataGetting;
+package sample.DataGetting.Tasks;
 
 
 import javafx.scene.image.Image;
+import sample.DataGetting.CvUtils;
+import sample.DataGetting.Distance;
+import sample.DataGetting.Spots;
+import sample.DataGetting.Values;
 import sample.Utils.ImageUtils;
 import sample.DataSaving.SettingsSaving.SettingsData;
 

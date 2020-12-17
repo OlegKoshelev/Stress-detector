@@ -1,7 +1,5 @@
 package sample.AdditionalUtils;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -9,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import sample.DataBase.*;
 import sample.DataBase.Entities.BaseTable;
 import sample.DataBase.Entities.TableType;
@@ -19,7 +16,6 @@ import sample.InitialDataSetting.Graph.GraphType;
 import sample.Utils.GraphValuesFromTable;
 import sample.WorkWindowSettings.WorkWindowSettings;
 
-import java.io.File;
 import java.util.List;
 
 public class WorkWindowControllerUtils {
@@ -88,15 +84,8 @@ public class WorkWindowControllerUtils {
                 data) {
             graphValuesFromTable.addData(values.getTimestamp(), values.getMeasuredValue(workWindowSettings.getGraphType()));
         }
-        System.out.println( graphValuesFromTable.getData().size() + "SIZE");
 
         BoundaryValues boundaryValues = new BoundaryValues(graphValuesFromTable.getMinX(), graphValuesFromTable.getMinY(), graphValuesFromTable.getMaxX(), graphValuesFromTable.getMaxY());
-      /*
-        maxX = graphValuesFromRegularTable.getMaxX();
-        minX = graphValuesFromRegularTable.getMinX();
-        maxY = graphValuesFromRegularTable.getMaxY();
-        minY = graphValuesFromRegularTable.getMinY();
-       */
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.getData().addAll(graphValuesFromTable.clone());
         lineChart.getData().add(series);

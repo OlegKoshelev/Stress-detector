@@ -10,9 +10,9 @@ import java.util.concurrent.*;
 public class ValuesLayer implements ModelLayer {
 
     private ReadFromCamera cameraReader;
-    private BlockingQueue<Spots> inputQueue;
-    private BlockingQueue<Distance> calculatorDQueue;
-    private CopyOnWriteArrayList<Distance> averageD;
+    private BlockingQueue<Snapshot> inputQueue;
+    private BlockingQueue<Spot> calculatorDQueue;
+    private CopyOnWriteArrayList<Spot> averageD;
     private BlockingQueue<Values> values;
     private int threadsCount;
     private ExecutorService averageDCalculating;
@@ -60,7 +60,7 @@ public class ValuesLayer implements ModelLayer {
 
     public double calculateD0() {
         double result = 0;
-        for (Distance d : averageD) {
+        for (Spot d : averageD) {
             result += d.getDistance();
         }
         return result / averageD.size();

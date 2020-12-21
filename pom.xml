@@ -120,6 +120,11 @@
             <artifactId>hibernate-jpa-2.1-api</artifactId>
             <version>1.0.0.Final</version>
         </dependency>
+        <dependency>
+            <groupId>de.gsi.chart</groupId>
+            <artifactId>chartfx-chart</artifactId>
+            <version>8.1.5</version>
+        </dependency>
 
     </dependencies>
 

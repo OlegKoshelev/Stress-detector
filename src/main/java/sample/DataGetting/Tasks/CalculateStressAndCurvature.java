@@ -3,8 +3,8 @@ package sample.DataGetting.Tasks;
 
 import javafx.scene.image.Image;
 import sample.DataGetting.CvUtils;
-import sample.DataGetting.Distance;
-import sample.DataGetting.Spots;
+import sample.DataGetting.Spot;
+import sample.DataGetting.Snapshot;
 import sample.DataGetting.Values;
 import sample.Utils.ImageUtils;
 import sample.DataSaving.SettingsSaving.SettingsData;
@@ -13,15 +13,15 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
 public class CalculateStressAndCurvature implements Runnable {
-    private BlockingQueue<Spots> queueIn;
-    private BlockingQueue<Distance> queueD;
+    private BlockingQueue<Snapshot> queueIn;
+    private BlockingQueue<Spot> queueD;
     private BlockingQueue<Values> values;
     private double D0;
     private SettingsData settingsData = SettingsData.getInstance();
 
 
 
-    public CalculateStressAndCurvature(BlockingQueue<Spots> queueIn, BlockingQueue<Distance> queueD, double D0, BlockingQueue<Values> values) {
+    public CalculateStressAndCurvature(BlockingQueue<Snapshot> queueIn, BlockingQueue<Spot> queueD, double D0, BlockingQueue<Values> values) {
         this.queueIn = queueIn;
         this.queueD = queueD;
         this.D0 = D0;
@@ -31,7 +31,7 @@ public class CalculateStressAndCurvature implements Runnable {
     @Override
     public void run() {
         while (true) {
-            Spots spots = null;
+            Snapshot spots = null;
             try {
                 spots = queueIn.take();
                 System.out.println(spots + " пятна");
@@ -40,9 +40,9 @@ public class CalculateStressAndCurvature implements Runnable {
                 Double d = CvUtils.coordinates(spots.getImg());
                 if (d == null) continue;
 
-                Distance distance = new Distance(d, spots.getDate(),spots.getImg());
+                Spot distance = new Spot(d, spots.getDate(),spots.getImg());
                 queueD.put(distance);
-                Distance D = queueD.take();
+                Spot D = queueD.take();
                 Date timestamp = D.getTimestamp();
                 double curvature = CvUtils.curvature( D.getDistance(), D0);
                 double stressThickness = CvUtils.stressThickness(602, 0.00043, curvature);

@@ -19,7 +19,6 @@ public class MedianOfList {
     }
 
     public Values getMedianValueAndClear (){
-        System.out.println("size--- " + list.size());
         Collections.sort(list);
         int size = list.size();
         Values result = null;
@@ -39,12 +38,10 @@ public class MedianOfList {
             result = list.get((size-1)/2);
         }
         result.setTimestamp(list.get(0).getTimestamp()); // берем самую первую дату в выборке
-        System.out.println("Начало выборки");
         for (Values val:list) {
             System.out.println(val.getDistance());
         }
         list.clear();
-        System.out.println("медиана ------- " + result.getDistance());
         return  result;
     }
 

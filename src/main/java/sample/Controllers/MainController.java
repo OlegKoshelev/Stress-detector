@@ -1,5 +1,7 @@
 package sample.Controllers;
 
+import de.gsi.chart.axes.spi.DefaultNumericAxis;
+import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -15,16 +17,15 @@ import javafx.stage.Modality;
 import sample.AdditionalUtils.GraphUtils;
 import sample.AdditionalUtils.MainControllerUtils;
 import sample.DataBase.*;
-import sample.DataBase.Entities.AbbreviatedTable;
 import sample.DataBase.Entities.BaseTable;
-import sample.DataBase.Entities.RegularTable;
-import sample.DataBase.Entities.DetailedTable;
+import sample.DataGetting.Calculator;
+import sample.DataGetting.Tasks.addValuesToChart;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
+import sample.DataSet.Data;
 import sample.Graph.AxisBoundaries;
 import sample.Graph.BoundaryValues;
 import sample.Utils.*;
-import javafx.application.Platform;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,10 +33,8 @@ import javafx.fxml.Initializable;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -49,10 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 public class MainController implements Initializable {
@@ -69,11 +65,14 @@ public class MainController implements Initializable {
     private Stage settings;
     private BlockingQueue<Values> values;
     private ValuesLayer modelLayer;
-
+    private Calculator calculator;
     @FXML
     private ImageView imageView;
-    @FXML
-    private LineChart<Number, Number> chart;
+    // @FXML
+    //private LineChart<Number, Number> chart;
+    private de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis());
+    private DefaultErrorDataSet dataSet = new DefaultErrorDataSet("distance");
+    private Data data = new Data("distance");
     @FXML
     private NumberAxis xAxis;
     @FXML
@@ -231,7 +230,9 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
+        stackPane.getChildren().add(chart);
+        GraphUtils.initialGraph(chart, dataSet);
+        // GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart);
     }
 
     @FXML
@@ -274,16 +275,16 @@ public class MainController implements Initializable {
         primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
         primaryStage.setOnHidden(event -> {
-            GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
+            //  GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
             controller.shutdown();
         });
     }
 
     public void graphRepaint() {
-        GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
+        //    GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
     }
 
-    public void showCheckingDBWindow () throws IOException {
+    public void showCheckingDBWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
         Parent root = loader.load();
         Stage primaryStage = new Stage();
@@ -299,18 +300,12 @@ public class MainController implements Initializable {
             showCheckingDBWindow();
             return;
         }
-        if (thread == null) {
-            chart.getData().clear();
-            xAxis.setUpperBound(xAxis.getUpperBound() + 40000);
-            series = new XYChart.Series<>();
-            chart.getData().add(series);
-            chart.setLegendVisible(false);
-        }
 
-        modelLayer = new ValuesLayer(3, d0);
-        values = modelLayer.getValuesQueue();
-        createThread();
-        thread.start();
+
+        calculator = new Calculator(4, d0);
+        values = calculator.getValuesQueue();
+        calculator.getExecutorService().execute(new addValuesToChart(dataSet,values));
+
     }
 
     @FXML
@@ -376,6 +371,23 @@ public class MainController implements Initializable {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                while (true) {
+                    try {
+                        Values value = values.take();
+                        System.out.println("time ----- " + value.getTimestamp() + " ---- distance -----" + value.getDistance());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+  /*
+    private void createThread() {
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
                 if (boundaryValues.getMinX() == 0) {
                     boundaryValues.setMinX(new Date().getTime());
                     GraphUtils.setAxisSettings(xAxis, boundaryValues.getMinX(), boundaryValues.getMaxX());
@@ -394,6 +406,7 @@ public class MainController implements Initializable {
                 while (true) {
                     Values nextValue = null;
                     try {
+                       // if (values.size() == 0) continue;
                         nextValue = values.take();
                         if (nextValue == null) continue;
                         counter++;
@@ -451,6 +464,7 @@ public class MainController implements Initializable {
             }
         });
     }
+   */
 
     @FXML
     public void stop() {
@@ -459,8 +473,10 @@ public class MainController implements Initializable {
 
     public void shutdown() {
         if (thread != null) {
-            d0 = modelLayer.getD0();
-            modelLayer.stop();
+            // d0 = modelLayer.getD0();
+            //  modelLayer.stop();
+            d0 = calculator.getD0();
+            calculator.stop();
             thread.interrupt();
         }
     }
@@ -476,7 +492,7 @@ public class MainController implements Initializable {
             file.createNewFile();
             System.out.println(file.getAbsolutePath());
             hibernateUtil = new HibernateUtilForSaving(file.getAbsolutePath());
-            chart.getData().clear();
+            //   chart.getData().clear();
             SettingsData.getInstance().setPathToDB(file.getAbsolutePath());
         }
 
@@ -484,7 +500,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void openDB() {
-        chart.getData().clear();
+        //   chart.getData().clear();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Opening DB");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
@@ -492,14 +508,14 @@ public class MainController implements Initializable {
         if (file == null)
             return;
         SettingsData.getInstance().setPathToDB(file.getAbsolutePath());
-        chart.getData().clear();
+        //    chart.getData().clear();
         hibernateUtil = new HibernateUtilForOpening(SettingsData.getInstance().getPathToDB());
         RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
         List<BaseTable> data = regularTableHelper.getTable();
-        GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
+        //   GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
         // GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
-        chart.getData().clear();
-        chart.getData().add(series);
+        //     chart.getData().clear();
+        //    chart.getData().add(series);
         ObservableList<XYChart.Data<Number, Number>> result = FXCollections.observableArrayList();
         for (BaseTable values :
                 data) {

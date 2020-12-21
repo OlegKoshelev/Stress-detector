@@ -4,11 +4,11 @@ import org.opencv.core.Mat;
 
 import java.util.Date;
 
-public class Spots {
+public class Snapshot {
     private Mat img;
     private Date date;
 
-    public Spots(Mat img, Date date) {
+    public Snapshot(Mat img, Date date) {
         this.img = img;
         this.date = date;
     }

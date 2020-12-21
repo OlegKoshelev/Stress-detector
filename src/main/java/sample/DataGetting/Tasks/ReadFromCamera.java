@@ -3,7 +3,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
-import sample.DataGetting.Spots;
+import sample.DataGetting.Snapshot;
 import sample.DataSaving.SettingsSaving.SettingsData;
 
 import java.util.Date;
@@ -16,11 +16,11 @@ public class ReadFromCamera implements Runnable {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-    private BlockingQueue<Spots> inputQueue;
+    private BlockingQueue<Snapshot> inputQueue;
     private boolean read;
     private VideoCapture camera;
 
-    public ReadFromCamera(BlockingQueue<Spots> inputQueue) throws Exception {
+    public ReadFromCamera(BlockingQueue<Snapshot> inputQueue) throws Exception {
         this.inputQueue = inputQueue;
         read = true;
         // Подключаемся к камере
@@ -50,7 +50,7 @@ public class ReadFromCamera implements Runnable {
             while ( read ) {
                 if (camera.read(frame)) {
                     System.out.println(frame.empty());
-                    inputQueue.put(new Spots(frame, new Date()));
+                    inputQueue.put(new Snapshot(frame, new Date()));
                     System.out.println(inputQueue.size() + "размер очереди");
                     System.out.println("изображенеи захвачено" );
                     try {

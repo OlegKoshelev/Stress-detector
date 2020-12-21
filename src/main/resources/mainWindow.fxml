@@ -2,8 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.ContextMenu?>
@@ -96,16 +94,6 @@
                   <StackPane fx:id="stackPane" BorderPane.alignment="CENTER">
                      <children>
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                                  <graphic>
-                                      <LineChart fx:id="chart" accessibleRole="TAB_PANE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#singleMouseClickAndPushingEnter" prefHeight="808.0" prefWidth="816.0">
-                                          <xAxis>
-                                              <NumberAxis onMouseClicked="#doubleMouseClick" side="BOTTOM" fx:id="xAxis" />
-                                          </xAxis>
-                                          <yAxis>
-                                              <NumberAxis fx:id="yAxis" onMouseClicked="#doubleMouseClick" side="LEFT" />
-                                          </yAxis>
-                                      </LineChart>
-                                  </graphic>
                                   <contextMenu>
                                       <ContextMenu>
                                           <items>

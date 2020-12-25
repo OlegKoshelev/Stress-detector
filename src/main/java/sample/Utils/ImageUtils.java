@@ -31,6 +31,23 @@ public class ImageUtils {
         return img2;
     }
 
+    public static Mat matReform(Mat img) {
+        int hueMax = SettingsData.getInstance().getHueMax();
+        int hueMin = SettingsData.getInstance().getHueMin();
+        int saturationMax = SettingsData.getInstance().getSaturationMax();
+        int saturationMin = SettingsData.getInstance().getSaturationMin();
+        int valueMax = SettingsData.getInstance().getValueMax();
+        int valueMin = SettingsData.getInstance().getValueMin();
+        Mat hsv = new Mat();
+        Imgproc.cvtColor(img, hsv, Imgproc.COLOR_BGR2HSV);
+        Mat img2 = new Mat();
+
+        Core.inRange(hsv, new Scalar(hueMin, saturationMin, valueMin),
+                new Scalar(hueMax, saturationMax, valueMax), img2);
+
+        return img2;
+    }
+
     public static Image getPrimaryImage(Mat img) {
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".jpg", img, matOfByte);
@@ -46,28 +63,21 @@ public class ImageUtils {
         return new Image(new ByteArrayInputStream(byteArray));
     }
 
-    public static Image getHsvImage(Mat img, SettingsData settingsData) {
-        Mat img2 = matReform(img, settingsData);
+    public static Image getHsvImage(Mat img) {
+        Mat img2 = matReform(img);
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".jpg", img2, matOfByte);
+        byte[] byteArray = matOfByte.toArray();
+        return new Image(new ByteArrayInputStream(byteArray));
+    }
+    public static Image getImage(Mat img) {
+        Mat img2 = ImageUtils.matReform(img,CameraCustomizations.getInstance());
+        // Mat img2 = img;
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".jpg", img2, matOfByte);
         byte[] byteArray = matOfByte.toArray();
         return new Image(new ByteArrayInputStream(byteArray));
     }
 
-    private static Mat matReform(Mat img, SettingsData settingsData) {
-        int hueMax = settingsData.getHueMax();
-        int hueMin = settingsData.getHueMin();
-        int saturationMax = settingsData.getSaturationMax();
-        int saturationMin = settingsData.getSaturationMin();
-        int valueMax = settingsData.getValueMax();
-        int valueMin = settingsData.getValueMin();
-        Mat hsv = new Mat();
-        Imgproc.cvtColor(img, hsv, Imgproc.COLOR_BGR2HSV);
-        Mat img2 = new Mat();
 
-        Core.inRange(hsv, new Scalar(hueMin, saturationMin, valueMin),
-                new Scalar(hueMax, saturationMax, valueMax), img2);
-
-        return img2;
-    }
 }

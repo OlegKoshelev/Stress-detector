@@ -1,22 +1,39 @@
 package sample.DataGetting;
 
-import sample.DataGetting.Tasks.CalculateStartingDistance;
-import sample.DataGetting.Tasks.GetValues;
-import sample.DataGetting.Tasks.ReadFromCamera;
+import de.gsi.dataset.spi.DefaultErrorDataSet;
+import javafx.scene.image.ImageView;
+import sample.DataGetting.Tasks.*;
 
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Calculator {
+    private  DefaultErrorDataSet dataSet;
+    private ImageView imageView;
     private ExecutorService executorService;
     private BlockingQueue<Snapshot> snapshots;
     private BlockingQueue<Values> values;
+    private List<Values> bufferForAveraging;
+    private Lock dataSetLock;
+    private Lock bufferLock;
     private double d0;
 
 
-    public Calculator(int count, double d0) {
+
+    public Calculator(DefaultErrorDataSet dataSet, ImageView imageView,int poolSize, double d0) {
+        this.dataSet = dataSet;
+        this.imageView = imageView;
         snapshots = new LinkedBlockingQueue<>();
         values = new LinkedBlockingQueue<>();
-        this.executorService = Executors.newFixedThreadPool(count);
+        dataSetLock = new ReentrantLock();
+        bufferLock = new ReentrantLock();
+        bufferForAveraging = new ArrayList<>();
+        this.executorService = Executors.newFixedThreadPool(poolSize);
         this.d0 = d0;
     }
 
@@ -26,11 +43,15 @@ public class Calculator {
             Future<Double> future = executorService.submit(new CalculateStartingDistance(snapshots, executorService));
             d0 = future.get();
             System.out.println(d0 + " -------D0");
-            executorService.execute(new GetValues(snapshots,values,d0,executorService));
+            executorService.execute(new FillBuffer(100,bufferForAveraging,bufferLock,snapshots,executorService,d0));
+            executorService.execute(new GetValues(dataSet,imageView,snapshots,values,d0,bufferForAveraging,executorService,dataSetLock,bufferLock));
         }else{ // даем executorService задачи  по вычислению values, задача выполняется до прекращения работы программы, кол-во задач зависит от заполненности листа snapshots
-            executorService.execute(new GetValues(snapshots,values,d0,executorService));
+            executorService.execute(new FillBuffer(100,bufferForAveraging,bufferLock,snapshots,executorService,d0));
+            executorService.execute(new GetValues(dataSet,imageView,snapshots,values,d0,bufferForAveraging,executorService,dataSetLock,bufferLock));
         }
+
     }
+
 
     public void stop() {
         executorService.shutdownNow();
@@ -41,7 +62,6 @@ public class Calculator {
     }
 
     public BlockingQueue<Values> getValuesQueue() throws Exception {
-        start();
         return values;
     }
 

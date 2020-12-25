@@ -10,29 +10,31 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
 public class ReadFromCamera implements Runnable {
-    private SettingsData settingsData = SettingsData.getInstance();
+    private BlockingQueue<Snapshot> snapshots;
+    private boolean read;
+    private VideoCapture camera;
+
     static {
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-    private BlockingQueue<Snapshot> inputQueue;
-    private boolean read;
-    private VideoCapture camera;
 
-    public ReadFromCamera(BlockingQueue<Snapshot> inputQueue) throws Exception {
-        this.inputQueue = inputQueue;
+
+    public ReadFromCamera(BlockingQueue<Snapshot> snapshots) throws Exception {
+        this.snapshots = snapshots;
         read = true;
         // Подключаемся к камере
-        camera = new VideoCapture(settingsData.getCameraId());
+        camera = new VideoCapture(SettingsData.getInstance().getCameraId());
         if (!camera.isOpened()) throw new Exception("Не удалось подключить камеру.");
 
-        // Задаем размеры кадра
 
-        camera.set(Videoio.CAP_PROP_FRAME_WIDTH, settingsData.getResolution().getWidth());
-        camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, settingsData.getResolution().getHeight());
-        System.out.println(settingsData.getResolution().getWidth());
-        System.out.println(settingsData.getResolution().getHeight());
+        // Задаем размеры кадра
+        camera.set(Videoio.CAP_PROP_FRAME_WIDTH, SettingsData.getInstance().getResolution().getWidth());
+        camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, SettingsData.getInstance().getResolution().getHeight());
+        System.out.println(SettingsData.getInstance().getResolution().getWidth());
+        System.out.println(SettingsData.getInstance().getResolution().getHeight());
+
     }
 
     public void Stop(){
@@ -42,6 +44,7 @@ public class ReadFromCamera implements Runnable {
     @Override
     public void run() {
 
+
         try {
             // Считываем кадры
             Mat frame = new Mat();
@@ -50,11 +53,11 @@ public class ReadFromCamera implements Runnable {
             while ( read ) {
                 if (camera.read(frame)) {
                     System.out.println(frame.empty());
-                    inputQueue.put(new Snapshot(frame, new Date()));
-                    System.out.println(inputQueue.size() + "размер очереди");
+                    snapshots.put(new Snapshot(frame, new Date()));
+                    System.out.println(snapshots.size() + "размер очереди");
                     System.out.println("изображенеи захвачено" );
                     try {
-                        Thread.sleep(1000/ settingsData.getFps()); // 10 кадров в секунду
+                        Thread.sleep(1000/ SettingsData.getInstance().getFps()); // 10 кадров в секунду
                     } catch (InterruptedException e) {}
                 }
                 else {

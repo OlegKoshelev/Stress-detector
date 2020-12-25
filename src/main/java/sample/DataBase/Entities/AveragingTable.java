@@ -1,20 +1,18 @@
 package sample.DataBase.Entities;
 
-
 import sample.DataGetting.Values;
 
 import javax.persistence.Entity;
 
 @Entity
-public class AbbreviatedTable extends BaseTable {
-    public AbbreviatedTable() {
+public class AveragingTable extends BaseTable {
+    public AveragingTable() {
     }
-
-    public AbbreviatedTable(Values values) {
+    public AveragingTable(Values values) {
         super(values);
     }
 
-    public AbbreviatedTable(long timestamp) {
+    public AveragingTable(long timestamp) {
         super(timestamp);
     }
 }

@@ -1,5 +1,6 @@
 package sample.DataGetting.Tasks;
 
+import sample.AdditionalUtils.CalculatorUtils;
 import sample.DataGetting.CvUtils;
 import sample.DataGetting.Snapshot;
 
@@ -20,7 +21,7 @@ public class CalculateDistance implements Runnable {
         Snapshot snapshot;
         try {
             snapshot = snapshots.take();
-            double d = CvUtils.coordinates(snapshot.getImg());
+            double d = CalculatorUtils.getDistance(snapshot.getImg());
             distance.add(d);
         } catch (InterruptedException e) {
             e.printStackTrace();

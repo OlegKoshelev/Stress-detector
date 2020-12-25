@@ -1,28 +1,28 @@
 package sample.AdditionalUtils;
 
 
-import de.gsi.chart.axes.AxisLabelOverlapPolicy;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
-import de.gsi.chart.axes.spi.NumericAxis;
 import de.gsi.chart.plugins.ChartPlugin;
+import de.gsi.chart.plugins.ParameterMeasurements;
+import de.gsi.chart.plugins.YValueIndicator;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import de.gsi.dataset.utils.ProcessingProfiler;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import sample.Graph.AxisBoundaries;
 import sample.Graph.BoundaryValues;
 import sample.InitialDataSetting.Graph.GraphType;
+import sample.Plugins.DataPoint;
+import sample.Plugins.Markers;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -295,10 +295,13 @@ public class GraphUtils {
         xAxis.setAutoRanging(true);
         yAxis.setAutoRanging(true);
         chart.getDatasets().add(dataSet);
+        chart.getPlugins().add(new DataPoint());
         chart.getPlugins().add(new Zoomer());
+        chart.getPlugins().add(new Markers());
         yAxis.setAnimated(false);
         xAxis.setAnimated(false);
-        Platform.runLater(() -> dataSet.fireInvalidated(null));
+       // Platform.runLater(() -> dataSet.fireInvalidated(null));
+
 
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {

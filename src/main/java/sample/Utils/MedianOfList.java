@@ -50,7 +50,6 @@ public class MedianOfList {
         result.setDistance((v1.getDistance() + v2.getDistance())/2);
         result.setCurvature((v1.getCurvature() + v2.getCurvature())/2);
         result.setStressThickness((v1.getStressThickness() + v2.getStressThickness())/2);
-        result.setImg(v1.getImage());
         return result;
     }
 

@@ -1,5 +1,6 @@
 package sample.Controllers;
 
+import com.sun.javafx.css.Size;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.collections.FXCollections;
@@ -14,6 +15,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import org.opencv.core.Core;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 import sample.AdditionalUtils.GraphUtils;
 import sample.AdditionalUtils.MainControllerUtils;
 import sample.DataBase.*;
@@ -72,28 +76,28 @@ public class MainController implements Initializable {
     //private LineChart<Number, Number> chart;
     private de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis());
     private DefaultErrorDataSet dataSet = new DefaultErrorDataSet("distance");
-    private Data data = new Data("distance");
-    @FXML
-    private NumberAxis xAxis;
-    @FXML
-    private NumberAxis yAxis;
-    private XYChart.Series<Number, Number> series = new XYChart.Series<>();
-    private Thread thread;
+   // private Data data = new Data("distance");
+   // @FXML
+   // private NumberAxis xAxis;
+   // @FXML
+   // private NumberAxis yAxis;
+   // private XYChart.Series<Number, Number> series = new XYChart.Series<>();
+   // private Thread thread;
     private Configuration dBConfiguration;
     private Boolean autoRangingFlag = false;
 
     private HibernateUtil hibernateUtil;
 
-    private BoundaryValues boundaryValues = new BoundaryValues(0, 0, 0, 0);
+    //private BoundaryValues boundaryValues = new BoundaryValues(0, 0, 0, 0);
 
-    private double maxY = 0;
+    //private double maxY = 0;
 
-    private double minY = 0;
+    //private double minY = 0;
 
 
-    private long maxX = 0;
+    //private long maxX = 0;
 
-    private long minX = 0;
+   // private long minX = 0;
 
     private TextField textField = null;
 
@@ -101,8 +105,8 @@ public class MainController implements Initializable {
     private TemporaryValues regularTableValues = new TemporaryValues();
     private TemporaryValues abbreviatedTableValues = new TemporaryValues();
 
-    @FXML
-    private Button run;
+  //  @FXML
+   // private Button run;
 
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
@@ -113,6 +117,7 @@ public class MainController implements Initializable {
     private AxisBoundaries axisBoundary = null;
 
 
+/*
     @FXML
     public void singleMouseClickAndPushingEnter(MouseEvent event) throws ParseException {
         if (event.getButton().equals(MouseButton.PRIMARY)) {// сброс отображения полей ввода диапазонов осей
@@ -154,7 +159,9 @@ public class MainController implements Initializable {
             }
         }
     }
+ */
 
+/*
     @FXML
     public void doubleMouseClick(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY)) { // отобразить поле ввода для изменения диапазона оси
@@ -222,6 +229,7 @@ public class MainController implements Initializable {
             }
         }
     }
+ */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -232,8 +240,10 @@ public class MainController implements Initializable {
         }
         stackPane.getChildren().add(chart);
         GraphUtils.initialGraph(chart, dataSet);
+
         // GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart);
     }
+
 
     @FXML
     public void showWorkWindow() throws IOException {
@@ -302,29 +312,30 @@ public class MainController implements Initializable {
         }
 
 
-        calculator = new Calculator(4, d0);
+        calculator = new Calculator(dataSet,imageView,5, d0);
         values = calculator.getValuesQueue();
-        calculator.getExecutorService().execute(new addValuesToChart(dataSet,values));
+        calculator.start();
+       // calculator.getExecutorService().execute(new addValuesToChart(dataSet,values));
 
     }
-
+/*
     @FXML
     public void changeAutoRanging() {
         if (autoRanging.isSelected()) {
             autoRangingFlag = MainControllerUtils.setAutoRanging(autoRanging);
             boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
-            /*
+
                         minY = graphValuesFromRegularTable.getMinY();
             maxY = graphValuesFromRegularTable.getMaxY();
             minX = graphValuesFromRegularTable.getMinX();
             maxX = graphValuesFromRegularTable.getMaxX();
-             */
+
             GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
         } else {
             autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
         }
     }
-
+*/
 
 /*
     private void changeBoundaries(long xValue, double yValue) {
@@ -366,7 +377,7 @@ public class MainController implements Initializable {
         abbreviatedTableValues.reset();
     }
 
-
+/*
     private void createThread() {
         thread = new Thread(new Runnable() {
             @Override
@@ -382,6 +393,8 @@ public class MainController implements Initializable {
             }
         });
     }
+    /*
+ */
 
   /*
     private void createThread() {
@@ -472,13 +485,15 @@ public class MainController implements Initializable {
     }
 
     public void shutdown() {
-        if (thread != null) {
+        /*
+               if (thread != null) {
             // d0 = modelLayer.getD0();
             //  modelLayer.stop();
             d0 = calculator.getD0();
             calculator.stop();
             thread.interrupt();
         }
+         */
     }
 
     @FXML
@@ -521,15 +536,15 @@ public class MainController implements Initializable {
                 data) {
             graphValuesFromRegularTable.addData(values.getTimestamp(), values.getMeasuredValue(SettingsData.getInstance().getType()));
         }
-        boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
+     //   boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
       /*
         maxX = graphValuesFromRegularTable.getMaxX();
         minX = graphValuesFromRegularTable.getMinX();
         maxY = graphValuesFromRegularTable.getMaxY();
         minY = graphValuesFromRegularTable.getMinY();
        */
-        series.getData().addAll(graphValuesFromRegularTable.clone());
-        GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
+       // series.getData().addAll(graphValuesFromRegularTable.clone());
+      //  GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
     }
 
     @FXML

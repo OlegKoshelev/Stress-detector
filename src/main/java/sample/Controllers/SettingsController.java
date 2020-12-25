@@ -1,6 +1,6 @@
 package sample.Controllers;
 
-import sample.DataGetting.CvUtils;
+import sample.AdditionalUtils.CalculatorUtils;
 import sample.DataSaving.SettingsSaving.*;
 import sample.DataSaving.SettingsSaving.DynamicSettings.CameraCustomizations;
 import sample.DataSaving.SettingsSaving.DynamicSettings.GraphCustomizations;
@@ -302,7 +302,7 @@ public class SettingsController implements Initializable {
                     if (nextMat == null) continue;
                     Image image = null;
                     if (hsvView){
-                        Platform.runLater(() -> countors.setText("" + CvUtils.getContours(nextMat))   );
+                        Platform.runLater(() -> countors.setText("" + CalculatorUtils.getNumberOfContours(nextMat,cameraCustomizations))   );
                         image = ImageUtils.getHsvImage(nextMat, cameraCustomizations);
                     }
 

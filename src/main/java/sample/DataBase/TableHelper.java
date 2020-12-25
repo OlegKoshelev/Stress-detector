@@ -41,85 +41,15 @@ public class TableHelper {
         return list;
     }
 
-    public BaseTable getTableType() {
-        if (this instanceof DetailedTableHelper)
-            return new DetailedTable();
-        if (this instanceof RegularTableHelper)
-            return new RegularTable();
-        if (this instanceof AbbreviatedTableHelper)
-            return new AbbreviatedTable();
-
-        return null;
-    }
-
-    public CriteriaQuery getCriteriaQuery(CriteriaBuilder cb) {
-        if (this instanceof DetailedTableHelper)
-            return cb.createQuery(DetailedTable.class);
-        if (this instanceof RegularTableHelper)
-            return cb.createQuery(RegularTable.class);
-        if (this instanceof AbbreviatedTableHelper)
-            return cb.createQuery(AbbreviatedTable.class);
-
-        return null;
-    }
-
-    public Root<BaseTable> getRoot(CriteriaQuery cq) {
-        if (this instanceof DetailedTableHelper)
-            return cq.from(DetailedTable.class);
-        if (this instanceof RegularTableHelper)
-            return cq.from(RegularTable.class);
-        if (this instanceof AbbreviatedTableHelper)
-            return cq.from(AbbreviatedTable.class);
-
-        return null;
-    }
 
     public Class<? extends BaseTable> getTableClass() {
         if (this instanceof DetailedTableHelper)
             return DetailedTable.class;
-        if (this instanceof RegularTableHelper)
-            return RegularTable.class;
         if (this instanceof AbbreviatedTableHelper)
-            return AbbreviatedTable.class;
+            return AveragingTable.class;
 
         return null;
     }
-
-
-    public long getInitialId() {
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(getTableClass());
-        Root<BaseTable> root = cq.from(getTableClass());
-        Selection[] selections = {root.get(BaseTable_.timestamp)};
-        cb.construct(getTableType().getClass(), selections);
-        cq.select(cb.least((root.get(BaseTable_.timestamp))));
-        Query query = session.createQuery(cq);
-        Long id = (Long) query.getSingleResult();
-        session.close();
-        return id;
-    }
-
-    public long getSecondId() {
-        Long firstId = getInitialId();
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(getTableClass());
-        ;
-        Root<BaseTable> root = cq.from(getTableClass());
-        Selection[] selections = {root.get(BaseTable_.timestamp)};
-        cb.construct(getTableType().getClass(), selections);
-        cq.select(cb.least((root.get(BaseTable_.timestamp)))).where(cb.notEqual(root.get(BaseTable_.timestamp), firstId));
-        Query query = session.createQuery(cq);
-        Long id = (Long) query.getSingleResult();
-        session.close();
-        return id;
-    }
-
-    public long getIncrement() {
-        return getSecondId() - getInitialId();
-    }
-
 
     public void tableToTxt(String path) {
         int rowsCount = (int) getCount();
@@ -149,42 +79,6 @@ public class TableHelper {
         return query.getResultList();
     }
 
-    public BoundaryValues getBoundaryValues(GraphType graphType) {
-        if (getCount() == 0)
-            return null;
-        long minX = 0;
-        long maxX = 0;
-        double minY = 0;
-        double maxY = 0;
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(getTableClass());
-        Root<BaseTable> root = cq.from(getTableClass());
-        minX = (Long) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.timestamp);
-        maxX = (Long) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.timestamp);
-
-
-        switch (graphType) {
-            case Distance:
-                minY = (Double) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.distance);
-                maxY = (Double) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.distance);
-                break;
-            case Curvature:
-                minY = (Double) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.curvature);
-                maxY = (Double) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.curvature);
-                break;
-            case StressThickness:
-                minY = (Double) TableHelperUtils.getMinBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.stressThickness);
-                maxY = (Double) TableHelperUtils.getMaxBoundaryValue(session,cb,cq,root,getTableType().getClass(),BaseTable_.stressThickness);
-                break;
-        }
-           session.close();
-        System.out.println(maxY + "-------------------------------------------------MAXY");
-        System.out.println(minY + "-------------------------------------------------MINY");
-        System.out.println(maxX + "-------------------------------------------------MAXX");
-        System.out.println(minX + "-------------------------------------------------MINX");
-        return new BoundaryValues(minX,minY,maxX,maxY);
-    }
 
 
     private String listToString(List<BaseTable> list) {

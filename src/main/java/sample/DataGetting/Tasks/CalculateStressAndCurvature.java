@@ -2,6 +2,7 @@ package sample.DataGetting.Tasks;
 
 
 import javafx.scene.image.Image;
+import sample.AdditionalUtils.CalculatorUtils;
 import sample.DataGetting.CvUtils;
 import sample.DataGetting.Spot;
 import sample.DataGetting.Snapshot;
@@ -37,17 +38,17 @@ public class CalculateStressAndCurvature implements Runnable {
                 System.out.println(spots + " пятна");
                 if (spots == null) continue;
                 System.out.println(spots.getImg() + " изображеие");
-                Double d = CvUtils.coordinates(spots.getImg());
+                Double d = CalculatorUtils.getDistance(spots.getImg());
                 if (d == null) continue;
 
                 Spot distance = new Spot(d, spots.getDate(),spots.getImg());
                 queueD.put(distance);
                 Spot D = queueD.take();
                 Date timestamp = D.getTimestamp();
-                double curvature = CvUtils.curvature( D.getDistance(), D0);
-                double stressThickness = CvUtils.stressThickness(602, 0.00043, curvature);
-                Image image = ImageUtils.getHsvImage(D.getImg(),settingsData);
-                values.put(new Values(stressThickness, curvature, timestamp,D.getDistance(),image));
+                double curvature = CalculatorUtils.getCurvature( D.getDistance(), D0);
+                double stressThickness = CalculatorUtils.getStressThickness(602, 0.00043, curvature);
+                Image image = ImageUtils.getHsvImage(D.getImg());
+             //   values.put(new Values(stressThickness, curvature, timestamp,D.getDistance(),image));
             } catch (InterruptedException e) {
                 break;
             }

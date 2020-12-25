@@ -11,14 +11,12 @@ public class Values  implements Comparable<Values>{
     private double curvature;
     private Date timestamp;
     private double distance;
-    private Image img;
 
-    public Values(double stressThickness, double curvature, Date timestamp, double distance, Image img) {
+    public Values(double stressThickness, double curvature, Date timestamp, double distance) {
         this.stressThickness = stressThickness;
         this.curvature = curvature;
         this.timestamp = timestamp;
         this.distance = distance;
-        this.img = img;
     }
 
     public Values() {
@@ -52,7 +50,6 @@ public class Values  implements Comparable<Values>{
 
     public double getDistance() { return distance; }
 
-    public Image getImage() { return img; }
 
     public void setStressThickness(double stressThickness) {
         this.stressThickness = stressThickness;
@@ -70,12 +67,9 @@ public class Values  implements Comparable<Values>{
         this.distance = distance;
     }
 
-    public void setImg(Image img) {
-        this.img = img;
-    }
 
     @Override
     public int compareTo(Values o) {
-        return (int) (distance - o.distance)*10000;
+        return (int) (timestamp.getTime() - o.getTimestamp().getTime());
     }
 }

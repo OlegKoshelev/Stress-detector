@@ -1,5 +1,6 @@
 package sample.DataGetting.Tasks;
 
+import sample.AdditionalUtils.CalculatorUtils;
 import sample.DataGetting.CvUtils;
 import sample.DataGetting.Spot;
 import sample.DataGetting.Snapshot;
@@ -33,7 +34,7 @@ public class CalculateDAverage implements Runnable{
             try {
                 spots = queueIn.take();
                 if (spots == null) continue;
-                double d = CvUtils.coordinates(spots.getImg());
+                double d = CalculatorUtils.getDistance(spots.getImg());
                 Spot distance = new Spot(d, spots.getDate(), spots.getImg());
                 queueD.add(distance);
                 averageD.add(distance);

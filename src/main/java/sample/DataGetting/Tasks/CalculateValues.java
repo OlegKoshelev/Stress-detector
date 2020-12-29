@@ -1,6 +1,7 @@
 package sample.DataGetting.Tasks;
 
 import de.gsi.dataset.spi.DefaultErrorDataSet;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import sample.AdditionalUtils.CalculatorUtils;
 import sample.DataGetting.Snapshot;
@@ -42,7 +43,7 @@ public class CalculateValues implements Runnable{
             double distance = CalculatorUtils.getDistance(snapshot.getImg());
             double curvature = CalculatorUtils.getCurvature(distance,d0);
             double stressThickness = CalculatorUtils.getStressThickness(602,0.00043,curvature);
-            imageView.setImage(ImageUtils.getHsvImage(snapshot.getImg()));
+            Platform.runLater(() -> imageView.setImage(ImageUtils.getHsvImage(snapshot.getImg())));
             Values usualValues = new Values(stressThickness, curvature, snapshot.getDate(),distance);
             values.put(usualValues);
 

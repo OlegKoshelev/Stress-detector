@@ -3,6 +3,7 @@ package sample.Plugins;
 import de.gsi.chart.axes.Axis;
 import de.gsi.chart.plugins.AbstractSingleValueIndicator;
 import de.gsi.chart.plugins.XValueIndicator;
+import de.gsi.dataset.DataSet;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
@@ -50,8 +51,37 @@ public class MyXValueIndicator extends XValueIndicator {
             layoutMarker(xPos, minY + 1.5 * AbstractSingleValueIndicator.triangleHalfWidth, xPos, maxY);
             layoutLabel(new BoundingBox(xPos, minY, 0, maxY - minY), AbstractSingleValueIndicator.MIDDLE_POSITION,
                     getLabelPosition());
-            label.setText(String.format("T: %s",new SimpleDateFormat("HH:mm:ss").format(new Date((long)getValue()))));
+            label.setText(String.format("Val. %.4f\nTime %s",getYValue(),new SimpleDateFormat("HH:mm:ss").format(new Date((long)getValue()))));
+
+           // label.setText(String.format("%.3f",getYValue()));
         }
+    }
+    
+    public double getYValue(){
+        if (getChart().getDatasets().size()!= 1)
+            return 0;
+        int size = getChart().getDatasets().get(0).getDataCount(DataSet.DIM_X);
+        long searchedX = (long) getValue();
+        long prevX = 0;
+        long nextX = 0;
+        int prevIn = 0;
+        int nextIn = 0;
+        for (int i = 0; i < size; i++){
+            long currentX = (long) getChart().getDatasets().get(0).get(DataSet.DIM_X,i);
+            if (currentX < searchedX){
+                prevX = currentX;
+                prevIn = i;
+            }
+            else{
+                nextX = currentX;
+                nextIn = i;
+                break;
+            }
+        }
+        if (Math.abs(prevX - searchedX) < Math.abs(nextX - searchedX))
+            return getChart().getDatasets().get(0).get(DataSet.DIM_Y,prevIn);
+        else
+            return getChart().getDatasets().get(0).get(DataSet.DIM_Y,nextIn);
     }
 
 

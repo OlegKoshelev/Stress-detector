@@ -1,8 +1,8 @@
 package sample.InitialDataSetting.Graph;
 
 public enum GraphType {
-    StressThickness("Stress X Thickness (GPa X um)"),
-    Curvature("Curvature (1/km)"),
+    StressThickness("Stress X Thickness (GPa X µm)"),
+    Curvature("Curvature (1/m)"),
     Distance("Distance (pixels)");
 
     private String name;

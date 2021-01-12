@@ -4,10 +4,16 @@ import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import sample.AdditionalUtils.CalculatorUtils;
+import sample.DataBase.AverageTableHelper;
+import sample.DataBase.DetailedTableHelper;
+import sample.DataBase.Entities.AveragingTable;
+import sample.DataBase.Entities.DetailedTable;
+import sample.DataBase.HibernateUtil;
 import sample.DataGetting.Snapshot;
 import sample.DataGetting.Values;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.Utils.ImageUtils;
+import sample.Utils.TemporaryValues;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -22,9 +28,12 @@ public class CalculateValues implements Runnable{
     private double d0;
     private List<Values> bufferForAveraging;
     private Lock bufferLock;
+    private TemporaryValues detailedTableValues;
+    private TemporaryValues averageTableValues;
+    private HibernateUtil hibernateUtil;
 
-    public CalculateValues(DefaultErrorDataSet dataSet, ImageView imageView, BlockingQueue<Snapshot> snapshots, BlockingQueue<Values> values,List<Values> bufferForAveraging
-            ,double d0, Lock dataSetLock,Lock bufferLock) {
+    public CalculateValues(DefaultErrorDataSet dataSet, ImageView imageView, BlockingQueue<Snapshot> snapshots, BlockingQueue<Values> values, List<Values> bufferForAveraging
+            , double d0, Lock dataSetLock, Lock bufferLock, TemporaryValues detailedTableValues, TemporaryValues averageTableValues,HibernateUtil hibernateUtil) {
         this.imageView = imageView;
         this.dataSet = dataSet;
         this.snapshots = snapshots;
@@ -33,6 +42,9 @@ public class CalculateValues implements Runnable{
         this.d0 = d0;
         this.bufferForAveraging = bufferForAveraging;
         this.bufferLock = bufferLock;
+        this.detailedTableValues = detailedTableValues;
+        this.averageTableValues = averageTableValues;
+        this.hibernateUtil = hibernateUtil;
     }
 
     @Override
@@ -42,7 +54,7 @@ public class CalculateValues implements Runnable{
             Snapshot snapshot = snapshots.take();
             double distance = CalculatorUtils.getDistance(snapshot.getImg());
             double curvature = CalculatorUtils.getCurvature(distance,d0);
-            double stressThickness = CalculatorUtils.getStressThickness(602,0.00043,curvature);
+            double stressThickness = CalculatorUtils.getStressThickness(curvature);
             Platform.runLater(() -> imageView.setImage(ImageUtils.getHsvImage(snapshot.getImg())));
             Values usualValues = new Values(stressThickness, curvature, snapshot.getDate(),distance);
             values.put(usualValues);
@@ -50,12 +62,19 @@ public class CalculateValues implements Runnable{
             bufferLock.lock();
             dataSetLock.lock();
             bufferForAveraging.add(usualValues);
+            DetailedTable dtValues = new DetailedTable(usualValues);
+            detailedTableValues.addValue(dtValues);
+
             Values averageValues = CalculatorUtils.getAverageValues(bufferForAveraging);
             bufferForAveraging.remove(0);
-            dataSet.add(averageValues.getTimestamp().getTime(),averageValues.getDistance());
+            dataSet.add(averageValues.getTimestamp().getTime(),averageValues.getMeasuredValue(SettingsData.getInstance().getType()));
+            AveragingTable avValues = new AveragingTable(averageValues);
+            averageTableValues.addValue(avValues);
+            System.out.println(averageTableValues.size() + "-----------AVERAGE");
+            System.out.println(detailedTableValues.size() + "-----------DETAILED");
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+           return;
         }
         finally {
             dataSetLock.unlock();

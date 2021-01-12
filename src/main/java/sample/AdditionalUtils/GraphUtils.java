@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
+import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.Graph.AxisBoundaries;
 import sample.Graph.BoundaryValues;
 import sample.InitialDataSetting.Graph.GraphType;
@@ -248,6 +249,7 @@ public class GraphUtils {
         yAxis.setAnimated(true);
         chart.setAnimated(false);
 
+
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
@@ -288,7 +290,7 @@ public class GraphUtils {
     public static void initialGraph(de.gsi.chart.XYChart chart, DefaultErrorDataSet dataSet){
         DefaultNumericAxis xAxis = (DefaultNumericAxis) chart.getXAxis();
         DefaultNumericAxis yAxis = (DefaultNumericAxis) chart.getYAxis();
-        yAxis.setName("Distance");
+        yAxis.setName(SettingsData.getInstance().getType().getName());
         xAxis.setName("Time");
         yAxis.setTickLabelFont(Font.font("Times", 15));
         xAxis.setTickLabelFont(Font.font("Times", 15));
@@ -301,8 +303,6 @@ public class GraphUtils {
         yAxis.setAnimated(false);
         xAxis.setAnimated(false);
        // Platform.runLater(() -> dataSet.fireInvalidated(null));
-
-
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
@@ -333,6 +333,11 @@ public class GraphUtils {
             }
         });
 
+    }
+
+    public static void repaint(de.gsi.chart.XYChart chart){
+        DefaultNumericAxis yAxis = (DefaultNumericAxis) chart.getYAxis();
+        yAxis.setName(SettingsData.getInstance().getType().getName());
     }
 
     public static void InitialGraph(GraphType graphType, de.gsi.chart.XYChart chart) {

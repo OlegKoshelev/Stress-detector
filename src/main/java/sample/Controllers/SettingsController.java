@@ -23,6 +23,7 @@ import sample.Utils.ImageUtils;
 
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -125,10 +126,10 @@ public class SettingsController implements Initializable {
     }
 
     @FXML
-    public void okAction() throws IOException {
+    public void okAction() throws IOException, URISyntaxException {
+        SettingsTransfer.writeToSettingsFile();
         Stage stage = (Stage) ok.getScene().getWindow();
         shutdown();
-        SettingsTransfer.writeToSettingsFile();
         stage.close();
     }
 
@@ -302,6 +303,7 @@ public class SettingsController implements Initializable {
                     if (nextMat == null) continue;
                     Image image = null;
                     if (hsvView){
+                        Platform.runLater(() -> countors.setText("" + CalculatorUtils.getNumberOfContours(nextMat,cameraCustomizations))   );
                         Platform.runLater(() -> countors.setText("" + CalculatorUtils.getNumberOfContours(nextMat,cameraCustomizations))   );
                         image = ImageUtils.getHsvImage(nextMat, cameraCustomizations);
                     }

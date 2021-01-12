@@ -28,11 +28,8 @@
                   <Menu mnemonicParsing="false" text="Save to txt">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#SaveAsDetailedTable" text="Save as Detailed Table" />
-                        <MenuItem mnemonicParsing="false" onAction="#SaveAsRegularTable" text="Save as Regular Table" />
-                        <MenuItem mnemonicParsing="false" onAction="#SaveAsAbbreviatedTable" text="Save as Abbreviated Table" />
                      </items>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" onAction="#openDB" text="Open DB" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">

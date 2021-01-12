@@ -5,6 +5,7 @@ import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TextField;
@@ -48,11 +49,14 @@ import sample.DataGetting.Values;
 import sample.DataGetting.ValuesLayer;
 
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class MainController implements Initializable {
@@ -74,8 +78,8 @@ public class MainController implements Initializable {
     private ImageView imageView;
     // @FXML
     //private LineChart<Number, Number> chart;
-    private de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis());
-    private DefaultErrorDataSet dataSet = new DefaultErrorDataSet("distance");
+    private  de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis()) ;
+    private  DefaultErrorDataSet dataSet = new DefaultErrorDataSet("distance");
    // private Data data = new Data("distance");
    // @FXML
    // private NumberAxis xAxis;
@@ -85,7 +89,8 @@ public class MainController implements Initializable {
    // private Thread thread;
     private Configuration dBConfiguration;
     private Boolean autoRangingFlag = false;
-
+    private TemporaryValues detailedTableValues =  new TemporaryValues();
+    private TemporaryValues averageTableValues =  new TemporaryValues();
     private HibernateUtil hibernateUtil;
 
     //private BoundaryValues boundaryValues = new BoundaryValues(0, 0, 0, 0);
@@ -101,7 +106,7 @@ public class MainController implements Initializable {
 
     private TextField textField = null;
 
-    private TemporaryValues detailedTableValues = new TemporaryValues();
+    // private TemporaryValues detailedTableValues = new TemporaryValues();
     private TemporaryValues regularTableValues = new TemporaryValues();
     private TemporaryValues abbreviatedTableValues = new TemporaryValues();
 
@@ -117,125 +122,13 @@ public class MainController implements Initializable {
     private AxisBoundaries axisBoundary = null;
 
 
-/*
-    @FXML
-    public void singleMouseClickAndPushingEnter(MouseEvent event) throws ParseException {
-        if (event.getButton().equals(MouseButton.PRIMARY)) {// сброс отображения полей ввода диапазонов осей
-            if (event.getClickCount() == 1) {
-                if (stackPane.getChildren().size() == 2) {
-                    stackPane.getChildren().remove(1);
-                    switch (axisBoundary) {
-                        case MinY:
-                            System.out.println(textField.getText());
-                            yAxis.setLowerBound(Double.parseDouble(textField.getText()));
-                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
-                            break;
-                        case MaxY:
-                            yAxis.setUpperBound(Double.parseDouble(textField.getText()));
-                            yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
-                            break;
-                        case MinX:
-                            if (textField.getText() == null ||
-                                    textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound())) == null) {
-                                break;
-                            }
-                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound()))).getTime());
-                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
-                            break;
-                        case MaxX:
-                            if (textField.getText() == null ||
-                                    textField.getText().isEmpty() ||
-                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound())) == null) {
-                                break;
-                            }
-                            xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound()))).getTime());
-                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
-                            break;
-                    }
-                    autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
-                    textField = null;
-                }
-            }
-        }
-    }
- */
 
-/*
-    @FXML
-    public void doubleMouseClick(MouseEvent event) {
-        if (event.getButton().equals(MouseButton.PRIMARY)) { // отобразить поле ввода для изменения диапазона оси
-            if (event.getClickCount() == 2) {
-                if ((stackPane.getChildren().size() == 1)) {
-                    textField = new TextField("");
-                    axisBoundary = GraphUtils.setBoundaryValue(event.getX(), event.getY(), (NumberAxis) event.getSource(), textField, stackPane);
-                    textField.addEventHandler(KeyEvent.KEY_PRESSED, event1 -> {
-                        if (event1.getCode() == KeyCode.ENTER) {
-                            if (stackPane.getChildren().size() == 2) {
-                                stackPane.getChildren().remove(1);
-                                switch (axisBoundary) {
-                                    case MinY:
-                                        System.out.println(textField.getText());
-                                        yAxis.setLowerBound(Double.parseDouble(textField.getText()));
-                                        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
-                                        break;
-                                    case MaxY:
-                                        yAxis.setUpperBound(Double.parseDouble(textField.getText()));
-                                        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
-                                        break;
-                                    case MinX:
-                                        try {
-                                            if (textField.getText() == null ||
-                                                    textField.getText().isEmpty() ||
-                                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound())) == null) {
-                                                break;
-                                            }
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-                                        try {
-                                            xAxis.setLowerBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getLowerBound()))).getTime());
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-                                        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
-                                        break;
-                                    case MaxX:
-                                        try {
-                                            if (textField.getText() == null ||
-                                                    textField.getText().isEmpty() ||
-                                                    GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound())) == null) {
-                                                break;
-                                            }
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-                                        try {
-                                            xAxis.setUpperBound(Objects.requireNonNull(GraphUtils.stringToDate(textField.getText(), new Date((long) xAxis.getUpperBound()))).getTime());
-                                            xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        break;
-                                }
-                                autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
-                                textField = null;
-                            }
-
-                        }
-                    });
-                }
-            }
-        }
-    }
- */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
             SettingsTransfer.getFullSettingsFromFile();
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         stackPane.getChildren().add(chart);
@@ -243,7 +136,9 @@ public class MainController implements Initializable {
 
         // GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart);
     }
-
+    public void graphRepaint() {
+        GraphUtils.repaint(chart);
+    }
 
     @FXML
     public void showWorkWindow() throws IOException {
@@ -285,14 +180,12 @@ public class MainController implements Initializable {
         primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
         primaryStage.setOnHidden(event -> {
-            //  GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
+            graphRepaint();
             controller.shutdown();
         });
     }
 
-    public void graphRepaint() {
-        //    GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
-    }
+
 
     public void showCheckingDBWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
@@ -312,7 +205,7 @@ public class MainController implements Initializable {
         }
 
 
-        calculator = new Calculator(dataSet,imageView,5, d0);
+        calculator = new Calculator(dataSet,imageView,5, d0,hibernateUtil,detailedTableValues,averageTableValues);
         values = calculator.getValuesQueue();
         calculator.start();
        // calculator.getExecutorService().execute(new addValuesToChart(dataSet,values));
@@ -367,14 +260,6 @@ public class MainController implements Initializable {
         DetailedTableHelper detailedTableHelper = new DetailedTableHelper(hibernateUtil);
         detailedTableHelper.addTableList(detailedTableValues.getList());
         detailedTableValues.reset();
-        // заносим данные в обычную таблицу
-        RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
-        regularTableHelper.addTableList(regularTableValues.getList());
-        regularTableValues.reset();
-        // заносим данные в сокращенную таблицу
-        AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
-        abbreviatedTableHelper.addTableList(abbreviatedTableValues.getList());
-        abbreviatedTableValues.reset();
     }
 
 /*
@@ -481,10 +366,13 @@ public class MainController implements Initializable {
 
     @FXML
     public void stop() {
+        addDataToTable();
         shutdown();
     }
 
     public void shutdown() {
+        if (calculator != null)
+            calculator.stop();
         /*
                if (thread != null) {
             // d0 = modelLayer.getD0();

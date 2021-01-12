@@ -22,4 +22,8 @@ public class TemporaryValues {
     public void  reset(){
         list.clear();
     }
+
+    public int size(){
+        return list.size();
+    }
 }

@@ -94,6 +94,13 @@ public class SettingsData {
         this.additionalBiaxialModule = additionalBiaxialModule;
     }
 
+    public int getBiaxialModulusValue (){
+        if (biaxialModulus == null)
+            return additionalBiaxialModule;
+        else
+            return biaxialModulus.getModule();
+    }
+
     public GraphType getType() {
         return type;
     }

@@ -1,8 +1,10 @@
 package sample.DataGetting.Tasks;
 
 import sample.AdditionalUtils.CalculatorUtils;
+import sample.DataBase.Entities.DetailedTable;
 import sample.DataGetting.Snapshot;
 import sample.DataGetting.Values;
+import sample.Utils.TemporaryValues;
 
 
 import java.util.List;
@@ -14,12 +16,14 @@ public class AddToBuffer implements Runnable{
     private Lock bufferLock;
     private BlockingQueue<Snapshot> snapshots;
     private double d0;
+    private TemporaryValues detailedTableValues;
 
-    public AddToBuffer(List<Values> bufferForAveraging, BlockingQueue<Snapshot> snapshots, double d0, Lock bufferLock) {
+    public AddToBuffer(List<Values> bufferForAveraging, BlockingQueue<Snapshot> snapshots, double d0, Lock bufferLock, TemporaryValues detailedTableValues) {
         this.bufferForAveraging = bufferForAveraging;
         this.bufferLock = bufferLock;
         this.snapshots = snapshots;
         this.d0 = d0;
+        this.detailedTableValues = detailedTableValues;
     }
 
     @Override
@@ -28,11 +32,14 @@ public class AddToBuffer implements Runnable{
             Snapshot snapshot = snapshots.take();
             double distance = CalculatorUtils.getDistance(snapshot.getImg());
             double curvature = CalculatorUtils.getCurvature(distance,d0);
-            double stressThickness = CalculatorUtils.getStressThickness(602,0.00043,curvature);
+            double stressThickness = CalculatorUtils.getStressThickness(curvature);
             bufferLock.lock();
-            bufferForAveraging.add(new Values(stressThickness, curvature, snapshot.getDate(),distance));
+            Values val = new Values(stressThickness, curvature, snapshot.getDate(),distance);
+            bufferForAveraging.add(val);
+            DetailedTable dtValues = new DetailedTable(val);
+            detailedTableValues.addValue(dtValues);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+           return;
         } finally {
             bufferLock.unlock();
         }

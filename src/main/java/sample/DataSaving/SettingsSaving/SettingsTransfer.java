@@ -8,19 +8,28 @@ import sample.DataSaving.SettingsSaving.DynamicSettings.CameraCustomizations;
 import sample.DataSaving.SettingsSaving.DynamicSettings.GraphCustomizations;
 import sample.DataSaving.SettingsSaving.DynamicSettings.SubstrateCustomizations;
 import sample.DataSaving.SettingsSaving.StaticSettings.SetupCustomizations;
+import sample.Program;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 
 public class SettingsTransfer {
 
-    public static void getFullSettingsFromFile() throws IOException {
+
+
+    public static void getFullSettingsFromFile() throws IOException, URISyntaxException {
         Gson gson = new Gson();
-        Reader reader = Files.newBufferedReader(Paths.get("Settings.json"));
+        File jarPath=new File(Program.class.getProtectionDomain().getCodeSource().getLocation()
+                .toURI());
+        System.out.println(jarPath.getPath());
+        System.out.println(jarPath.getParentFile().getPath());
+        FileInputStream inputStream = new FileInputStream(jarPath.getParentFile().getPath()+"\\Settings.json");
+        //InputStream in = SettingsTransfer.class.getResourceAsStream("/Settings.json");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        // Reader reader = Files.newBufferedReader(Paths.get("/Settings.json"));
         SettingsFileObject settingsFileObject = gson.fromJson(reader, SettingsFileObject.class);
         if (settingsFileObject != null) {
             SettingsData.getInstance().setCameraId(settingsFileObject.getCameraId());
@@ -45,9 +54,13 @@ public class SettingsTransfer {
         reader.close();
     }
 
-    public static void writeToSettingsFile() throws IOException {
+    public static void writeToSettingsFile() throws IOException, URISyntaxException {
         Gson gson = new Gson();
-        Writer writer = Files.newBufferedWriter(Paths.get("Settings.json"));
+        File jarPath=new File(Program.class.getProtectionDomain().getCodeSource().getLocation()
+                .toURI());
+        FileOutputStream outputStream = new FileOutputStream(jarPath.getParentFile().getPath()+"\\Settings.json");
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+       // Writer writer = Files.newBufferedWriter(Paths.get("Settings.json"));
         gson.toJson(SettingsData.getInstance(),writer);
         writer.close();
     }

@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="17.db" uuid="26df0a64-264c-4655-bfe0-53bacf8ac767">
+    <data-source source="LOCAL" name="13.db" uuid="27a4535a-c8d1-4ea8-b814-508eefc55852">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:/17.db</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="null" uuid="76147ccf-722d-4923-9382-73162c0c0baf">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\Oleg\Desktop\Stress-detector\null</jdbc-url>
-      <libraries>
-        <library>
-          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.31.1/sqlite-jdbc-3.31.1.jar</url>
-        </library>
-      </libraries>
+      <jdbc-url>jdbc:sqlite:D:/13.db</jdbc-url>
     </data-source>
   </component>
 </project>

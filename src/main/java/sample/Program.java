@@ -27,6 +27,7 @@ public class Program extends Application {
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
             controller.shutdown();
+            System.exit(0);
         });
     }
 

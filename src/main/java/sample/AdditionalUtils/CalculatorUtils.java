@@ -22,7 +22,7 @@ public class CalculatorUtils {
             curvature += value.getCurvature();
             stressThickness += value.getStressThickness();
         }
-        return new Values(stressThickness / values.size(),curvature / values.size(), values.get(0).getTimestamp(), distance / values.size());
+        return new Values(stressThickness / values.size(),curvature / values.size(), values.get(values.size()-1).getTimestamp(), distance / values.size());
     }
 
     public static Values getMedianValueS( List <Values> values ){
@@ -83,8 +83,12 @@ public class CalculatorUtils {
         return (Math.cos(Math.toRadians(SettingsData.getInstance().getAngle())) / (2 * SettingsData.getInstance().getDistance())) * (1 - (D / D0));
     }
 
-    public static double getStressThickness(int biaxialModulus, double substrateThickness, double curvature) {
-        return (curvature * biaxialModulus * 1000000 * (Math.pow(substrateThickness, 2))) / 6;
+    public static double getStressThickness( double curvature) {
+        return (curvature * SettingsData.getInstance().getBiaxialModulusValue() * 1000000 * (Math.pow(getSubstrateThickness(), 2))) / 6;
+    }
+    
+    private static double getSubstrateThickness (){
+        return (double) SettingsData.getInstance().getThickness()/1000000;
     }
 
     public static double getDistance(Mat img) {

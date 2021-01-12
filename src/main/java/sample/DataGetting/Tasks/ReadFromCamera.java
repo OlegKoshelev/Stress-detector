@@ -58,14 +58,16 @@ public class ReadFromCamera implements Runnable {
                     System.out.println("изображенеи захвачено" );
                     try {
                         Thread.sleep(1000/ SettingsData.getInstance().getFps()); // 10 кадров в секунду
-                    } catch (InterruptedException e) {}
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
                 else {
                     throw new Exception("Не удалось захватить кадр");
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return;
         } finally {
             camera.release();
             read = false;

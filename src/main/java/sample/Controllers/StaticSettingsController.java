@@ -12,6 +12,7 @@ import sample.DataSaving.SettingsSaving.SettingsTransfer;
 
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -32,13 +33,13 @@ public class StaticSettingsController implements Initializable {
     }
 
     @FXML
-    public void applyAction() throws IOException {
+    public void applyAction() throws IOException, URISyntaxException {
         SettingsTransfer.transferFromStaticOptionsToFullSettings();
         SettingsTransfer.writeToSettingsFile();
     }
 
     @FXML
-    public void okAction(Event event) throws IOException {
+    public void okAction(Event event) throws IOException, URISyntaxException {
         Button button = (Button) event.getSource();
         Stage stage = (Stage) button.getScene().getWindow();
         SettingsTransfer.writeToSettingsFile();

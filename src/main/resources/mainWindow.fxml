@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+<VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.MainController">
+    <children>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#Edit" text="New DB" />
+                  <Menu mnemonicParsing="false" text="Save to txt">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#SaveAsDetailedTable" text="Save as Detailed Table" />
+                     </items>
+                  </Menu>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Settings">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#showSettings" text="Dynamic options" />
+                  <MenuItem mnemonicParsing="false" onAction="#showStaticSettings" text="Static options" />
+               </items></Menu>
+            </menus>
+        </MenuBar>
+        <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <items>
+                <Button graphicTextGap="0.0" mnemonicParsing="false" onAction="#stop" text="⏹">
+               <font>
+                  <Font name="Yu Gothic Regular" size="22.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Button>
+                <Button fx:id="run" graphicTextGap="0.0" mnemonicParsing="false" onAction="#print" text="▶">
+               <font>
+                  <Font name="Yu Gothic Regular" size="22.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Button>
+            </items>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+            <padding>
+                <Insets left="100.0" />
+            </padding>
+        </ToolBar>
+        <SplitPane dividerPositions="0.2904841402337229" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <items>
+                <Pane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <ImageView fx:id="imageView" fitHeight="259.0" fitWidth="344.0" pickOnBounds="true" preserveRatio="true">
+                            <viewport>
+                                <Rectangle2D />
+                            </viewport>
+                        </ImageView>
+                        <TextFlow layoutY="259.0" prefHeight="467.0" prefWidth="344.0" />
+                    </children>
+                </Pane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <StackPane fx:id="stackPane" BorderPane.alignment="CENTER">
+                     <children>
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                                  <contextMenu>
+                                      <ContextMenu>
+                                          <items>
+                                    <MenuItem mnemonicParsing="false" onAction="#showWorkWindow" text="Work window" />
+                                              <CheckMenuItem fx:id="autoRanging" mnemonicParsing="false" text="Autoranging" />
+                                          </items>
+                                      </ContextMenu>
+                                  </contextMenu>
+                              </Button>
+                     </children>
+                  </StackPane>
+               </center>
+            </BorderPane>
+            </items>
+        </SplitPane>
+    </children>
+</VBox>

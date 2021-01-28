@@ -1,0 +1,7 @@
+<hibernate-configuration>
+    <session-factory>
+        <mapping class="sample.DataBase.Entities.AveragingTable"/>
+        <mapping class = "sample.DataBase.Entities.DetailedTable"/>
+    </session-factory>
+</hibernate-configuration>
+

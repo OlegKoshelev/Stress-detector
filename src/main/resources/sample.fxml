@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="442.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.SettingsController">
+    <children>
+        <TabPane prefHeight="400.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Camera">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <ImageView fx:id="imageView" fitHeight="240.0" fitWidth="360.0" layoutX="416.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+                                <Separator layoutX="412.0" layoutY="-2.0" orientation="VERTICAL" prefHeight="365.0" prefWidth="8.0" />
+                                <Text layoutX="580.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="View" />
+                                <GridPane layoutX="1.0" layoutY="160.0" prefHeight="177.0" prefWidth="406.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="10.0" prefWidth="86.0" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="164.0" minWidth="10.0" prefWidth="158.0" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="152.0" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                        <TextField fx:id="valueMin" prefHeight="31.0" prefWidth="74.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin></TextField>
+                                        <TextField fx:id="saturationMin" prefHeight="31.0" prefWidth="144.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin></TextField>
+                                        <TextField fx:id="hueMin" prefHeight="31.0" prefWidth="74.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin></TextField>
+                                        <Label text="Hue" GridPane.rowIndex="1">
+                                            <padding>
+                                                <Insets left="10.0" />
+                                            </padding>
+                                        </Label>
+                                        <Label text="Saturation" GridPane.rowIndex="2">
+                                            <padding>
+                                                <Insets left="10.0" />
+                                            </padding>
+                                        </Label>
+                                        <Label text="Value" GridPane.rowIndex="3">
+                                            <padding>
+                                                <Insets left="10.0" />
+                                            </padding>
+                                        </Label>
+                                        <Label text="Max Values" GridPane.columnIndex="2">
+                                            <padding>
+                                                <Insets left="5.0" />
+                                            </padding>
+                                        </Label>
+                                        <Label text="Min Values" GridPane.columnIndex="1" />
+                              <TextField fx:id="hueMax" prefHeight="31.0" prefWidth="135.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <TextField fx:id="saturationMax" prefHeight="33.0" prefWidth="135.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <TextField fx:id="valueMax" prefHeight="33.0" prefWidth="135.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                                    </children>
+                                </GridPane>
+                        <GridPane layoutX="10.0" layoutY="16.0" prefHeight="130.0" prefWidth="380.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="79.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="186.0" minWidth="10.0" prefWidth="186.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="95.0" minWidth="10.0" prefWidth="45.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="74.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="51.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="71.0" minHeight="9.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="67.0" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Resolution" />
+                              <MenuButton fx:id="menuResolutionButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Choose resolution" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </MenuButton>
+                                      <MenuButton fx:id="menuCameraButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="21.0" prefWidth="184.0" text="Сhoose camera" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                </MenuButton>
+                              <Label text="Camera" GridPane.rowIndex="1" />
+                              <Label text="FPS" GridPane.columnIndex="2" />
+                              <TextField fx:id="fps" prefHeight="31.0" prefWidth="66.0" GridPane.columnIndex="3" />
+                              <CheckBox fx:id="hsvMode" mnemonicParsing="false" onAction="#checkHsvMode" prefHeight="21.0" prefWidth="19.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <Label text="HSV" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                        <Label layoutX="428.0" layoutY="298.0" text="Count of contours:">
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="countors" layoutX="565.0" layoutY="298.0" text="countors">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
+                        <Separator layoutX="119.0" layoutY="332.0" prefHeight="31.0" prefWidth="800.0" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Substrate">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <GridPane layoutX="26.0" layoutY="38.0" prefHeight="207.0" prefWidth="438.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="236.0" minWidth="10.0" prefWidth="230.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="184.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="71.0" minHeight="10.0" prefHeight="38.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="71.0" minHeight="10.0" prefHeight="38.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="80.0" minHeight="0.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="21.0" prefWidth="171.0" text="Сhoose biaxial module">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </Label>
+                              <MenuButton fx:id="menuBiaxialModulusButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="31.0" prefWidth="210.0" text="Biaxial modulus (GPa)" GridPane.columnIndex="1" />
+                              <Label text="Substrate rotation time (ms)" GridPane.rowIndex="2">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label text="Set your biaxial module" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <CheckBox fx:id="setYourBiaxialModule" mnemonicParsing="false" onAction="#checkSetYourBiaxialModule" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label prefHeight="21.0" prefWidth="195.0" text="Your Biaxial module (GPa)" GridPane.rowIndex="4">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label text="Substrate thickness (um)" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </Label>
+                              <TextField fx:id="thickness" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="rotationTime" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="additionalBiaxialModule" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                           </children>
+                        </GridPane>
+                     </children></AnchorPane>
+                    </content>
+                </Tab>
+            <Tab text="Graph">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <GridPane layoutX="37.0" layoutY="98.0" prefHeight="132.0" prefWidth="386.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Line color " GridPane.rowIndex="1" />
+                              <ColorPicker fx:id="line" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <MenuButton fx:id="menuGraphTypeButton" mnemonicParsing="false" text=" Data (Time)" GridPane.columnIndex="1">
+                              </MenuButton>
+                              <Label text="Graph type" />
+                              <Label text="Grid color " GridPane.rowIndex="2" />
+                              <ColorPicker fx:id="grid" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            </tabs>
+        </TabPane>
+      <Button fx:id="ok" layoutX="700.0" layoutY="406.0" mnemonicParsing="false" onAction="#okAction" prefHeight="25.0" prefWidth="47.0" text="OK" />
+      <Button fx:id="apply" layoutX="633.0" layoutY="406.0" mnemonicParsing="false" onAction="#applyAction" text="Apply" />
+    </children>
+</Pane>

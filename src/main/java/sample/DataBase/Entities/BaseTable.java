@@ -3,9 +3,7 @@ package sample.DataBase.Entities;
 import sample.DataGetting.Values;
 import sample.InitialDataSetting.Graph.GraphType;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass

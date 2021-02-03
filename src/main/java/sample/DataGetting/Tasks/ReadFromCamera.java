@@ -52,12 +52,9 @@ public class ReadFromCamera implements Runnable {
 
             while ( read ) {
                 if (camera.read(frame)) {
-                    System.out.println(frame.empty());
                     snapshots.put(new Snapshot(frame, new Date()));
-                    System.out.println(snapshots.size() + "размер очереди");
-                    System.out.println("изображенеи захвачено" );
                     try {
-                        Thread.sleep(1000/ SettingsData.getInstance().getFps()); // 10 кадров в секунду
+                        Thread.sleep(1000/ SettingsData.getInstance().getFps()); // ? кадров в секунду
                     } catch (InterruptedException e) {
                         return;
                     }

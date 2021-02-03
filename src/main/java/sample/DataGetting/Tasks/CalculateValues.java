@@ -4,8 +4,6 @@ import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import sample.AdditionalUtils.CalculatorUtils;
-import sample.DataBase.AverageTableHelper;
-import sample.DataBase.DetailedTableHelper;
 import sample.DataBase.Entities.AveragingTable;
 import sample.DataBase.Entities.DetailedTable;
 import sample.DataBase.HibernateUtil;
@@ -15,6 +13,7 @@ import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.Utils.ImageUtils;
 import sample.Utils.TemporaryValues;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.Lock;
@@ -28,12 +27,12 @@ public class CalculateValues implements Runnable{
     private double d0;
     private List<Values> bufferForAveraging;
     private Lock bufferLock;
-    private TemporaryValues detailedTableValues;
-    private TemporaryValues averageTableValues;
+    private TemporaryValues<DetailedTable> detailedTableValues;
+    private TemporaryValues<AveragingTable> averageTableValues;
     private HibernateUtil hibernateUtil;
 
     public CalculateValues(DefaultErrorDataSet dataSet, ImageView imageView, BlockingQueue<Snapshot> snapshots, BlockingQueue<Values> values, List<Values> bufferForAveraging
-            , double d0, Lock dataSetLock, Lock bufferLock, TemporaryValues detailedTableValues, TemporaryValues averageTableValues,HibernateUtil hibernateUtil) {
+            , double d0, Lock dataSetLock, Lock bufferLock, TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues,HibernateUtil hibernateUtil) {
         this.imageView = imageView;
         this.dataSet = dataSet;
         this.snapshots = snapshots;

@@ -1,7 +1,5 @@
 package sample.DataGetting.Tasks;
 
-import sample.DataBase.DetailedTableHelper;
-import sample.DataBase.Entities.DetailedTable;
 import sample.DataBase.HibernateUtil;
 import sample.DataGetting.Snapshot;
 import sample.DataGetting.Values;

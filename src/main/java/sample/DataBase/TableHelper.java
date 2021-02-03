@@ -1,39 +1,38 @@
 package sample.DataBase;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.type.EntityType;
-import sample.AdditionalUtils.TableHelperUtils;
+import sample.AdditionalUtils.DBUtils;
 import sample.DataBase.Entities.*;
-import sample.Graph.BoundaryValues;
-import sample.InitialDataSetting.Graph.GraphType;
 
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class TableHelper {
+public class TableHelper<Type extends BaseTable>{
     private SessionFactory sessionFactory;
 
-    public TableHelper(HibernateUtil hibernateUtil) {
+    private  Class<Type> type;
+
+    private final Logger logger = Logger.getLogger(TableHelper.class);
+
+    public TableHelper(HibernateUtil hibernateUtil,Class<Type> type) {
         sessionFactory = hibernateUtil.getSessionFactory();
+        this.type = type;
     }
 
-    public List<BaseTable> addTableList(List<BaseTable> list) {
+
+
+    public List<Type> addTableList(List<Type> list) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         for (int i = 0; i < list.size(); i++) {
             session.save(list.get(i));
-            if (i % 10 == 0) {
+            if (i % 100 == 0) {
                 session.flush();
+                logger.debug("flush");
             }
         }
         session.getTransaction().commit();
@@ -41,78 +40,38 @@ public class TableHelper {
         return list;
     }
 
-
-    public Class<? extends BaseTable> getTableClass() {
-        if (this instanceof DetailedTableHelper)
-            return DetailedTable.class;
-        if (this instanceof AbbreviatedTableHelper)
-            return AveragingTable.class;
-
-        return null;
-    }
-
     public void tableToTxt(String path) {
         int rowsCount = (int) getCount();
         String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])   Distance(pixels) \r\n";
-        writeListToFile(columnNames, path);
+        DBUtils.writeListToFile(columnNames, path);
         Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(getTableClass());
-        Root<BaseTable> root = cq.from(getTableClass());
-        cb.asc(root.get(BaseTable_.timestamp));
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Type> criteriaQuery = criteriaBuilder.createQuery(type);
+        Root<Type> root = criteriaQuery.from(type);
+        criteriaBuilder.asc(root.get(BaseTable_.timestamp));
 
         for (int first = 0; first < rowsCount; first = first + 100) {
-            List<BaseTable> list = null;
+            List<Type> list = null;
             int max = 100;
-            list = getRows(session, cq, first, max);
-            String text = listToString(list);
-            writeListToFile(text, path);
+            list = (List<Type>) DBUtils.getRows(session, criteriaQuery, first, max);
+            String text = DBUtils.listToString(list);
+            DBUtils.writeListToFile(text, path);
         }
         session.close();
     }
 
-
-    private List<BaseTable> getRows(Session session, CriteriaQuery cq, int first, int max) {
-        Query query = session.createQuery(cq);
-        query.setFirstResult(first);
-        query.setMaxResults(max);
-        return query.getResultList();
-    }
-
-
-
-    private String listToString(List<BaseTable> list) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (BaseTable bt : list) {
-            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SS");
-            stringBuilder.append(dateFormat.format(new Date(bt.getTimestamp()))).append("   ").
-                    append(bt.getStressThickness()).append("   ").
-                    append(bt.getCurvature()).append("   ").
-                    append(bt.getDistance()).append("\r\n");
-        }
-        return stringBuilder.toString();
-    }
-
-    private void writeListToFile(String text, String path) {
-        try {
-            Files.write(Paths.get(path), text.getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<BaseTable> getTable() {
-        List<BaseTable> result = new ArrayList<>();
+    public List<Type> getTable() {
+        List<Type> result = new ArrayList<>();
         int rowsCount = (int) getCount();
         Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(getTableClass());
-        Root<BaseTable> root = cq.from(getTableClass());
-        cb.asc(root.get(BaseTable_.timestamp));
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Type> criteriaQuery = criteriaBuilder.createQuery(type);
+        Root<Type> root = criteriaQuery.from(type);
+        criteriaBuilder.asc(root.get(BaseTable_.timestamp));
         for (int first = 0; first < rowsCount; first = first + 100) {
-            List<BaseTable> list = null;
+            List<Type> list = null;
             int max = 100;
-            list = getRows(session, cq, first, max);
+            list = (List<Type>) DBUtils.getRows(session, criteriaQuery, first, max);
             result.addAll(list);
         }
         session.close();
@@ -123,7 +82,7 @@ public class TableHelper {
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<? extends BaseTable> root = cq.from(getTableClass());
+        Root<Type> root = cq.from(type);
         cq.select(cb.count(root));
         Query query = session.createQuery(cq);
         Long count = (Long) query.getSingleResult();

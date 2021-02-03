@@ -20,6 +20,7 @@ import java.util.List;
 
 public class WorkWindowControllerUtils {
 
+/*
     public static void setGraphTypesMenuButton(MenuButton graphTypes, Label thicknessLabel, Label stressLabel, TextField thicknessTextField,
                                                LineChart lineChart, WorkWindowSettings workWindowSettings) {
         for (GraphType type : GraphType.values()) {
@@ -48,12 +49,14 @@ public class WorkWindowControllerUtils {
         }
     }
 
-    public static void plotGraph( LineChart lineChart, WorkWindowSettings workWindowSettings) {
+*/
+/*    public static void plotGraph( LineChart lineChart, WorkWindowSettings workWindowSettings) {
         if (workWindowSettings.getTableType() != null && workWindowSettings.getGraphType() != null) {
             GraphUtils.InitialGraph(workWindowSettings.getGraphType(),lineChart);
             getDataForGraph(lineChart,workWindowSettings);
         }
-    }
+    }*//*
+
 
     public static void setFieldsActivity(GraphType type, Label thicknessLabel, Label stressLabel, TextField thicknessTextField) {
         if (type == GraphType.StressThickness)
@@ -62,7 +65,8 @@ public class WorkWindowControllerUtils {
             setFieldsAsDisable(thicknessLabel, stressLabel, thicknessTextField);
     }
 
-    public static void getDataForGraph(LineChart lineChart,WorkWindowSettings workWindowSettings) {
+*/
+/*    public static void getDataForGraph(LineChart lineChart,WorkWindowSettings workWindowSettings) {
         lineChart.getData().clear();
         HibernateUtil hibernateUtil = new HibernateUtilForOpening(SettingsData.getInstance().getPathToDB());
         TableHelper tableHelper = null;
@@ -90,7 +94,8 @@ public class WorkWindowControllerUtils {
         series.getData().addAll(graphValuesFromTable.clone());
         lineChart.getData().add(series);
         GraphUtils.setBoundaries( (NumberAxis) lineChart.getXAxis(),(NumberAxis)lineChart.getYAxis(), boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
-    }
+    }*//*
+
 
     public static void setFieldsAsDisable(Label thicknessLabel, Label stressLabel, TextField thicknessTextField) {
         thicknessLabel.setDisable(true);
@@ -104,5 +109,6 @@ public class WorkWindowControllerUtils {
         thicknessTextField.setDisable(false);
     }
 
+*/
 
 }

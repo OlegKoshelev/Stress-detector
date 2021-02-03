@@ -2,6 +2,9 @@ package sample.DataGetting;
 
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.scene.image.ImageView;
+import org.apache.log4j.Logger;
+import sample.DataBase.Entities.AveragingTable;
+import sample.DataBase.Entities.DetailedTable;
 import sample.DataBase.HibernateUtil;
 import sample.DataGetting.Tasks.*;
 import sample.Utils.TemporaryValues;
@@ -23,13 +26,15 @@ public class Calculator {
     private List<Values> bufferForAveraging;
     private Lock dataSetLock;
     private Lock bufferLock;
-    private TemporaryValues detailedTableValues;
-    private TemporaryValues averageTableValues;
+    private TemporaryValues<DetailedTable> detailedTableValues;
+    private TemporaryValues<AveragingTable> averageTableValues;
     private HibernateUtil hibernateUtil;
     private double d0;
+    private final Logger logger = Logger.getLogger(Calculator.class);
 
 
-    public Calculator(DefaultErrorDataSet dataSet, ImageView imageView, int poolSize, double d0, HibernateUtil hibernateUtil, TemporaryValues detailedTableValues, TemporaryValues averageTableValues) {
+    public Calculator(DefaultErrorDataSet dataSet, ImageView imageView, int poolSize, double d0, HibernateUtil hibernateUtil,
+                      TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues) {
         this.dataSet = dataSet;
         this.imageView = imageView;
         snapshots = new LinkedBlockingQueue<>();
@@ -44,19 +49,22 @@ public class Calculator {
         this.hibernateUtil = hibernateUtil;
     }
 
-    public void start() throws Exception {
+    public double start() throws Exception {
         executorService.execute(new ReadFromCamera(snapshots));// запуск считывания изображений с камеры, задача выполняется до прекращения работы программы
         if (d0 == 0) { // даем executorService задачи  по вычислению стартового расстояния, кол-во задач зависит от заполненности листа snapshots, задачи подаются в течении определенного времени
-            Future<Double> future = executorService.submit(new CalculateStartingDistance(snapshots, executorService));
-            d0 = future.get();
+            Future<Double> startDistance = executorService.submit(new CalculateStartingDistance(snapshots, executorService));
+            d0 = startDistance.get();
             System.out.println(d0 + " -------D0");
-            executorService.execute(new FillBuffer(100, bufferForAveraging, bufferLock, snapshots, executorService, d0, detailedTableValues, hibernateUtil));
+            Future bufferFilling = executorService.submit(new FillBuffer(100, bufferForAveraging, bufferLock, snapshots, executorService, d0, detailedTableValues, hibernateUtil));
+            bufferFilling.get();
             executorService.execute(new GetValues(dataSet, imageView, snapshots, values, d0, bufferForAveraging, executorService, dataSetLock, bufferLock, detailedTableValues, averageTableValues, hibernateUtil));
         } else { // даем executorService задачи  по вычислению values, задача выполняется до прекращения работы программы, кол-во задач зависит от заполненности листа snapshots
-            executorService.execute(new FillBuffer(100, bufferForAveraging, bufferLock, snapshots, executorService, d0, detailedTableValues, hibernateUtil));
+            Future bufferFilling = executorService.submit(new FillBuffer(100, bufferForAveraging, bufferLock, snapshots, executorService, d0, detailedTableValues, hibernateUtil));
+            bufferFilling.get();
             executorService.execute(new GetValues(dataSet, imageView, snapshots, values, d0, bufferForAveraging, executorService, dataSetLock, bufferLock, detailedTableValues, averageTableValues, hibernateUtil));
         }
-
+        logger.debug("d0 is calculated --- " + d0 );
+        return d0;
     }
 
 

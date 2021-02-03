@@ -5,21 +5,21 @@ import sample.DataBase.Entities.BaseTable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemporaryValues {
-    private List<BaseTable> list = new ArrayList<>();
+public class TemporaryValues <Type extends BaseTable> {
+    private List<Type> list = new ArrayList<>();
 
     public TemporaryValues() {
     }
 
-    public void addValue(BaseTable table){
+    public synchronized void addValue(Type table){
         list.add(table);
     }
 
-    public List<BaseTable> getList() {
+    public synchronized List<Type> getList() {
         return list;
     }
 
-    public void  reset(){
+    public synchronized void  reset(){
         list.clear();
     }
 

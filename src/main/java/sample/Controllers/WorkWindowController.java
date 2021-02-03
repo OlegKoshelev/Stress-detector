@@ -37,9 +37,9 @@ public class WorkWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WorkWindowControllerUtils.setGraphTypesMenuButton(graphTypes,thicknessLabel,stressLabel,thicknessTextField, lineChart,workWindowSettings);
+/*        WorkWindowControllerUtils.setGraphTypesMenuButton(graphTypes,thicknessLabel,stressLabel,thicknessTextField, lineChart,workWindowSettings);
         WorkWindowControllerUtils.setTableTypesMenuButton(tableTypes,lineChart,workWindowSettings);
-        WorkWindowControllerUtils.setFieldsAsDisable(thicknessLabel,stressLabel,thicknessTextField);
+        WorkWindowControllerUtils.setFieldsAsDisable(thicknessLabel,stressLabel,thicknessTextField);*/
     }
 
 

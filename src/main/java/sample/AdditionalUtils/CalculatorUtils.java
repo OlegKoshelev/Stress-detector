@@ -22,7 +22,7 @@ public class CalculatorUtils {
             curvature += value.getCurvature();
             stressThickness += value.getStressThickness();
         }
-        return new Values(stressThickness / values.size(),curvature / values.size(), values.get(values.size()-1).getTimestamp(), distance / values.size());
+        return new Values(stressThickness / values.size(),curvature / values.size(), values.get(0).getTimestamp(), distance / values.size());
     }
 
     public static Values getMedianValueS( List <Values> values ){
@@ -54,6 +54,10 @@ public class CalculatorUtils {
         result.setCurvature((v1.getCurvature() + v2.getCurvature())/2);
         result.setStressThickness((v1.getStressThickness() + v2.getStressThickness())/2);
         return result;
+    }
+
+    public static double getAverageDistance(List<Double> list){
+        return list.stream().mapToDouble(a -> a).average().getAsDouble();
     }
 
 
@@ -93,13 +97,13 @@ public class CalculatorUtils {
 
     public static double getDistance(Mat img) {
         if (img == null)
-            return -1;
+            return 0;
         //  System.load("C:\\opencv_3_3\\build\\java\\x64\\opencv_java330.dll");
         Mat img2 = ImageUtils.matReform(img);
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(img2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
         if (contours.size() < 2)
-            return  -1;
+            return  0;
         Collections.sort(contours, new Comparator<MatOfPoint>() {
             @Override
             public int compare(MatOfPoint o1, MatOfPoint o2) {

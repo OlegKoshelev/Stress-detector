@@ -70,9 +70,6 @@ public class CalculateValues implements Runnable{
             dataSet.add(averageValues.getTimestamp().getTime(),averageValues.getMeasuredValue(SettingsData.getInstance().getType()));
             AveragingTable avValues = new AveragingTable(averageValues);
             averageTableValues.addValue(avValues);
-            System.out.println(averageTableValues.size() + "-----------AVERAGE");
-            System.out.println(detailedTableValues.size() + "-----------DETAILED");
-
         } catch (InterruptedException e) {
            return;
         }

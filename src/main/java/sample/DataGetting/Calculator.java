@@ -23,9 +23,9 @@ public class Calculator {
     private ExecutorService executorService;
     private BlockingQueue<Snapshot> snapshots;
     private BlockingQueue<Values> values;
-    private List<Values> bufferForAveraging;
-    private Lock dataSetLock;
-    private Lock bufferLock;
+//    private List<Values> bufferForAveraging;
+//    private Lock dataSetLock;
+//    private Lock bufferLock;
     private TemporaryValues<DetailedTable> detailedTableValues;
     private TemporaryValues<AveragingTable> averageTableValues;
     private HibernateUtil hibernateUtil;
@@ -39,9 +39,9 @@ public class Calculator {
         this.imageView = imageView;
         snapshots = new LinkedBlockingQueue<>();
         values = new LinkedBlockingQueue<>();
-        dataSetLock = new ReentrantLock();
-        bufferLock = new ReentrantLock();
-        bufferForAveraging = new ArrayList<>();
+//        dataSetLock = new ReentrantLock();
+//        bufferLock = new ReentrantLock();
+//        bufferForAveraging = new ArrayList<>();
         this.executorService = Executors.newCachedThreadPool();
         this.detailedTableValues = detailedTableValues;
         this.averageTableValues = averageTableValues;
@@ -49,22 +49,8 @@ public class Calculator {
         this.hibernateUtil = hibernateUtil;
     }
 
-    public double start() throws Exception {
-        executorService.execute(new ReadFromCamera(snapshots));// запуск считывания изображений с камеры, задача выполняется до прекращения работы программы
-        if (d0 == 0) { // даем executorService задачи  по вычислению стартового расстояния, кол-во задач зависит от заполненности листа snapshots, задачи подаются в течении определенного времени
-            Future<Double> startDistance = executorService.submit(new CalculateStartingDistance(snapshots, executorService));
-            d0 = startDistance.get();
-            System.out.println(d0 + " -------D0");
-            Future bufferFilling = executorService.submit(new FillBuffer(100, bufferForAveraging, bufferLock, snapshots, executorService, d0, detailedTableValues, hibernateUtil));
-            bufferFilling.get();
-            executorService.execute(new GetValues(dataSet, imageView, snapshots, values, d0, bufferForAveraging, executorService, dataSetLock, bufferLock, detailedTableValues, averageTableValues, hibernateUtil));
-        } else { // даем executorService задачи  по вычислению values, задача выполняется до прекращения работы программы, кол-во задач зависит от заполненности листа snapshots
-            Future bufferFilling = executorService.submit(new FillBuffer(100, bufferForAveraging, bufferLock, snapshots, executorService, d0, detailedTableValues, hibernateUtil));
-            bufferFilling.get();
-            executorService.execute(new GetValues(dataSet, imageView, snapshots, values, d0, bufferForAveraging, executorService, dataSetLock, bufferLock, detailedTableValues, averageTableValues, hibernateUtil));
-        }
-        logger.debug("d0 is calculated --- " + d0 );
-        return d0;
+    public void start() throws Exception {
+        executorService.execute(new ReadFromCamera(dataSet,imageView,d0,hibernateUtil,detailedTableValues,averageTableValues));
     }
 
 

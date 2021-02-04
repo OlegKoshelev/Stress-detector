@@ -21,6 +21,7 @@ public class CountCameras {
     private boolean resWasChanged = false; // installing a new resolution
     private CameraCustomizations cameraCustomizations = CameraCustomizations.getInstance(); // camera settings
 
+
     static {
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);

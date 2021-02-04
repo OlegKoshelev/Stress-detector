@@ -26,6 +26,8 @@ public class InitialDistanceHelper {
         Session session = sessionFactory.openSession();
         InitialDistance initialDistance = session.get(InitialDistance.class,1);
         session.close();
+        if (initialDistance == null)
+            return 0;
         return initialDistance.getD0();
     }
 }

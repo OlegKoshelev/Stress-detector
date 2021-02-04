@@ -3,7 +3,6 @@ package sample.Controllers;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import org.apache.log4j.Logger;
@@ -144,14 +143,16 @@ public class MainController implements Initializable {
             showCheckingDBWindow();
             return;
         }
-
+        if (d0 == 0){
+          d0 =  new InitialDistanceHelper(hibernateUtil).getDistance();
+        }
         detailedTableValues = new TemporaryValues<DetailedTable>();
         averageTableValues = new TemporaryValues<AveragingTable>();
         calculator = new Calculator(dataSet,imageView, d0,hibernateUtil,detailedTableValues,averageTableValues);
         values = calculator.getValuesQueue();
-        d0 = calculator.start();
-        new InitialDistanceHelper(hibernateUtil).saveDistance(d0);
-        logger.debug("d0 is --- " + d0);
+        calculator.start();
+//        new InitialDistanceHelper(hibernateUtil).saveDistance(d0);
+//        logger.debug("d0 is --- " + d0);
 
     }
 

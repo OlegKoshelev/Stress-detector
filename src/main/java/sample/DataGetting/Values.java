@@ -1,7 +1,7 @@
 package sample.DataGetting;
 
 
-import javafx.scene.image.Image;
+
 import sample.InitialDataSetting.Graph.GraphType;
 
 import java.util.Date;

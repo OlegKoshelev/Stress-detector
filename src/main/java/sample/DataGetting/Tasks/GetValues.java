@@ -66,7 +66,6 @@ public class GetValues implements Runnable{
                 TableHelper<AveragingTable> averageTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
                 averageTableHelper.addTableList(averageTableValues.getList());
                 averageTableValues.reset();
-
                 dataSetLock.unlock();
                 bufferLock.unlock();
 

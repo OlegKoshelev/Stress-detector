@@ -50,6 +50,8 @@ public class CalculateValues implements Runnable{
     public void run() {
 
         try {
+            bufferLock.lock();
+            dataSetLock.lock();
             Snapshot snapshot = snapshots.take();
             double distance = CalculatorUtils.getDistance(snapshot.getImg());
             double curvature = CalculatorUtils.getCurvature(distance,d0);
@@ -58,8 +60,7 @@ public class CalculateValues implements Runnable{
             Values usualValues = new Values(stressThickness, curvature, snapshot.getDate(),distance);
             values.put(usualValues);
 
-            bufferLock.lock();
-            dataSetLock.lock();
+
             bufferForAveraging.add(usualValues);
             DetailedTable dtValues = new DetailedTable(usualValues);
             detailedTableValues.addValue(dtValues);

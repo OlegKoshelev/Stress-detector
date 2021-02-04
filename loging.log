@@ -268,3 +268,98 @@ org.sqlite.SQLiteException: [SQLITE_BUSY]  The database file is locked (database
 	at java.lang.Thread.run(Thread.java:748)
 17:03:29 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
 17:03:29 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+17:19:32 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+17:23:12 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+17:23:12 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+17:23:14 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+17:23:14 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+17:23:14 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+17:23:14 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+17:23:14 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+17:23:14 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+17:23:14 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+17:23:14 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+17:23:14 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+17:23:14 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+18:20:17 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+18:25:24 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+18:25:24 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+18:27:25 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+18:31:29 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+18:31:29 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+19:00:32 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:11:48 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:16:12 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:16:52 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:29:20 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:29:20 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:31:58 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:36:39 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:36:39 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:38:26 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:41:07 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:41:07 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:46:14 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:49:34 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:49:34 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:53:47 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+19:56:55 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+19:56:55 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+19:57:35 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:57:35 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:57:38 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:57:38 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:58:12 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+19:58:12 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+19:58:37 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+21:17:44 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+21:19:23 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+21:19:23 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+21:21:42 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+21:27:29 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+21:29:33 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+21:29:33 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+21:38:26 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+21:40:12 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+21:40:12 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+21:40:53 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+21:40:53 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+21:41:08 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+21:41:08 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+21:41:12 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+21:41:12 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+21:41:15 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+21:41:15 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+21:44:25 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:02:55 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:03:51 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:07:25 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:15:39 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:25:47 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:26:44 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:35:36 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:40:12 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:45:14 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+22:52:34 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 19, SQLState: null
+22:52:34 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_CONSTRAINT]  Abort due to constraint violation (UNIQUE constraint failed: DetailedTable.DATE)
+22:52:36 WARN  [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - SQL Error: 5, SQLState: null
+22:52:36 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] - [SQLITE_BUSY]  The database file is locked (database is locked)
+23:00:07 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+23:01:07 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+23:12:12 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+23:18:06 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+23:34:49 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+12:47:20 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+12:50:21 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+12:50:41 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+12:50:53 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+12:52:13 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+12:52:58 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+13:24:33 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+13:27:09 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+13:29:15 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+13:33:38 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+13:37:22 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+15:47:58 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+15:54:20 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+15:58:49 WARN  [org.hibernate.orm.connections.pooling] - HHH10001002: Using Hibernate built-in connection pool (not for production use!)

@@ -48,19 +48,17 @@ public class ReadFromCamera implements Runnable {
         try {
             // Считываем кадры
             Mat frame = new Mat();
-
-
             while ( read ) {
                 if (camera.read(frame)) {
                     snapshots.put(new Snapshot(frame, new Date()));
-                    try {
-                        Thread.sleep(1000/ SettingsData.getInstance().getFps()); // ? кадров в секунду
-                    } catch (InterruptedException e) {
-                        return;
-                    }
                 }
                 else {
                     throw new Exception("Не удалось захватить кадр");
+                }
+                try {
+                    Thread.sleep(1000/ SettingsData.getInstance().getFps()); // ? кадров в секунду
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
         } catch (Exception e) {

@@ -33,7 +33,7 @@ public class Calculator {
     private final Logger logger = Logger.getLogger(Calculator.class);
 
 
-    public Calculator(DefaultErrorDataSet dataSet, ImageView imageView, int poolSize, double d0, HibernateUtil hibernateUtil,
+    public Calculator(DefaultErrorDataSet dataSet, ImageView imageView, double d0, HibernateUtil hibernateUtil,
                       TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues) {
         this.dataSet = dataSet;
         this.imageView = imageView;
@@ -42,7 +42,7 @@ public class Calculator {
         dataSetLock = new ReentrantLock();
         bufferLock = new ReentrantLock();
         bufferForAveraging = new ArrayList<>();
-        this.executorService = Executors.newFixedThreadPool(poolSize);
+        this.executorService = Executors.newCachedThreadPool();
         this.detailedTableValues = detailedTableValues;
         this.averageTableValues = averageTableValues;
         this.d0 = d0;

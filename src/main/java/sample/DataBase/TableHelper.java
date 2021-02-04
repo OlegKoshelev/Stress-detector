@@ -25,24 +25,23 @@ public class TableHelper<Type extends BaseTable>{
 
 
 
-    public List<Type> addTableList(List<Type> list) {
+    public void addTableList(List<Type> list) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         for (int i = 0; i < list.size(); i++) {
             session.save(list.get(i));
             if (i % 100 == 0) {
                 session.flush();
-                logger.debug("flush");
+                logger.debug("flush ---- " + i);
             }
         }
         session.getTransaction().commit();
         session.close();
-        return list;
     }
 
-    public void tableToTxt(String path) {
+    public void tableToTxt(String path,double d0) {
         int rowsCount = (int) getCount();
-        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])   Distance(pixels) \r\n";
+        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])    Distance(pixels)    D0(pixels) = " + d0 + "\r\n";
         DBUtils.writeListToFile(columnNames, path);
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();

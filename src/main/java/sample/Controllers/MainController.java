@@ -1,38 +1,19 @@
 package sample.Controllers;
 
-import com.sun.javafx.css.Size;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.LineChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import org.apache.log4j.Logger;
-import org.opencv.core.Core;
-import org.opencv.videoio.VideoCapture;
-import org.opencv.videoio.Videoio;
 import sample.AdditionalUtils.GraphUtils;
-import sample.AdditionalUtils.MainControllerUtils;
 import sample.DataBase.*;
 import sample.DataBase.Entities.AveragingTable;
-import sample.DataBase.Entities.BaseTable;
 import sample.DataBase.Entities.DetailedTable;
 import sample.DataGetting.Calculator;
-import sample.DataGetting.Tasks.addValuesToChart;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
-import sample.DataSet.Data;
-import sample.Graph.AxisBoundaries;
-import sample.Graph.BoundaryValues;
 import sample.Utils.*;
 
 import javafx.fxml.FXML;
@@ -41,23 +22,17 @@ import javafx.fxml.Initializable;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import org.hibernate.cfg.Configuration;
 import sample.DataGetting.Values;
-import sample.DataGetting.ValuesLayer;
 
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -69,67 +44,29 @@ public class MainController implements Initializable {
     private double d0 = 0;
     @FXML
     private StackPane stackPane;
-    @FXML
-    private VBox vBox;
-
-    @FXML
-    private Stage settings;
     private BlockingQueue<Values> values;
-    private ValuesLayer modelLayer;
     private Calculator calculator;
     @FXML
     private ImageView imageView;
-    // @FXML
-    //private LineChart<Number, Number> chart;
     private  de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis()) ;
     private  DefaultErrorDataSet dataSet = new DefaultErrorDataSet("distance");
-   // private Data data = new Data("distance");
-   // @FXML
-   // private NumberAxis xAxis;
-   // @FXML
-   // private NumberAxis yAxis;
-   // private XYChart.Series<Number, Number> series = new XYChart.Series<>();
-   // private Thread thread;
-    private Configuration dBConfiguration;
-    private Boolean autoRangingFlag = false;
-    private TemporaryValues<DetailedTable> detailedTableValues =  new TemporaryValues<DetailedTable>();
-    private TemporaryValues<AveragingTable> averageTableValues =  new TemporaryValues<AveragingTable>();
+    private TemporaryValues<DetailedTable> detailedTableValues ;
+    private TemporaryValues<AveragingTable> averageTableValues ;
     private HibernateUtil hibernateUtil;
 
-    //private BoundaryValues boundaryValues = new BoundaryValues(0, 0, 0, 0);
 
-    //private double maxY = 0;
-
-    //private double minY = 0;
-
-
-    //private long maxX = 0;
-
-   // private long minX = 0;
-
-    private TextField textField = null;
-
-    // private TemporaryValues detailedTableValues = new TemporaryValues();
-    private TemporaryValues regularTableValues = new TemporaryValues();
-    private TemporaryValues abbreviatedTableValues = new TemporaryValues();
-
-  //  @FXML
-   // private Button run;
 
     public void setValues(BlockingQueue<Values> values) {
         this.values = values;
     }
 
-    private GraphValuesFromTable graphValuesFromAbbreviatedTable = new GraphValuesFromTable();
-    private GraphValuesFromTable graphValuesFromRegularTable = new GraphValuesFromTable();
-    private AxisBoundaries axisBoundary = null;
+
 
     private final Logger logger = Logger.getLogger(MainController.class);
 
 
 
-
-    @Override
+   @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
             SettingsTransfer.getFullSettingsFromFile();
@@ -139,7 +76,6 @@ public class MainController implements Initializable {
         stackPane.getChildren().add(chart);
         GraphUtils.initialGraph(chart, dataSet);
 
-        // GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart);
     }
     public void graphRepaint() {
         GraphUtils.repaint(chart);
@@ -209,191 +145,45 @@ public class MainController implements Initializable {
             return;
         }
 
-
-        calculator = new Calculator(dataSet,imageView,5, d0,hibernateUtil,detailedTableValues,averageTableValues);
+        detailedTableValues = new TemporaryValues<DetailedTable>();
+        averageTableValues = new TemporaryValues<AveragingTable>();
+        calculator = new Calculator(dataSet,imageView, d0,hibernateUtil,detailedTableValues,averageTableValues);
         values = calculator.getValuesQueue();
         d0 = calculator.start();
+        new InitialDistanceHelper(hibernateUtil).saveDistance(d0);
         logger.debug("d0 is --- " + d0);
-       // calculator.getExecutorService().execute(new addValuesToChart(dataSet,values));
 
     }
-/*
-    @FXML
-    public void changeAutoRanging() {
-        if (autoRanging.isSelected()) {
-            autoRangingFlag = MainControllerUtils.setAutoRanging(autoRanging);
-            boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
 
-                        minY = graphValuesFromRegularTable.getMinY();
-            maxY = graphValuesFromRegularTable.getMaxY();
-            minX = graphValuesFromRegularTable.getMinX();
-            maxX = graphValuesFromRegularTable.getMaxX();
 
-            GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
-        } else {
-            autoRangingFlag = MainControllerUtils.removeAutoRanging(autoRanging);
-        }
-    }
-*/
-
-/*
-    private void changeBoundaries(long xValue, double yValue) {
-        if (autoRangingFlag) {
-            if (xValue > maxX - 50000) {
-                maxX = xValue + 100000;
-                xAxis.setUpperBound(maxX);
-                double v = (double) (maxX - minX) / 5;
-                xAxis.setTickUnit(v);
-            }
-
-            if (yValue > maxY) {
-                maxY = yValue + Math.abs(yValue * 0.1);
-                yAxis.setUpperBound(maxY);
-                yAxis.setTickUnit((maxY - minY) / 5);
-            }
-
-            if (yValue < minY) {
-                minY = yValue - Math.abs(yValue * 0.1);
-                yAxis.setLowerBound(minY);
-                yAxis.setTickUnit((maxY - minY) / 5);
-            }
-        }
-    }
- */
 
     public void addDataToTable() {
         // заносим данные в подробную таблицу
-        TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil,DetailedTable.class);
-        detailedTableHelper.addTableList(detailedTableValues.getList());
-        detailedTableValues.reset();
+        if (detailedTableValues != null && detailedTableValues.getList().size() > 0) {
+            TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil,DetailedTable.class);
+            detailedTableHelper.addTableList(detailedTableValues.getList());
+            detailedTableValues.reset();
+        }
 
         // заносим данные в усредненную таблицу
-        TableHelper<AveragingTable> averageTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
-        averageTableHelper.addTableList(averageTableValues.getList());
-        averageTableValues.reset();
+        if (averageTableValues != null && averageTableValues.getList().size() > 0) {
+            TableHelper<AveragingTable> averageTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
+            averageTableHelper.addTableList(averageTableValues.getList());
+            averageTableValues.reset();
+        }
 
     }
 
-/*
-    private void createThread() {
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Values value = values.take();
-                        System.out.println("time ----- " + value.getTimestamp() + " ---- distance -----" + value.getDistance());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-    /*
- */
-
-  /*
-    private void createThread() {
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (boundaryValues.getMinX() == 0) {
-                    boundaryValues.setMinX(new Date().getTime());
-                    GraphUtils.setAxisSettings(xAxis, boundaryValues.getMinX(), boundaryValues.getMaxX());
-                    GraphUtils.setAxisSettings(yAxis, boundaryValues.getMinY(), boundaryValues.getMaxY());
-                }
-
-
-                int counter = 0;
-
-
-                int pushPoint = SettingsData.getInstance().getRotationTime() * SettingsData.getInstance().getFps() / 2000; // коэффициент используемый для выгрузки данных в таблицы
-                MedianOfList regularTableMedian = new MedianOfList();
-                MedianOfList abbreviatedTableMedian = new MedianOfList();
-
-
-                while (true) {
-                    Values nextValue = null;
-                    try {
-                       // if (values.size() == 0) continue;
-                        nextValue = values.take();
-                        if (nextValue == null) continue;
-                        counter++;
-
-                        //changeBoundaries(nextValue.getTimestamp().getTime(), nextValue.getStressThickness());
-                        Image image = nextValue.getImage();
-                        regularTableMedian.save(nextValue);
-                        DetailedTable dtValues = new DetailedTable(nextValue);
-                        detailedTableValues.addValue(dtValues);
-                        System.out.println(counter);
-
-                        if (counter % 1000 == 0) {
-                            addDataToTable();
-                        }
-
-
-                        if (counter % pushPoint == 0) { // вычисляем медиану выборки для обычной таблицы (учитывая скорость вращеняи подложки и частоту камеры) и выводим ее на график
-                            Values regularTableValue = regularTableMedian.getMedianValueAndClear();
-                            abbreviatedTableMedian.save(regularTableValue);
-                            System.out.println("размер -- " + abbreviatedTableMedian.getList());
-                            RegularTable rtValue = new RegularTable(regularTableValue);
-                            regularTableValues.addValue(rtValue);
-                            Number x = regularTableValue.getTimestamp().getTime();
-                            Number y = regularTableValue.getMeasuredValue(SettingsData.getInstance().getType());
-                            GraphUtils.changeBoundaries(regularTableValue.getTimestamp().getTime(), regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()), xAxis, yAxis, boundaryValues, autoRangingFlag);
-                            graphValuesFromRegularTable.addData(regularTableValue.getTimestamp().getTime(), regularTableValue.getMeasuredValue(SettingsData.getInstance().getType()));
-                            System.out.println(x + "   " + regularTableValue.getTimestamp().toString());
-                            Platform.runLater(() -> series.getData().add(new XYChart.Data<>(x, y)));
-                            if (counter % (pushPoint * 20) != 0) {
-
-                            }
-                        }
-
-
-                        if ((counter % (pushPoint * 12) == 0) && (abbreviatedTableMedian.getList().size() > 0)) {
-                            System.out.println(abbreviatedTableMedian.getList().size() + " -----РАЗМЕР");
-                            Values abbreviatedTableValue = abbreviatedTableMedian.getMedianValueAndClear();
-                            AbbreviatedTable atValue = new AbbreviatedTable(abbreviatedTableValue);
-                            graphValuesFromAbbreviatedTable.addData(abbreviatedTableValue.getTimestamp().getTime(), abbreviatedTableValue.getMeasuredValue(SettingsData.getInstance().getType()));
-                            abbreviatedTableValues.addValue(atValue);
-                        }
-
-                        if (counter % (pushPoint * 1000) == 0 && counter != 0) {
-                            Platform.runLater(() -> {
-                                series.getData().clear();
-                                ObservableList<XYChart.Data<Number, Number>> clone = graphValuesFromAbbreviatedTable.clone();
-                                series.getData().addAll(clone);
-                            });
-                        }
-                        Platform.runLater(() -> imageView.setImage(image));
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-            }
-        });
-    }
-   */
 
     @FXML
     public void stop() {
-        addDataToTable();
         shutdown();
+        addDataToTable();
     }
 
     public void shutdown() {
         if (calculator != null)
             calculator.stop();
-        /*
-               if (thread != null) {
-            // d0 = modelLayer.getD0();
-            //  modelLayer.stop();
-            d0 = calculator.getD0();
-            calculator.stop();
-            thread.interrupt();
-        }
-         */
     }
 
     @FXML
@@ -407,7 +197,7 @@ public class MainController implements Initializable {
             file.createNewFile();
             System.out.println(file.getAbsolutePath());
             hibernateUtil = new HibernateUtilForSaving(file.getAbsolutePath());
-            //   chart.getData().clear();
+            dataSet.clearData();
             SettingsData.getInstance().setPathToDB(file.getAbsolutePath());
         }
 
@@ -415,7 +205,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void openDB() {
-        //   chart.getData().clear();
+        dataSet.clearData();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Opening DB");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SQLite", "*.db"));
@@ -423,45 +213,15 @@ public class MainController implements Initializable {
         if (file == null)
             return;
         SettingsData.getInstance().setPathToDB(file.getAbsolutePath());
-        //    chart.getData().clear();
 
-
-
-/*
+        dataSet.clearData();
         hibernateUtil = new HibernateUtilForOpening(SettingsData.getInstance().getPathToDB());
-        RegularTableHelper regularTableHelper = new RegularTableHelper(hibernateUtil);
-        List<BaseTable> data = regularTableHelper.getTable();
-   */
-
-
-
-        //   GraphUtils.InitialGraph(SettingsData.getInstance().getType(), chart, xAxis, yAxis, series);
-        // GraphsSettings.DistanceGraph(chart, xAxis, yAxis, series);
-        //     chart.getData().clear();
-        //    chart.getData().add(series);
-
-
-
-        /*
-                ObservableList<XYChart.Data<Number, Number>> result = FXCollections.observableArrayList();
-        for (BaseTable values :
-                data) {
-            graphValuesFromRegularTable.addData(values.getTimestamp(), values.getMeasuredValue(SettingsData.getInstance().getType()));
+        TableHelper<AveragingTable> averagingTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
+        List<AveragingTable> data = averagingTableHelper.getTable();
+        d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
+        for (AveragingTable avTable : data) {
+            dataSet.add(avTable.getTimestamp(),avTable.getMeasuredValue(SettingsData.getInstance().getType()));
         }
-         */
-
-
-
-
-     //   boundaryValues = new BoundaryValues(graphValuesFromRegularTable.getMinX(), graphValuesFromRegularTable.getMinY(), graphValuesFromRegularTable.getMaxX(), graphValuesFromRegularTable.getMaxY());
-      /*
-        maxX = graphValuesFromRegularTable.getMaxX();
-        minX = graphValuesFromRegularTable.getMinX();
-        maxY = graphValuesFromRegularTable.getMaxY();
-        minY = graphValuesFromRegularTable.getMinY();
-       */
-       // series.getData().addAll(graphValuesFromRegularTable.clone());
-      //  GraphUtils.setBoundaries(xAxis, yAxis, boundaryValues.getMinX(), boundaryValues.getMaxX(), boundaryValues.getMinY(), boundaryValues.getMaxY());
     }
 
     @FXML
@@ -474,13 +234,12 @@ public class MainController implements Initializable {
             file.createNewFile();
             addDataToTable();
             TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil,DetailedTable.class);
-            detailedTableHelper.tableToTxt(file.getAbsolutePath());
+            detailedTableHelper.tableToTxt(file.getAbsolutePath(), d0);
         }
     }
 
-/*
     @FXML
-    public void SaveAsRegularTable() throws IOException {
+    public void SaveAsAveragingTable() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Saving to file");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
@@ -488,24 +247,9 @@ public class MainController implements Initializable {
         if (file != null) {
             file.createNewFile();
             addDataToTable();
-            RegularTableHelper detailedTableHelper = new RegularTableHelper(hibernateUtil);
-            detailedTableHelper.tableToTxt(file.getAbsolutePath());
+            TableHelper<AveragingTable> detailedTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
+            detailedTableHelper.tableToTxt(file.getAbsolutePath(),d0);
         }
     }
-
-    @FXML
-    public void SaveAsAbbreviatedTable() throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Saving to file");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
-        File file = fileChooser.showSaveDialog(null);
-        if (file != null) {
-            file.createNewFile();
-            addDataToTable();
-            AbbreviatedTableHelper abbreviatedTableHelper = new AbbreviatedTableHelper(hibernateUtil);
-            abbreviatedTableHelper.tableToTxt(file.getAbsolutePath());
-        }
-    }
-*/
 
 }

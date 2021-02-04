@@ -9,13 +9,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class BaseTable_ {
 
 	public static volatile SingularAttribute<BaseTable, Double> distance;
-	public static volatile SingularAttribute<BaseTable, Long> id;
 	public static volatile SingularAttribute<BaseTable, Double> stressThickness;
 	public static volatile SingularAttribute<BaseTable, Long> timestamp;
 	public static volatile SingularAttribute<BaseTable, Double> curvature;
 
 	public static final String DISTANCE = "distance";
-	public static final String ID = "id";
 	public static final String STRESS_THICKNESS = "stressThickness";
 	public static final String TIMESTAMP = "timestamp";
 	public static final String CURVATURE = "curvature";

@@ -25,9 +25,11 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#Edit" text="New DB" />
+                  <MenuItem mnemonicParsing="false" onAction="#openDB" text="Open DB" />
                   <Menu mnemonicParsing="false" text="Save to txt">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#SaveAsDetailedTable" text="Save as Detailed Table" />
+                        <MenuItem mnemonicParsing="false" onAction="#SaveAsAveragingTable" text="Save as Averaging Table" />
                      </items>
                   </Menu>
                     </items>

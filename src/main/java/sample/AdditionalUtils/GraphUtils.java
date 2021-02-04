@@ -309,9 +309,9 @@ public class GraphUtils {
             public String toString(Number object) {
                 Date date = new Date(object.longValue());
                 DateFormat dateFormat = null;
-                if (xAxis.getMax() -  xAxis.getMin() < 1000)
+                if (xAxis.getMax() -  xAxis.getMin() < 10000)
                     dateFormat = new SimpleDateFormat("HH:mm:ss.SS");
-                if (xAxis.getMax() -  xAxis.getMin() >= 1000 && xAxis.getMax() -  xAxis.getMin() <3600000)
+                if (xAxis.getMax() -  xAxis.getMin() >= 10000 && xAxis.getMax() -  xAxis.getMin() <3600000)
                     dateFormat = new SimpleDateFormat("HH:mm:ss");
                 if (xAxis.getMax() -  xAxis.getMin() >= 3600000)
                     dateFormat = new SimpleDateFormat("HH:mm");

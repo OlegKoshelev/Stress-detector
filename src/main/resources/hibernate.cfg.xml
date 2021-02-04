@@ -12,5 +12,6 @@
 
     <mapping class="sample.DataBase.Entities.AveragingTable"/>
     <mapping class = "sample.DataBase.Entities.DetailedTable"/>
+    <mapping class="sample.DataBase.Entities.InitialDistance"/>
   </session-factory>
 </hibernate-configuration>

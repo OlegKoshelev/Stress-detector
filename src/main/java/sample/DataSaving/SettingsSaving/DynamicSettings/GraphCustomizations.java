@@ -4,19 +4,11 @@ import sample.InitialDataSetting.Graph.GraphType;
 import javafx.scene.paint.Color;
 
 public class GraphCustomizations {
-    private static GraphCustomizations instance;
-    private GraphType type;
+    private GraphType type = GraphType.StressThickness;
     private Color line;
     private Color grid;
 
-    private GraphCustomizations() {
-    }
-
-    public static GraphCustomizations getInstance() {
-        if (instance == null) {
-            instance = new GraphCustomizations();
-        }
-        return instance;
+    public GraphCustomizations() {
     }
 
     public GraphType getType() {

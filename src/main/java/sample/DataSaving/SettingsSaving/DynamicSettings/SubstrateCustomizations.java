@@ -4,20 +4,12 @@ package sample.DataSaving.SettingsSaving.DynamicSettings;
 import sample.InitialDataSetting.Substrate.BiaxialModulus;
 
 public class SubstrateCustomizations {
-    private static SubstrateCustomizations instance;
-    private BiaxialModulus biaxialModulus;
-    private int thickness;
-    private int rotationTime;
-    private int additionalBiaxialModule;
+    private BiaxialModulus biaxialModulus = BiaxialModulus.Al2O3;
+    private int thickness = 403;
+    private int rotationTime = 1800;
+    private int additionalBiaxialModule = 0;
 
-    private SubstrateCustomizations() {
-    }
-
-    public static SubstrateCustomizations getInstance() {
-        if (instance == null) {
-            instance = new SubstrateCustomizations();
-        }
-        return instance;
+    public SubstrateCustomizations() {
     }
 
     public BiaxialModulus getBiaxialModulus() {

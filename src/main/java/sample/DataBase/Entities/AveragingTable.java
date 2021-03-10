@@ -12,7 +12,7 @@ public class AveragingTable extends BaseTable {
         super(values);
     }
 
-    public AveragingTable(long timestamp) {
-        super(timestamp);
-    }
+//    public AveragingTable(long timestamp) {
+//        super(timestamp);
+//    }
 }

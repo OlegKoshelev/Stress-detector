@@ -42,6 +42,7 @@ public class ReadFromCamera implements Runnable {
     private Date startTime;
     private int dotsAmount = 100;
     private double d0;
+    private  int counter = 0;
 
     static {
         nu.pattern.OpenCV.loadShared();
@@ -49,25 +50,23 @@ public class ReadFromCamera implements Runnable {
     }
 
 
-
-
-
     public ReadFromCamera(DefaultErrorDataSet dataSet, ImageView imageView, double d0, HibernateUtil hibernateUtil,
-                          TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues) throws Exception {
+                          TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues,
+                          Lock dataSetLock, Lock bufferLock) throws Exception {
 
         this.dataSet = dataSet;
         this.imageView = imageView;
         snapshots = new LinkedBlockingQueue<>();
         values = new LinkedBlockingQueue<>();
-        dataSetLock = new ReentrantLock();
-        bufferLock = new ReentrantLock();
+        this.dataSetLock = dataSetLock;
+        this.bufferLock = bufferLock;
         bufferForAveraging = new ArrayList<>();
         this.executorService = Executors.newCachedThreadPool();
         this.detailedTableValues = detailedTableValues;
         this.averageTableValues = averageTableValues;
         this.d0 = d0;
         this.hibernateUtil = hibernateUtil;
-        this.distances = new CopyOnWriteArrayList<>();;
+        this.distances = new CopyOnWriteArrayList<>();
         read = true;
         // Подключаемся к камере
         camera = new VideoCapture(SettingsData.getInstance().getCameraId());
@@ -104,7 +103,7 @@ public class ReadFromCamera implements Runnable {
                 try {
                     Thread.sleep(1000 / SettingsData.getInstance().getFps()); // ? кадров в секунду
                 } catch (InterruptedException e) {
-                    return;
+                   break;
                 }
             }
         } catch (Exception e) {
@@ -117,14 +116,15 @@ public class ReadFromCamera implements Runnable {
 
     private void selectTask() throws ExecutionException, InterruptedException {
         if (d0 == 0) {
-           d0 = getInitialDistance();
-            return;
+            d0 = getInitialDistance();
+        }else{
+            if (!bufferIsFull) {
+                fillBuffer();
+            } else {
+                getValues();
+            }
         }
-        if (!bufferIsFull) {
-            fillBuffer();
-        } else {
-            getValues();
-        }
+
 
     }
 
@@ -137,7 +137,7 @@ public class ReadFromCamera implements Runnable {
             for (Future<?> future : futures) {
                 future.get();
             }
-            Future<Double> startDistance = executorService.submit(new CalculateInitialDistance(distances,hibernateUtil));
+            Future<Double> startDistance = executorService.submit(new CalculateInitialDistance(distances, hibernateUtil));
             return startDistance.get();
         }
     }
@@ -154,23 +154,16 @@ public class ReadFromCamera implements Runnable {
         }
     }
 
-    private void getValues (){
-        if (averageTableValues.size() >= 1000){
-            bufferLock.lock();
-            dataSetLock.lock();
-            System.out.println("> 1000");
-            // заносим данные в подробную таблицу
-            TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil,DetailedTable.class);
-            detailedTableHelper.addTableList(detailedTableValues.getList());
-            detailedTableValues.reset();
-            // заносим данные в усредненную таблицу
-            TableHelper<AveragingTable> averageTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
-            averageTableHelper.addTableList(averageTableValues.getList());
-            averageTableValues.reset();
-            dataSetLock.unlock();
-            bufferLock.unlock();
+    private void getValues() {
+
+        if (counter % 1000 == 0 && counter > 0) {
+            executorService.execute(new AddDataToTables(dataSetLock,bufferLock, detailedTableValues,averageTableValues, hibernateUtil));
         }
-        executorService.submit(new CalculateValues(dataSet,imageView,snapshots,values,bufferForAveraging,d0,dataSetLock,bufferLock,detailedTableValues, averageTableValues,hibernateUtil));
+
+        executorService.execute(new CalculateValues(dataSet, imageView, snapshots, values,
+                bufferForAveraging, d0, dataSetLock, bufferLock, detailedTableValues,
+                averageTableValues, hibernateUtil));
+        counter ++;
     }
 }
 

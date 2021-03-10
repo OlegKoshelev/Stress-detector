@@ -1,5 +1,7 @@
 package sample.Controllers;
 
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import sample.AdditionalUtils.CalculatorUtils;
 import sample.DataSaving.SettingsSaving.*;
 import sample.DataSaving.SettingsSaving.DynamicSettings.CameraCustomizations;
@@ -25,6 +27,8 @@ import sample.Utils.ImageUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -77,14 +81,22 @@ public class SettingsController implements Initializable {
     private Button ok;
     @FXML
     private Label countors;
+    @FXML
+    private  Label pointOne;
+    @FXML
+    private Label pointTwo;
+    @FXML
+    private Label spotOne;
+    @FXML
+    private Label spotTwo;
     // Usual fields
     SettingsData settingsData = SettingsData.getInstance();
-    private CameraCustomizations cameraCustomizations = CameraCustomizations.getInstance();
-    private SubstrateCustomizations substrateCustomizations = SubstrateCustomizations.getInstance();
-    private GraphCustomizations graphCustomizations = GraphCustomizations.getInstance();
+    private CameraCustomizations cameraCustomizations = new CameraCustomizations();
+    private SubstrateCustomizations substrateCustomizations = new SubstrateCustomizations();
+    private GraphCustomizations graphCustomizations = new GraphCustomizations();
     private TextField[] hsvFields = new TextField[10];
     private LinkedBlockingQueue<Mat> inputQueue = new LinkedBlockingQueue<>(); // images from cameras
-    private CountCameras countCameras = new CountCameras(); // use for determine cameras count and turning on camera
+    private CountCameras countCameras = new CountCameras(cameraCustomizations); // use for determine cameras count and turning on camera
     private Thread camerasThread; // use for display images from cameras
     //Boolean fields
     private boolean work = true; // while work is true camera is working
@@ -122,7 +134,7 @@ public class SettingsController implements Initializable {
 
     @FXML
     public void applyAction() {
-        SettingsTransfer.transferFromDynamicOptionsToFullSettings();
+        SettingsTransfer.transferFromDynamicOptionsToFullSettings(cameraCustomizations,graphCustomizations,substrateCustomizations);
     }
 
     @FXML
@@ -137,7 +149,7 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SettingsTransfer.transferFromFullSettingsToDynamicOptions();
+        SettingsTransfer.transferFromFullSettingsToDynamicOptions(cameraCustomizations,graphCustomizations,substrateCustomizations);
 
         hsvFields = new TextField[]{hueMin, saturationMin, valueMin, hueMax, saturationMax, valueMax,
                 fps, additionalBiaxialModule, thickness, rotationTime};
@@ -303,9 +315,22 @@ public class SettingsController implements Initializable {
                     if (nextMat == null) continue;
                     Image image = null;
                     if (hsvView){
-                        Platform.runLater(() -> countors.setText("" + CalculatorUtils.getNumberOfContours(nextMat,cameraCustomizations))   );
-                        Platform.runLater(() -> countors.setText("" + CalculatorUtils.getNumberOfContours(nextMat,cameraCustomizations))   );
-                        image = ImageUtils.getHsvImage(nextMat, cameraCustomizations);
+                        Point [] points = new Point[2];
+                        double [] sizes = new double[2];
+                        List<MatOfPoint> contoursList = new ArrayList<>();
+//                        Platform.runLater(() -> countors.setText("" + CalculatorUtils.getNumberOfContours(nextMat,cameraCustomizations))   );
+                        //image = ImageUtils.getHsvImage(nextMat, cameraCustomizations);
+                        image = ImageUtils.getHsvImageWithСenters(nextMat, cameraCustomizations, points,sizes,contoursList);
+                        Platform.runLater(() -> {
+                            if (points[0] != null && points[1] != null) {
+                                countors.setText("" + contoursList.size());
+                                pointOne.setText("(" + ((int) (points[0].x) )+ "," + ((int) (points[0].y) ) + ")");
+                                pointTwo.setText("(" + ((int) (points[1].x) )+ "," + ((int) (points[1].y) ) + ")");
+                                spotOne.setText("" + sizes[0]);
+                                spotTwo.setText("" + sizes[1]);
+                            }
+                        }  );
+
                     }
 
                     else

@@ -24,6 +24,7 @@ public class SettingsFileObject {
     private Color grid;
     private double distance;
     private  int angle;
+    private double d0;
 
 
 
@@ -169,5 +170,13 @@ public class SettingsFileObject {
 
     public void setAngle(int angle) {
         this.angle = angle;
+    }
+
+    public double getD0() {
+        return d0;
+    }
+
+    public void setD0(double d0) {
+        this.d0 = d0;
     }
 }

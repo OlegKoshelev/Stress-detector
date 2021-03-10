@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import sample.AdditionalUtils.StaticSettingsControllerUtils;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
+import sample.DataSaving.SettingsSaving.StaticSettings.SetupCustomizations;
 
 
 import java.io.IOException;
@@ -23,18 +24,22 @@ public class StaticSettingsController implements Initializable {
     private TextField angle;
     @FXML
     private TextField distance;
+    @FXML
+    private TextField d0;
+
+    private SetupCustomizations setupCustomizations = new SetupCustomizations();
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SettingsTransfer.transferFromFullSettingsToStaticOptions();
+        SettingsTransfer.transferFromFullSettingsToStaticOptions(setupCustomizations);
         StaticSettingsControllerUtils.uploadImage(imageView);
-        StaticSettingsControllerUtils.textFieldsCustomization(angle,distance);
+        StaticSettingsControllerUtils.textFieldsCustomization(angle,distance,d0,setupCustomizations);
     }
 
     @FXML
     public void applyAction() throws IOException, URISyntaxException {
-        SettingsTransfer.transferFromStaticOptionsToFullSettings();
+        SettingsTransfer.transferFromStaticOptionsToFullSettings(setupCustomizations);
         SettingsTransfer.writeToSettingsFile();
     }
 

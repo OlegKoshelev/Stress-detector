@@ -26,6 +26,7 @@ public class SettingsData {
     private Color grid = Color.BLACK;
     private double distance = 0.5;
     private int angle = 70;
+    private double d0 = 0;
     private String pathToDB;
 
     private SettingsData() {
@@ -195,5 +196,13 @@ public class SettingsData {
 
     public void setPathToDB(String pathToDB) {
         this.pathToDB = pathToDB;
+    }
+
+    public double getD0() {
+        return d0;
+    }
+
+    public void setD0(double d0) {
+        this.d0 = d0;
     }
 }

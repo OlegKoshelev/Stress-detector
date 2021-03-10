@@ -3,10 +3,9 @@ package sample.DataSaving.SettingsSaving.DynamicSettings;
 import sample.InitialDataSetting.Camera.Resolution;
 
 public class CameraCustomizations {
-    private static CameraCustomizations instance;
-    private Resolution resolution;
-    private int fps;
-    private int cameraId;
+    private Resolution resolution = Resolution.HD;
+    private int fps =30;
+    private int cameraId = 0;
     private int hueMin = 0;
     private int hueMax = 200;
     private int saturationMin = 0;
@@ -14,14 +13,7 @@ public class CameraCustomizations {
     private int valueMin = 220;
     private  int valueMax = 255;
 
-    private CameraCustomizations() {
-    }
-
-    public static CameraCustomizations getInstance() {
-        if (instance == null) {
-            instance = new CameraCustomizations();
-        }
-        return instance;
+    public CameraCustomizations() {
     }
 
     public int getFps() {

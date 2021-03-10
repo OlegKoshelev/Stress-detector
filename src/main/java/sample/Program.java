@@ -10,6 +10,7 @@ import sample.Controllers.SettingsController;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 
 public class Program extends Application {
@@ -26,8 +27,14 @@ public class Program extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
-            controller.shutdown();
-            controller.addDataToTable();
+//            controller.shutdown();
+//            controller.addDataToTable();
+            try {
+                controller.stop();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             System.exit(0);
         });
     }

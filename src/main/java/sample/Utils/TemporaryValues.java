@@ -11,15 +11,15 @@ public class TemporaryValues <Type extends BaseTable> {
     public TemporaryValues() {
     }
 
-    public synchronized void addValue(Type table){
+    public  void addValue(Type table){
         list.add(table);
     }
 
-    public synchronized List<Type> getList() {
+    public  List<Type> getList() {
         return list;
     }
 
-    public synchronized void  reset(){
+    public  void  reset(){
         list.clear();
     }
 

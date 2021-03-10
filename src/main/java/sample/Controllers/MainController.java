@@ -11,6 +11,9 @@ import sample.DataBase.*;
 import sample.DataBase.Entities.AveragingTable;
 import sample.DataBase.Entities.DetailedTable;
 import sample.DataGetting.Calculator;
+import sample.DataGetting.Tasks.AddDataToTables;
+import sample.DataGetting.Tasks.SaveAsAverageTable;
+import sample.DataGetting.Tasks.SaveAsDetailedTable;
 import sample.DataSaving.SettingsSaving.SettingsData;
 import sample.DataSaving.SettingsSaving.SettingsTransfer;
 import sample.Utils.*;
@@ -33,8 +36,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainController implements Initializable {
 
@@ -47,12 +53,13 @@ public class MainController implements Initializable {
     private Calculator calculator;
     @FXML
     private ImageView imageView;
-    private  de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis()) ;
-    private  DefaultErrorDataSet dataSet = new DefaultErrorDataSet("distance");
-    private TemporaryValues<DetailedTable> detailedTableValues ;
-    private TemporaryValues<AveragingTable> averageTableValues ;
+    private de.gsi.chart.XYChart chart = new de.gsi.chart.XYChart(new DefaultNumericAxis(), new DefaultNumericAxis());
+    private DefaultErrorDataSet dataSet = new DefaultErrorDataSet("in situ measurements");
+    private TemporaryValues<DetailedTable> detailedTableValues = new TemporaryValues<DetailedTable>();
+    private TemporaryValues<AveragingTable> averageTableValues = new TemporaryValues<AveragingTable>();
     private HibernateUtil hibernateUtil;
-
+    private Lock dataSetLock = new ReentrantLock();
+    private Lock bufferLock = new ReentrantLock();
 
 
     public void setValues(BlockingQueue<Values> values) {
@@ -60,12 +67,10 @@ public class MainController implements Initializable {
     }
 
 
-
     private final Logger logger = Logger.getLogger(MainController.class);
 
 
-
-   @Override
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
             SettingsTransfer.getFullSettingsFromFile();
@@ -76,6 +81,7 @@ public class MainController implements Initializable {
         GraphUtils.initialGraph(chart, dataSet);
 
     }
+
     public void graphRepaint() {
         GraphUtils.repaint(chart);
     }
@@ -126,7 +132,6 @@ public class MainController implements Initializable {
     }
 
 
-
     public void showCheckingDBWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/CheckingDB.fxml"));
         Parent root = loader.load();
@@ -139,53 +144,66 @@ public class MainController implements Initializable {
 
     @FXML
     public void print() throws Exception {
+        if( calculator != null && calculator.getExecutorService() != null && !calculator.getExecutorService().isShutdown()){
+            return;
+        }
         if (hibernateUtil == null) {
             showCheckingDBWindow();
             return;
         }
-        if (d0 == 0){
-          d0 =  new InitialDistanceHelper(hibernateUtil).getDistance();
+
+        if (d0 == 0) {
+            d0 = SettingsData.getInstance().getD0();
+            if( d0 != 0){
+                new InitialDistanceHelper(hibernateUtil).saveDistance(d0);
+            }
+            if (d0 == 0) {
+                d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
+            }
+            logger.debug(d0);
         }
-        detailedTableValues = new TemporaryValues<DetailedTable>();
-        averageTableValues = new TemporaryValues<AveragingTable>();
-        calculator = new Calculator(dataSet,imageView, d0,hibernateUtil,detailedTableValues,averageTableValues);
-        values = calculator.getValuesQueue();
+        calculator = new Calculator(dataSet, imageView, d0, hibernateUtil, detailedTableValues,
+                averageTableValues,dataSetLock,bufferLock);
         calculator.start();
-//        new InitialDistanceHelper(hibernateUtil).saveDistance(d0);
-//        logger.debug("d0 is --- " + d0);
 
     }
 
 
-
-    public void addDataToTable() {
-        // заносим данные в подробную таблицу
-        if (detailedTableValues != null && detailedTableValues.getList().size() > 0) {
-            TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil,DetailedTable.class);
-            detailedTableHelper.addTableList(detailedTableValues.getList());
-            detailedTableValues.reset();
+    public Future addDataToTable() {
+        if (d0 == 0 && hibernateUtil != null) {
+            d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
         }
+        Future future = calculator.getExecutorService().submit(new AddDataToTables(dataSetLock,bufferLock, detailedTableValues,
+                averageTableValues, hibernateUtil));
 
-        // заносим данные в усредненную таблицу
-        if (averageTableValues != null && averageTableValues.getList().size() > 0) {
-            TableHelper<AveragingTable> averageTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
-            averageTableHelper.addTableList(averageTableValues.getList());
-            averageTableValues.reset();
-        }
-
+        return future;
     }
 
 
     @FXML
-    public void stop() {
-        shutdown();
-        addDataToTable();
+    public void stop() throws InterruptedException {
+        if ( calculator == null || calculator.getExecutorService() == null || calculator.getExecutorService().isShutdown())
+            return;
+        calculator.getExecutorService().shutdownNow();
+        Thread.sleep(2000);
+        bufferLock.lock();
+        dataSetLock.lock();
+        // заносим данные в подробную таблицу
+        TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil, DetailedTable.class);
+        detailedTableHelper.addTableList(detailedTableValues.getList());
+        detailedTableValues.reset();
+        // заносим данные в усредненную таблицу
+        TableHelper<AveragingTable> averageTableHelper = new TableHelper<>(hibernateUtil, AveragingTable.class);
+        averageTableHelper.addTableList(averageTableValues.getList());
+        averageTableValues.reset();
+        dataSetLock.unlock();
+        bufferLock.unlock();
     }
 
-    public void shutdown() {
-        if (calculator != null)
-            calculator.stop();
-    }
+//    public void shutdown() {
+//        if (calculator != null)
+//            calculator.stop();
+//    }
 
     @FXML
     public void Edit() throws IOException {
@@ -217,39 +235,56 @@ public class MainController implements Initializable {
 
         dataSet.clearData();
         hibernateUtil = new HibernateUtilForOpening(SettingsData.getInstance().getPathToDB());
-        TableHelper<AveragingTable> averagingTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
-        List<AveragingTable> data = averagingTableHelper.getTable();
-        d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
-        for (AveragingTable avTable : data) {
-            dataSet.add(avTable.getTimestamp(),avTable.getMeasuredValue(SettingsData.getInstance().getType()));
-        }
+//        TableHelper<AveragingTable> averagingTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
+//        List<AveragingTable> data = averagingTableHelper.getTable();
+//        d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
+//        for (AveragingTable avTable : data) {
+//            dataSet.add(avTable.getTimestamp(),avTable.getMeasuredValue(SettingsData.getInstance().getType()));
+//        }
     }
 
     @FXML
-    public void SaveAsDetailedTable() throws IOException {
+    public void SaveAsDetailedTable() throws IOException, ExecutionException, InterruptedException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Saving to file");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
         File file = fileChooser.showSaveDialog(null);
+        if (d0 == 0){
+            d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
+        }
         if (file != null) {
             file.createNewFile();
-            addDataToTable();
-            TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil,DetailedTable.class);
-            detailedTableHelper.tableToTxt(file.getAbsolutePath(), d0);
+            if (calculator != null && calculator.getExecutorService() != null && !calculator.getExecutorService().isShutdown()) {
+                Future future = addDataToTable();
+                calculator.getExecutorService().execute(new SaveAsDetailedTable(d0,hibernateUtil,file.getAbsolutePath(),future));
+            }else{
+                TableHelper<DetailedTable> detailedTableHelper = new TableHelper<>(hibernateUtil, DetailedTable.class);
+                detailedTableHelper.tableToTxt(file.getAbsolutePath(), d0);
+            }
         }
     }
 
     @FXML
-    public void SaveAsAveragingTable() throws IOException {
+    public void SaveAsAveragingTable() throws IOException, ExecutionException, InterruptedException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Saving to file");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT", "*.txt"));
         File file = fileChooser.showSaveDialog(null);
+        if (d0 == 0){
+            d0 = new InitialDistanceHelper(hibernateUtil).getDistance();
+        }
         if (file != null) {
             file.createNewFile();
-            addDataToTable();
-            TableHelper<AveragingTable> detailedTableHelper = new TableHelper<>(hibernateUtil,AveragingTable.class);
-            detailedTableHelper.tableToTxt(file.getAbsolutePath(),d0);
+
+            if (calculator != null && calculator.getExecutorService() != null && !calculator.getExecutorService().isShutdown()) {
+                Future future = addDataToTable();
+//                Future future = calculator.getExecutorService().submit(new AddDataToTables(dataSetLock,bufferLock, detailedTableValues,
+//                        averageTableValues, hibernateUtil));
+                calculator.getExecutorService().execute(new SaveAsAverageTable(d0,hibernateUtil,file.getAbsolutePath(),future));
+            } else {
+                TableHelper<AveragingTable> averagingTableTableHelper = new TableHelper<>(hibernateUtil, AveragingTable.class);
+                averagingTableTableHelper.tableToTxt(file.getAbsolutePath(), d0);
+            }
         }
     }
 

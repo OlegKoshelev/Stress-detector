@@ -41,7 +41,8 @@ public class TableHelper<Type extends BaseTable>{
 
     public void tableToTxt(String path,double d0) {
         int rowsCount = (int) getCount();
-        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])    Distance(pixels)    D0(pixels) = " + d0 + "\r\n";
+        String columnNames = "Time (long)   Stress*Thickness(GPa*um)   Curvature(m^[-1])    Distance(pixels)" +
+                "   X_1(pixel)  Y_1(pixel)   X_2(pixel)  Y_2(pixel) Size_1(length of contour)   Size_2(length of contour)   D0(pixels) = " + d0 + "\r\n";
         DBUtils.writeListToFile(columnNames, path);
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -49,9 +50,9 @@ public class TableHelper<Type extends BaseTable>{
         Root<Type> root = criteriaQuery.from(type);
         criteriaBuilder.asc(root.get(BaseTable_.timestamp));
 
-        for (int first = 0; first < rowsCount; first = first + 100) {
+        for (int first = 0; first < rowsCount; first = first + 10000) {
             List<Type> list = null;
-            int max = 100;
+            int max = 10000;
             list = (List<Type>) DBUtils.getRows(session, criteriaQuery, first, max);
             String text = DBUtils.listToString(list);
             DBUtils.writeListToFile(text, path);
@@ -67,9 +68,9 @@ public class TableHelper<Type extends BaseTable>{
         CriteriaQuery<Type> criteriaQuery = criteriaBuilder.createQuery(type);
         Root<Type> root = criteriaQuery.from(type);
         criteriaBuilder.asc(root.get(BaseTable_.timestamp));
-        for (int first = 0; first < rowsCount; first = first + 100) {
+        for (int first = 0; first < rowsCount; first = first + 10000) {
             List<Type> list = null;
-            int max = 100;
+            int max = 10000;
             list = (List<Type>) DBUtils.getRows(session, criteriaQuery, first, max);
             result.addAll(list);
         }

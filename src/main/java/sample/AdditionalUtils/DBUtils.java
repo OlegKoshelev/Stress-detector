@@ -29,7 +29,13 @@ public class DBUtils {
             stringBuilder.append(dateFormat.format(new Date(bt.getTimestamp()))).append("   ").
                     append(bt.getStressThickness()).append("   ").
                     append(bt.getCurvature()).append("   ").
-                    append(bt.getDistance()).append("\r\n");
+                    append(bt.getDistance()).append("   ").
+                    append(bt.getX1()).append("   ").
+                    append(bt.getY1()).append("   ").
+                    append(bt.getX2()).append("   ").
+                    append(bt.getY2()).append("   ").
+                    append(bt.getSize1()).append("   ").
+                    append(bt.getSize2()).append("\r\n");
         }
         return stringBuilder.toString();
     }

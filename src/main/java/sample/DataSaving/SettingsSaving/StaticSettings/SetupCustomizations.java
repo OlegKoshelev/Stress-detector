@@ -3,17 +3,12 @@ package sample.DataSaving.SettingsSaving.StaticSettings;
 
 
 public class SetupCustomizations {
-    private static SetupCustomizations instance;
-    private double distance;
-    private int angle;
+    private double distance = 0.5;
+    private int angle = 70;
+    private double d0 = 0;
 
-    private SetupCustomizations(){}
 
-    public static SetupCustomizations getInstance() {
-        if (instance == null) {
-            instance = new SetupCustomizations();
-        }
-        return instance;
+    public SetupCustomizations() {
     }
 
     public double getDistance() {
@@ -30,5 +25,13 @@ public class SetupCustomizations {
 
     public void setAngle(int angle) {
         this.angle = angle;
+    }
+
+    public double getD0() {
+        return d0;
+    }
+
+    public void setD0(double d0) {
+        this.d0 = d0;
     }
 }

@@ -19,7 +19,7 @@ public class CountCameras {
     private boolean read = true; // getting new images while it is true
     private boolean camWasChanged = true; // installing a new camera and closing the last camera
     private boolean resWasChanged = false; // installing a new resolution
-    private CameraCustomizations cameraCustomizations = CameraCustomizations.getInstance(); // camera settings
+    private CameraCustomizations cameraCustomizations ; // camera settings
 
 
     static {
@@ -27,7 +27,8 @@ public class CountCameras {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-    public CountCameras() {
+    public CountCameras(CameraCustomizations cameraCustomizations) {
+        this.cameraCustomizations = cameraCustomizations;
         for (int device = 0; device < 10; device++) {
             camera = new VideoCapture(device);
             if (!camera.isOpened()) {
@@ -78,7 +79,6 @@ public class CountCameras {
                             changeResolution();
                         if (camera.read(frame)) {
                             inputQueue.add(frame);
-                            System.out.println("захват");
                             try {
                                 Thread.sleep(1000 / cameraCustomizations.getFps());
                             } catch (InterruptedException e) {

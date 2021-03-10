@@ -10,14 +10,20 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.StaticSettingsController">
    <children>
       <ImageView fx:id="imageView" fitHeight="341.0" fitWidth="380.0" layoutX="218.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" />
-      <TextField fx:id="distance" layoutX="72.0" layoutY="99.0" prefHeight="31.0" prefWidth="102.0" />
-      <TextField fx:id="angle" layoutX="73.0" layoutY="171.0" prefHeight="31.0" prefWidth="102.0" />
+      <TextField fx:id="distance" layoutX="90.0" layoutY="99.0" prefHeight="31.0" prefWidth="102.0" />
+      <TextField fx:id="angle" layoutX="91.0" layoutY="171.0" prefHeight="31.0" prefWidth="102.0" />
       <Button fx:id="apply" layoutX="408.0" layoutY="355.0" mnemonicParsing="false" onAction="#applyAction" text="Apply" />
       <Button fx:id="ok" layoutX="492.0" layoutY="355.0" mnemonicParsing="false" onAction="#okAction" prefHeight="25.0" prefWidth="47.0" text="OK" />
-      <Label layoutX="21.0" layoutY="102.0" text="L(m):" />
-      <Label layoutX="28.0" layoutY="177.0" text="α:">
+      <Label layoutX="43.0" layoutY="102.0" text="L(m):" />
+      <Label layoutX="62.0" layoutY="177.0" text="α:">
          <font>
             <Font size="14.0" />
          </font></Label>
+      <TextField fx:id="d0" layoutX="90.0" layoutY="240.0" prefHeight="31.0" prefWidth="102.0" />
+      <Label layoutX="19.0" layoutY="246.0" text="d0(pixels):">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

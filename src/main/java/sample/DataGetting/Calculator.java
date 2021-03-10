@@ -22,10 +22,10 @@ public class Calculator {
     private ImageView imageView;
     private ExecutorService executorService;
     private BlockingQueue<Snapshot> snapshots;
-    private BlockingQueue<Values> values;
+//    private BlockingQueue<Values> values;
 //    private List<Values> bufferForAveraging;
-//    private Lock dataSetLock;
-//    private Lock bufferLock;
+    private Lock dataSetLock;
+    private Lock bufferLock;
     private TemporaryValues<DetailedTable> detailedTableValues;
     private TemporaryValues<AveragingTable> averageTableValues;
     private HibernateUtil hibernateUtil;
@@ -34,13 +34,14 @@ public class Calculator {
 
 
     public Calculator(DefaultErrorDataSet dataSet, ImageView imageView, double d0, HibernateUtil hibernateUtil,
-                      TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues) {
+                      TemporaryValues<DetailedTable> detailedTableValues, TemporaryValues<AveragingTable> averageTableValues,
+                      Lock dataSetLock,Lock bufferLock) {
         this.dataSet = dataSet;
         this.imageView = imageView;
         snapshots = new LinkedBlockingQueue<>();
-        values = new LinkedBlockingQueue<>();
-//        dataSetLock = new ReentrantLock();
-//        bufferLock = new ReentrantLock();
+//        values = new LinkedBlockingQueue<>();
+        this.dataSetLock = dataSetLock;
+        this.bufferLock = bufferLock;
 //        bufferForAveraging = new ArrayList<>();
         this.executorService = Executors.newCachedThreadPool();
         this.detailedTableValues = detailedTableValues;
@@ -50,27 +51,23 @@ public class Calculator {
     }
 
     public void start() throws Exception {
-        executorService.execute(new ReadFromCamera(dataSet,imageView,d0,hibernateUtil,detailedTableValues,averageTableValues));
+        executorService.execute(new ReadFromCamera(dataSet,imageView,d0,hibernateUtil,detailedTableValues,
+                averageTableValues,dataSetLock,bufferLock));
     }
 
 
     public void stop() {
+
         executorService.shutdownNow();
     }
 
-    public double getD0() {
-        return d0;
-    }
 
-    public BlockingQueue<Values> getValuesQueue() throws Exception {
-        return values;
-    }
+//    public BlockingQueue<Values> getValuesQueue() throws Exception {
+//        return values;
+//    }
 
     public ExecutorService getExecutorService() {
         return executorService;
     }
 
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
 }
